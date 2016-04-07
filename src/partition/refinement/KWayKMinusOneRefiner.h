@@ -87,6 +87,7 @@ class KWayKMinusOneRefiner final : public IRefiner,
     _stopping_policy() {
     _performed_moves.reserve(_hg.initialNumNodes());
     _hns_to_activate.reserve(_hg.initialNumNodes());
+    _delta_gain_support = true;
   }
 
   virtual ~KWayKMinusOneRefiner() { }
@@ -118,7 +119,7 @@ class KWayKMinusOneRefiner final : public IRefiner,
 
   bool refineImpl(std::vector<HypernodeID>& refinement_nodes,
                   const std::array<HypernodeWeight, 2>& max_allowed_part_weights,
-                  const UncontractionGainChanges& UNUSED(changes),
+                  UncontractionGainChanges& changes,
                   Metrics& best_metrics) noexcept override final {
     // LOG("=================================================");
     ASSERT(best_metrics.cut == metrics::hyperedgeCut(_hg),
@@ -132,6 +133,25 @@ class KWayKMinusOneRefiner final : public IRefiner,
     _pq.clear();
     _hg.resetHypernodeState();
     _pq_contains.resetAllBitsToFalse();
+
+    if (!_gain_cache.valid(refinement_nodes[1])) {
+      // In further FM passes, changes will be set to 0 by the caller.
+      if (_gain_cache.valid(refinement_nodes[0])) {
+        for (PartitionID part = 0; part < _config.partition.k; ++part) {
+          if (hypernodeIsConnectedToPart(refinement_nodes[1], part)) {
+            _gain_cache.initializeEntry(refinement_nodes[1], part, _gain_cache.entry(refinement_nodes[0], part) + changes.contraction_partner[part]);
+          }
+          if (hypernodeIsConnectedToPart(refinement_nodes[0], part)) {
+            _gain_cache.updateEntryAfterUncontraction(refinement_nodes[0], part, changes.representative[part]);
+          } else {
+            _gain_cache.removeEntry(refinement_nodes[0], part);
+          }
+          changes.representative[part] = 0;
+          changes.contraction_partner[part] = 0;
+        }
+      }
+      _gain_cache.setValid(refinement_nodes[1]);
+    }
 
     Randomize::shuffleVector(refinement_nodes, refinement_nodes.size());
     for (const HypernodeID hn : refinement_nodes) {
@@ -706,10 +726,10 @@ class KWayKMinusOneRefiner final : public IRefiner,
     // Currently we cannot infer the gain changes of the two initial refinement nodes
     // from the uncontraction itself (this is still a todo). Therefore, these activations
     // have to invalidate and recalculate the gains.
-    if (invalidate_hn) {
-      _gain_cache.setInvalid(hn);
-      initializeGainCacheFor(hn);
-    }
+    // if (invalidate_hn) {
+    //   _gain_cache.setInvalid(hn);
+    //   initializeGainCacheFor(hn);
+    // }
 
 
     if (_hg.isBorderNode(hn)) {

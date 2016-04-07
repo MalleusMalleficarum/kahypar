@@ -151,6 +151,23 @@ TEST_F(AHyperedgeFMRefiner, ComputesGainOfMovingAllPinsFromOneToAnotherPartition
   ASSERT_THAT(hyperedge_fm_refiner.computeGain(2, 0, 1), Eq(0));
 }
 
+TEST_F(AHyperedgeFMRefiner, ComputesCorrectGainValuesForInteralHEs) {
+  hypergraph.reset(new Hypergraph(7, 3, HyperedgeIndexVector { 0, 2, 5,  /*sentinel*/ 8 },
+                                  HyperedgeVector { 0, 1, 1, 2, 3, 4, 5, 6 }));
+
+  hypergraph->setNodePart(0, 0);
+  hypergraph->setNodePart(1, 0);
+  hypergraph->setNodePart(2, 0);
+  hypergraph->setNodePart(3, 0);
+  hypergraph->setNodePart(4, 1);
+  hypergraph->setNodePart(5, 1);
+  hypergraph->setNodePart(6, 1);
+  hypergraph->initializeNumCutHyperedges();
+
+  HyperedgeFMRefinerSimpleStopping hyperedge_fm_refiner(*hypergraph, config);
+  ASSERT_THAT(hyperedge_fm_refiner.computeGain(0, 0, 1), Eq(-1));
+}
+
 TEST_F(AHyperedgeFMRefiner, ComputesGainValuesOnModifiedHypergraph) {
   hypergraph.reset(new Hypergraph(7, 3, HyperedgeIndexVector { 0, 3, 7,  /*sentinel*/ 9 },
                                   HyperedgeVector { 0, 5, 6, 1, 2, 3, 4, 4, 5 }));

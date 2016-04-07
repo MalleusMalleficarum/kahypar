@@ -728,11 +728,155 @@ class GenericHypergraph {
   template <typename GainChanges>
   void uncontract(const Memento& memento, GainChanges& changes,
                   Int2Type<static_cast<int>(RefinementAlgorithm::kway_fm_km1)>) noexcept {
-    LOG("yeah");
-    // TODO(schlag): Maybe we can extract the handling of the 3 cases in which the gain needs to be
-    // adapted into policies. Then we could use one uncontract for the tag versions
-    // and only change the policy.
-    exit(0);
+    ASSERT(!hypernode(memento.u).isDisabled(), "Hypernode " << memento.u << " is disabled");
+    ASSERT(hypernode(memento.v).isDisabled(), "Hypernode " << memento.v << " is not invalid");
+
+    std::vector<HyperedgeWeight>& changes_u = changes.representative;
+    std::vector<HyperedgeWeight>& changes_v = changes.contraction_partner;
+
+    ASSERT(changes_u.size() == _k, V(changes_u.size()) << V(_k));
+    ASSERT(changes_v.size() == _k, V(changes_v.size()) << V(_k));
+    ASSERT(std::count(changes_u.begin(), changes_u.end(), 0) == _k, "Changes u not initialized");
+    ASSERT(std::count(changes_v.begin(), changes_v.end(), 0) == _k, "Changes v not initialized");
+
+    // TODO(schlag): How can we infer which blocks V_i are not adjacent to u or v anymore,
+    // after we perform the uncontraction. Currently we explicitly need to check via
+    // hypernodeIsConnectedToPart in KWayMinusOneRefiner. This seems to be too expensive and thus
+    // calculating the gain changes becomes as expensive as recomputing the gains...
+
+    DBG(dbg_hypergraph_uncontraction, "uncontracting (" << memento.u << "," << memento.v << ")");
+    hypernode(memento.v).enable();
+    ++_current_num_hypernodes;
+    hypernode(memento.v).part_id = hypernode(memento.u).part_id;
+    ++_part_info[partID(memento.u)].size;
+
+    ASSERT(partID(memento.v) != kInvalidPartition,
+           "PartitionID " << partID(memento.u) << " of representative HN " << memento.u <<
+           " is INVALID - therefore wrong partition id was inferred for uncontracted HN "
+           << memento.v);
+
+    _hes_not_containing_u.resetAllBitsToFalse();
+    // Assume all HEs did not contain u and we have to undo Case 2 operations.
+    for (const HyperedgeID he : incidentEdges(memento.v)) {
+      _hes_not_containing_u.setBit(he, true);
+    }
+
+    for (HyperedgeID i = memento.u_first_entry; i < memento.u_first_entry + memento.u_size; ++i) {
+      const HyperedgeID he = _incidence_array[i];
+      if (!_hes_not_containing_u[he]) {
+        // These are hyperedges that are not connected to v after the uncontraction operation,
+        // because they initially were only connected to u before the contraction.
+        if (connectivity(he) == 1) {
+          for (PartitionID part = 0; part < _k; ++part) {
+            changes_v[part] += edgeWeight(he);
+          }
+        } else if (pinCountInPart(he, partID(memento.u)) == 1) {
+          for (const PartitionID part : connectivitySet(he)) {
+            changes_v[part] -= edgeWeight(he);
+          }
+        } else {
+          for (PartitionID part = 0; part < _k; ++part) {
+            if (pinCountInPart(he, part) == 0) {
+              changes_v[part] += edgeWeight(he);
+            }
+          }
+        }
+      }
+      // Those HEs actually contained u and therefore will result in a Case 1 undo operation.
+      _hes_not_containing_u.setBit(he, false);
+    }
+
+    if (hypernode(memento.u).size() - memento.u_size > 0) {
+      // Undo case 2 opeations (i.e. Entry of pin v in HE e was reused to store connection to u):
+      // Set incidence entry containing u for this HE e back to v, because this slot was used
+      // to store the new edge to representative u during contraction as u was not a pin of e.
+      for (const HyperedgeID he : incidentEdges(memento.u)) {
+        if (_hes_not_containing_u[he]) {
+          DBG(dbg_hypergraph_uncontraction, "resetting reused Pinslot of HE " << he << " from "
+              << memento.u << " to " << memento.v);
+          resetReusedPinSlotToOriginalValue(he, memento);
+
+          if (connectivity(he) > 1) {
+            --hypernode(memento.u).num_incident_cut_hes;    // because u is not connected to that cut HE anymore
+            ++hypernode(memento.v).num_incident_cut_hes;    // because v is connected to that cut HE
+            // because after uncontraction, u is not connected to that HE anymore
+          }
+
+          if (connectivity(he) == 1) {
+            for (PartitionID part = 0; part < _k; ++part) {
+              changes_u[part] += edgeWeight(he);
+            }
+          } else if (pinCountInPart(he, partID(memento.u)) == 1) {
+            for (const PartitionID part : connectivitySet(he)) {
+              changes_u[part] -= edgeWeight(he);
+            }
+          } else {
+            for (PartitionID part = 0; part < _k; ++part) {
+              if (pinCountInPart(he, part) == 0) {
+                changes_u[part] += edgeWeight(he);
+              }
+            }
+          }
+          // The state of this hyperedge now resembles the state before contraction.
+          // Thus we don't need to process them any further.
+        }
+      }
+
+      // Check if we can remove the dynamically added incidence entries for u:
+      // If the old incidence entries are located before the current ones, than the
+      // contraction we are currently undoing was responsible moving the incidence entries
+      // of u to the end of the incidence array. Thus we can remove these entries now.
+      // Otherwise these entries will still be needed by upcoming uncontract operations.
+      if (memento.u_first_entry < hypernode(memento.u).firstEntry()) {
+        _incidence_array.erase(_incidence_array.begin() + hypernode(memento.u).firstEntry(),
+                               _incidence_array.end());
+      }
+    }
+
+    restoreRepresentative(memento);
+
+    // Undo case 1 operations (i.e. Pin v was just cut off by decreasing size of HE e):
+    // Thus it is sufficient to just increase the size of the HE e to re-add the entry of v.
+    for (const HyperedgeID he : incidentEdges(memento.v)) {
+      if (!_hes_not_containing_u[he]) {
+        DBG(dbg_hypergraph_uncontraction, "increasing size of HE " << he);
+        ASSERT(!hyperedge(he).isDisabled(), "Hyperedge " << he << " is disabled");
+        hyperedge(he).increaseSize();
+        increasePinCountInPart(he, partID(memento.v));
+        ASSERT(_incidence_array[hyperedge(he).firstInvalidEntry() - 1] == memento.v,
+               "Incorrect case 1 restore of HE " << he << ": "
+               << _incidence_array[hyperedge(he).firstInvalidEntry() - 1] << "!=" << memento.v
+               << "(while uncontracting: (" << memento.u << "," << memento.v << "))");
+
+        if (connectivity(he) > 1) {
+          ++hypernode(memento.v).num_incident_cut_hes;     // because v is connected to that cut HE
+        }
+
+
+        // Either the HE could have been removed from the cut before the move, or the HE
+        // was not present before uncontraction, because it was a removed single-node HE
+        // In both cases, there is no positive gain anymore, because the HE can't be removed
+        // from the cut or a move now would result in a new cut edge.
+        if (pinCountInPart(he, partID(memento.u)) == 2) {
+          for (PartitionID part = 0; part < _k; ++part) {
+            changes_u[part] -= edgeWeight(he);
+            changes_v[part] -= edgeWeight(he);
+          }
+        }
+
+        ++_current_num_pins;
+      }
+    }
+
+    ASSERT(hypernode(memento.u).num_incident_cut_hes == numIncidentCutHEs(memento.u),
+           V(memento.u) << V(hypernode(memento.u).num_incident_cut_hes)
+           << V(numIncidentCutHEs(memento.u)));
+    ASSERT(hypernode(memento.v).num_incident_cut_hes == numIncidentCutHEs(memento.v),
+           V(memento.v) << V(hypernode(memento.v).num_incident_cut_hes)
+           << V(numIncidentCutHEs(memento.v)));
+
+    changes_u[partID(memento.u)] = 0;
+    changes_v[partID(memento.v)] = 0;
   }
 
   void uncontract(const Memento& memento) noexcept {

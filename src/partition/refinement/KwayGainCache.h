@@ -187,6 +187,11 @@ class KwayGainCache {
     }
   }
 
+  void updateEntryAfterUncontraction(const HypernodeID hn, const PartitionID part, const Gain delta) {
+    ASSERT(part < _k, V(part));
+    entryOf(hn, part) += delta;
+  }
+
   void updateExistingEntry(const HypernodeID hn, const PartitionID part, const Gain delta) {
     ASSERT(part < _k, V(part));
     ASSERT(entryExists(hn, part), V(hn) << V(part));

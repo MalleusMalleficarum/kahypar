@@ -118,8 +118,17 @@ class HeavyEdgeCoarsenerBase : public CoarsenerBase<CoarseningMemento>{
     initializeRefiner(refiner);
     std::vector<HypernodeID> refinement_nodes(2, 0);
     UncontractionGainChanges changes;
-    changes.representative.push_back(0);
-    changes.contraction_partner.push_back(0);
+    switch (_config.partition.refinement_algorithm) {
+      case RefinementAlgorithm::twoway_fm:
+        changes.representative.push_back(0);
+        changes.contraction_partner.push_back(0);
+        break;
+      case RefinementAlgorithm::kway_fm_km1:
+        changes.representative.resize(_config.partition.k, 0);
+        changes.contraction_partner.resize(_config.partition.k, 0);
+        break;
+    }
+
     while (!_history.empty()) {
       restoreParallelHyperedges();
       restoreSingleNodeHyperedges();
@@ -154,8 +163,6 @@ class HeavyEdgeCoarsenerBase : public CoarsenerBase<CoarseningMemento>{
         _hg.uncontract(_history.back().contraction_memento);
         performLocalSearch(refiner, refinement_nodes, current_metrics, changes);
       }
-      changes.representative[0] = 0;
-      changes.contraction_partner[0] = 0;
       _history.pop_back();
     }
 

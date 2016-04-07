@@ -185,7 +185,7 @@ class TwoWayFMRefiner final : public IRefiner,
 
   bool refineImpl(std::vector<HypernodeID>& refinement_nodes,
                   const std::array<HypernodeWeight, 2>& max_allowed_part_weights,
-                  const UncontractionGainChanges& changes,
+                  UncontractionGainChanges& changes,
                   Metrics& best_metrics) noexcept override final {
     // LOG("------------------------------------------------------------------------> NEW REFINE");
     ASSERT(best_metrics.cut == metrics::hyperedgeCut(_hg),
@@ -217,6 +217,8 @@ class TwoWayFMRefiner final : public IRefiner,
                                                                    _gain_cache.value(refinement_nodes[1]));
         }
       }
+      changes.representative[0] = 0;
+      changes.contraction_partner[0] = 0;
     }
 
     Randomize::shuffleVector(refinement_nodes, refinement_nodes.size());

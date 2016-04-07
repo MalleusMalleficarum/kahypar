@@ -116,7 +116,7 @@ class CoarsenerBase {
 
   void performLocalSearch(IRefiner& refiner, std::vector<HypernodeID>& refinement_nodes,
                           Metrics& current_metrics,
-                          const UncontractionGainChanges& changes) noexcept {
+                          UncontractionGainChanges& changes) noexcept {
     ASSERT(changes.representative.size() != 0, "0");
     ASSERT(changes.contraction_partner.size() != 0, "0");
 
@@ -137,7 +137,7 @@ class CoarsenerBase {
 
   bool performLocalSearchIteration(IRefiner& refiner,
                                    std::vector<HypernodeID>& refinement_nodes,
-                                   const UncontractionGainChanges& current_changes,
+                                   UncontractionGainChanges& current_changes,
                                    Metrics& current_metrics) {
     const HyperedgeWeight old_cut = current_metrics.cut;
     const HyperedgeWeight old_km1 = current_metrics.km1;
