@@ -106,11 +106,11 @@ class MLCoarsener final : public ICoarsener,
           if (rating.target != kInvalidTarget) {
             already_matched.set(hn, true);
             already_matched.set(rating.target, true);
-            // if (_hg.nodeDegree(hn) > _hg.nodeDegree(rating.target)) {
-            performContraction(hn, rating.target);
-            // } else {
-            //   contract(rating.target, hn);
-            // }
+            if (_hg.freeSpace(hn) > _hg.freeSpace(rating.target)) {
+              performContraction(hn, rating.target);
+            } else {
+              performContraction(rating.target, hn);
+            }
           }
 
           if (_hg.currentNumNodes() <= limit) {

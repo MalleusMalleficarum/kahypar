@@ -181,12 +181,14 @@ class GenericHypergraph {
                       const WeightType weight) :
       _begin(begin),
       _size(size),
+      _used_space(size),
       _weight(weight),
       _valid(true) { }
 
     HypergraphElement() :
       _begin(0),
       _size(0),
+      _used_space(0),
       _weight(1),
       _valid(true) { }
 
@@ -237,11 +239,31 @@ class GenericHypergraph {
     void setSize(IDType size) {
       ASSERT(!isDisabled());
       _size = size;
+      _used_space = size;
+    }
+
+    void setUsedSpace(const IDType used_space) {
+      _used_space = used_space;
+    }
+
+    void updateUsedSpace() {
+      ASSERT(!isDisabled());
+      _used_space = _size;
     }
 
     void incrementSize() {
       ASSERT(!isDisabled());
       ++_size;
+    }
+
+    void incrementUsedSpace() {
+      ASSERT(!isDisabled());
+      ++_used_space;
+    }
+
+    IDType usedSpace() const {
+      ASSERT(!isDisabled());
+      return _used_space;
     }
 
     void decrementSize() {
@@ -273,6 +295,9 @@ class GenericHypergraph {
     IDType _begin;
     //! Number of _incidence_array elements
     IDType _size;
+    //! Maximum space used by the element. The maximum available free space for each
+    //! element is: math::nextPowerOfTwoCeiled(_used_space)
+    IDType _used_space;
     //! Hypernode/Hyperedge weight
     WeightType _weight;
     //! Flag indicating whether or not the element is active.
@@ -408,10 +433,13 @@ class GenericHypergraph {
     Memento& operator= (Memento&& other) = default;
 
     Memento(const HypernodeID u_, const HypernodeID u_first_entry_,
-            const HypernodeID u_size_, const HypernodeID v_) :
+            const HypernodeID u_size_, const HypernodeID u_used_space_,
+
+            const HypernodeID v_) :
       u(u_),
       u_first_entry(u_first_entry_),
       u_size(u_size_),
+      u_used_space(u_used_space_),
       v(v_) { }
 
     //! The representative hypernode that remains in the hypergraph
@@ -420,6 +448,9 @@ class GenericHypergraph {
     const HypernodeID u_first_entry;
     //! The size of u's incidence structure before contraction
     const HypernodeID u_size;
+    //! The space that was used by the hypernode before the contraction.
+    const HypernodeID u_used_space;
+
     //! The contraction partner of u that is removed from the hypergraph after the contraction.
     const HypernodeID v;
   };
@@ -540,6 +571,7 @@ class GenericHypergraph {
       hyperedge(i).setFirstEntry(edge_vector_index);
       for (VertexID pin_index = index_vector[i]; pin_index < index_vector[i + 1]; ++pin_index) {
         hyperedge(i).incrementSize();
+        hyperedge(i).incrementUsedSpace();
         hyperedge(i).hash += math::hash(edge_vector[pin_index]);
         _incidence_array[pin_index] = edge_vector[pin_index];
         hypernode(edge_vector[pin_index]).incrementSize();
@@ -559,6 +591,7 @@ class GenericHypergraph {
         const HypernodeID pin = edge_vector[pin_index];
         _incidence_array[hypernode(pin).firstInvalidEntry()] = i;
         hypernode(pin).incrementSize();
+        hypernode(pin).incrementUsedSpace();
       }
     }
 
@@ -784,6 +817,7 @@ class GenericHypergraph {
     hypernode(u).setWeight(hypernode(u).weight() + hypernode(v).weight());
     const HypernodeID u_offset = hypernode(u).firstEntry();
     const HypernodeID u_size = hypernode(u).size();
+    const HypernodeID u_used_space = hypernode(u).usedSpace();
 
     // The first call to connectHyperedgeToRepresentative copies the old incidence array of the
     // representative u to the end of the _incidence_array (even in the case that the old entries
@@ -833,7 +867,8 @@ class GenericHypergraph {
     }
     hypernode(v).disable();
     --_current_num_hypernodes;
-    return Memento(u, u_offset, u_size, v);
+
+    return Memento(u, u_offset, u_size, u_used_space, v);
   }
 
   /*!
@@ -867,15 +902,59 @@ class GenericHypergraph {
            " is INVALID - therefore wrong partition id was inferred for uncontracted HN "
            << memento.v);
 
+
     _hes_not_containing_u.reset();
     // Assume all HEs did not contain u and we have to undo Case 2 operations.
     for (const HyperedgeID he : incidentEdges(memento.v)) {
       _hes_not_containing_u.set(he, true);
     }
 
-    for (HyperedgeID i = memento.u_first_entry; i < memento.u_first_entry + memento.u_size; ++i) {
+    for (HyperedgeID i = hypernode(memento.u).firstEntry(); i < hypernode(memento.u).firstEntry() +
+         hypernode(memento.u).size(); ++i) {
       const HyperedgeID he = _incidence_array[i];
-      if (!_hes_not_containing_u[he]) {
+      if (_hes_not_containing_u[he]) {
+        // then we have to do sth.
+        // peek
+        if (_incidence_array[hyperedge(he).firstInvalidEntry()] == memento.v &&
+            hyperedge(he).size() != hyperedge(he).usedSpace()) {
+          // case1
+          hyperedge(he).incrementSize();
+          incrementPinCountInPart(he, partID(memento.v));
+          if (connectivity(he) > 1) {
+            ++hypernode(memento.v).num_incident_cut_hes;     // because v is connected to that cut HE
+          }
+          // Either the HE could have been removed from the cut before the move, or the HE
+          // was not present before uncontraction, because it was a removed single-node HE
+          // In both cases, there is no positive gain anymore, because the HE can't be removed
+          // from the cut or a move now would result in a new cut edge.
+          changes_u -= pinCountInPart(he, partID(memento.u)) == 2 ? edgeWeight(he) : 0;
+          changes_v -= pinCountInPart(he, partID(memento.u)) == 2 ? edgeWeight(he) : 0;
+          ++_current_num_pins;
+        } else {
+          // Undo case 2 opeations (i.e. Entry of pin v in HE e was reused to store connection to u):
+          // Set incidence entry containing u for this HE e back to v, because this slot was used
+          // to store the new edge to representative u during contraction as u was not a pin of e.
+          resetReusedPinSlotToOriginalValue(he, memento);
+
+          std::swap(_incidence_array[i],
+                    _incidence_array[hypernode(memento.u).firstInvalidEntry() - 1]);
+          hypernode(memento.u).decrementSize();
+
+          --i;
+
+          if (connectivity(he) > 1) {
+            --hypernode(memento.u).num_incident_cut_hes;    // because u is not connected to that cut HE anymore
+            ++hypernode(memento.v).num_incident_cut_hes;    // because v is connected to that cut HE
+            changes_u -= pinCountInPart(he, partID(memento.u)) == 1 ? edgeWeight(he) : 0;
+          } else {
+            // because after uncontraction, u is not connected to that HE anymore
+            // This assertion cannot be guaranteed at this point, since we do CASE 1 restores
+            // afterwards.
+            ASSERT(pinCountInPart(he, partID(memento.u)) > 1, "Found Single-Node HE!" << V(he));
+            changes_u += edgeWeight(he);
+          }
+        }
+      } else {
         // These are hyperedges that are not connected to v after the uncontraction operation,
         // because they initially were only connected to u before the contraction.
         if (connectivity(he) > 1) {
@@ -887,75 +966,9 @@ class GenericHypergraph {
           changes_v += edgeWeight(he);
         }
       }
-      // Those HEs actually contained u and therefore will result in a Case 1 undo operation.
-      _hes_not_containing_u.set(he, false);
-    }
-
-    if (hypernode(memento.u).size() - memento.u_size > 0) {
-      // Undo case 2 opeations (i.e. Entry of pin v in HE e was reused to store connection to u):
-      // Set incidence entry containing u for this HE e back to v, because this slot was used
-      // to store the new edge to representative u during contraction as u was not a pin of e.
-      for (const HyperedgeID he : incidentEdges(memento.u)) {
-        if (_hes_not_containing_u[he]) {
-          DBG(dbg_hypergraph_uncontraction, "resetting reused Pinslot of HE " << he << " from "
-              << memento.u << " to " << memento.v);
-          resetReusedPinSlotToOriginalValue(he, memento);
-
-          if (connectivity(he) > 1) {
-            --hypernode(memento.u).num_incident_cut_hes;    // because u is not connected to that cut HE anymore
-            ++hypernode(memento.v).num_incident_cut_hes;    // because v is connected to that cut HE
-            // because after uncontraction, u is not connected to that HE anymore
-            changes_u -= pinCountInPart(he, partID(memento.u)) == 1 ? edgeWeight(he) : 0;
-          } else {
-            // because after uncontraction, u is not connected to that HE anymore
-            ASSERT(pinCountInPart(he, partID(memento.u)) > 1, "Found Single-Node HE!");
-            changes_u += edgeWeight(he);
-          }
-          // The state of this hyperedge now resembles the state before contraction.
-          // Thus we don't need to process them any further.
-        }
-      }
-
-      // Check if we can remove the dynamically added incidence entries for u:
-      // If the old incidence entries are located before the current ones, than the
-      // contraction we are currently undoing was responsible moving the incidence entries
-      // of u to the end of the incidence array. Thus we can remove these entries now.
-      // Otherwise these entries will still be needed by upcoming uncontract operations.
-      if (memento.u_first_entry < hypernode(memento.u).firstEntry()) {
-        _incidence_array.erase(_incidence_array.begin() + hypernode(memento.u).firstEntry(),
-                               _incidence_array.end());
-      }
     }
 
     restoreRepresentative(memento);
-
-    // Undo case 1 operations (i.e. Pin v was just cut off by decreasing size of HE e):
-    // Thus it is sufficient to just increase the size of the HE e to re-add the entry of v.
-    for (const HyperedgeID he : incidentEdges(memento.v)) {
-      if (!_hes_not_containing_u[he]) {
-        DBG(dbg_hypergraph_uncontraction, "increasing size of HE " << he);
-        ASSERT(!hyperedge(he).isDisabled(), "Hyperedge " << he << " is disabled");
-        hyperedge(he).incrementSize();
-        incrementPinCountInPart(he, partID(memento.v));
-        ASSERT(_incidence_array[hyperedge(he).firstInvalidEntry() - 1] == memento.v,
-               "Incorrect case 1 restore of HE " << he << ": "
-               << _incidence_array[hyperedge(he).firstInvalidEntry() - 1] << "!=" << memento.v
-               << "(while uncontracting: (" << memento.u << "," << memento.v << "))");
-
-        if (connectivity(he) > 1) {
-          ++hypernode(memento.v).num_incident_cut_hes;     // because v is connected to that cut HE
-        }
-
-        // Either the HE could have been removed from the cut before the move, or the HE
-        // was not present before uncontraction, because it was a removed single-node HE
-        // In both cases, there is no positive gain anymore, because the HE can't be removed
-        // from the cut or a move now would result in a new cut edge.
-        changes_u -= pinCountInPart(he, partID(memento.u)) == 2 ? edgeWeight(he) : 0;
-        changes_v -= pinCountInPart(he, partID(memento.u)) == 2 ? edgeWeight(he) : 0;
-
-        ++_current_num_pins;
-      }
-    }
 
     ASSERT(hypernode(memento.u).num_incident_cut_hes == numIncidentCutHEs(memento.u),
            V(memento.u) << V(hypernode(memento.u).num_incident_cut_hes)
@@ -992,64 +1005,42 @@ class GenericHypergraph {
       _hes_not_containing_u.set(he, true);
     }
 
-    for (HyperedgeID i = memento.u_first_entry; i < memento.u_first_entry + memento.u_size; ++i) {
+    for (HyperedgeID i = hypernode(memento.u).firstEntry(); i < hypernode(memento.u).firstEntry() +
+         hypernode(memento.u).size(); ++i) {
       const HyperedgeID he = _incidence_array[i];
-      // Those HEs actually contained u and therefore will result in a Case 1 undo operation.
-      _hes_not_containing_u.set(he, false);
-    }
-
-    if (hypernode(memento.u).size() - memento.u_size > 0) {
-      // Undo case 2 opeations (i.e. Entry of pin v in HE e was reused to store connection to u):
-      // Set incidence entry containing u for this HE e back to v, because this slot was used
-      // to store the new edge to representative u during contraction as u was not a pin of e.
-      for (const HyperedgeID he : incidentEdges(memento.u)) {
-        if (_hes_not_containing_u[he]) {
-          DBG(dbg_hypergraph_uncontraction, "resetting reused Pinslot of HE " << he << " from "
-              << memento.u << " to " << memento.v);
+      if (_hes_not_containing_u[he]) {
+        // then we have to do sth.
+        //peek:
+        if (_incidence_array[hyperedge(he).firstInvalidEntry()] == memento.v &&
+            hyperedge(he).size() != hyperedge(he).usedSpace()) {
+          // case1
+          hyperedge(he).incrementSize();
+          incrementPinCountInPart(he, partID(memento.v));
+          if (connectivity(he) > 1) {
+            ++hypernode(memento.v).num_incident_cut_hes;     // because v is connected to that cut HE
+          }
+          ++_current_num_pins;
+        } else {
+          // Undo case 2 opeations (i.e. Entry of pin v in HE e was reused to store connection to u):
+          // Set incidence entry containing u for this HE e back to v, because this slot was used
+          // to store the new edge to representative u during contraction as u was not a pin of e.
           resetReusedPinSlotToOriginalValue(he, memento);
+
+          std::swap(_incidence_array[i],
+                    _incidence_array[hypernode(memento.u).firstInvalidEntry() - 1]);
+          hypernode(memento.u).decrementSize();
+
+          --i;
 
           if (connectivity(he) > 1) {
             --hypernode(memento.u).num_incident_cut_hes;    // because u is not connected to that cut HE anymore
             ++hypernode(memento.v).num_incident_cut_hes;    // because v is connected to that cut HE
           }
-          // The state of this hyperedge now resembles the state before contraction.
-          // Thus we don't need to process them any further.
         }
-      }
-
-      // Check if we can remove the dynamically added incidence entries for u:
-      // If the old incidence entries are located before the current ones, than the
-      // contraction we are currently undoing was responsible moving the incidence entries
-      // of u to the end of the incidence array. Thus we can remove these entries now.
-      // Otherwise these entries will still be needed by upcoming uncontract operations.
-      if (memento.u_first_entry < hypernode(memento.u).firstEntry()) {
-        _incidence_array.erase(_incidence_array.begin() + hypernode(memento.u).firstEntry(),
-                               _incidence_array.end());
       }
     }
 
     restoreRepresentative(memento);
-
-    // Undo case 1 operations (i.e. Pin v was just cut off by decreasing size of HE e):
-    // Thus it is sufficient to just increase the size of the HE e to re-add the entry of v.
-    for (const HyperedgeID he : incidentEdges(memento.v)) {
-      if (!_hes_not_containing_u[he]) {
-        DBG(dbg_hypergraph_uncontraction, "increasing size of HE " << he);
-        ASSERT(!hyperedge(he).isDisabled(), "Hyperedge " << he << " is disabled");
-        hyperedge(he).incrementSize();
-        incrementPinCountInPart(he, partID(memento.v));
-        ASSERT(_incidence_array[hyperedge(he).firstInvalidEntry() - 1] == memento.v,
-               "Incorrect case 1 restore of HE " << he << ": "
-               << _incidence_array[hyperedge(he).firstInvalidEntry() - 1] << "!=" << memento.v
-               << "(while uncontracting: (" << memento.u << "," << memento.v << "))");
-
-        if (connectivity(he) > 1) {
-          ++hypernode(memento.v).num_incident_cut_hes;     // because v is connected to that cut HE
-        }
-
-        ++_current_num_pins;
-      }
-    }
 
     ASSERT(hypernode(memento.u).num_incident_cut_hes == numIncidentCutHEs(memento.u),
            V(memento.u) << V(hypernode(memento.u).num_incident_cut_hes) << V(numIncidentCutHEs(memento.u)));
@@ -1284,7 +1275,19 @@ class GenericHypergraph {
              == 0,
              "HN " << pin << " is already connected to HE " << he);
       DBG(dbg_hypergraph_restore_edge, "re-adding pin  " << pin << " to HE " << he);
-      hypernode(pin).incrementSize();
+
+      const size_t first_invalid_index = hypernode(pin).firstInvalidEntry();
+      const size_t last_used_index = hypernode(pin).firstEntry() +
+                                     math::nextPowerOfTwoCeiled(hypernode(pin).usedSpace());
+
+      for (size_t i = first_invalid_index; i < last_used_index; ++i) {
+        if (_incidence_array[i] == he) {
+          std::swap(_incidence_array[i], _incidence_array[first_invalid_index]);
+          hypernode(pin).incrementSize();
+          break;
+        }
+      }
+
       if (partID(pin) != kInvalidPartition) {
         incrementPinCountInPart(he, partID(pin));
       }
@@ -1313,7 +1316,19 @@ class GenericHypergraph {
              == 0,
              "HN " << pin << " is already connected to HE " << he);
       DBG(dbg_hypergraph_restore_edge, "re-adding pin  " << pin << " to HE " << he);
-      hypernode(pin).incrementSize();
+
+      const size_t first_invalid_index = hypernode(pin).firstInvalidEntry();
+      const size_t last_used_index = hypernode(pin).firstEntry() +
+                                     math::nextPowerOfTwoCeiled(hypernode(pin).usedSpace());
+
+      for (size_t i = first_invalid_index; i < last_used_index; ++i) {
+        if (_incidence_array[i] == he) {
+          std::swap(_incidence_array[i], _incidence_array[first_invalid_index]);
+          hypernode(pin).incrementSize();
+          break;
+        }
+      }
+
       if (partID(pin) != kInvalidPartition) {
         incrementPinCountInPart(he, partID(pin));
       }
@@ -1632,6 +1647,11 @@ class GenericHypergraph {
     return hyperedge(he);
   }
 
+  HypernodeID freeSpace(const HypernodeID u) {
+    return math::nextPowerOfTwoCeiled(hypernode(u).usedSpace()) -
+           hypernode(u).usedSpace();
+  }
+
  private:
   FRIEND_TEST(AHypergraph, DisconnectsHypernodeFromHyperedge);
   FRIEND_TEST(AHypergraph, RemovesHyperedges);
@@ -1790,6 +1810,7 @@ class GenericHypergraph {
     ASSERT(!hypernode(memento.u).isDisabled(), "Hypernode " << memento.u << " is disabled");
     hypernode(memento.u).setFirstEntry(memento.u_first_entry);
     hypernode(memento.u).setSize(memento.u_size);
+    hypernode(memento.u).setUsedSpace(memento.u_used_space);
     hypernode(memento.u).setWeight(hypernode(memento.u).weight() - hypernode(memento.v).weight());
   }
 
@@ -1815,6 +1836,13 @@ class GenericHypergraph {
     *pin_end = memento.v;
   }
 
+  bool freeSpaceRemaining(const HypernodeID hn) const {
+    if (hypernode(hn).firstEntry() < 2 * _num_pins) {
+      return false;
+    }
+    return hypernode(hn).usedSpace() != math::nextPowerOfTwoCeiled(hypernode(hn).usedSpace());
+  }
+
   /*!
    * Connect hyperedge e to representative hypernode u.
    * If first_call is true, the method appends the old incidence structure of
@@ -1834,17 +1862,32 @@ class GenericHypergraph {
     // the hypernode's point of view.
     _incidence_array[hyperedge(e).firstInvalidEntry() - 1] = u;
 
-    Hypernode& nodeU = hypernode(u);
-    if (first_call) {
-      _incidence_array.insert(_incidence_array.cend(), _incidence_array.cbegin() + nodeU.firstEntry(),
-                              _incidence_array.cbegin() + nodeU.firstInvalidEntry());
-      nodeU.setFirstEntry(_incidence_array.size() - nodeU.size());
-      first_call = false;
+    Hypernode& node_u = hypernode(u);
+    if (!freeSpaceRemaining(u)) {
+      if (first_call) {
+        _incidence_array.insert(_incidence_array.cend(),
+                                _incidence_array.cbegin() + node_u.firstEntry(),
+                                _incidence_array.cbegin() + node_u.firstInvalidEntry());
+        node_u.setFirstEntry(_incidence_array.size() - node_u.size());
+        first_call = false;
+      }
+      _incidence_array.push_back(e);
+      node_u.incrementSize();
+      node_u.updateUsedSpace();
+
+      for (size_t i = math::nextPowerOfTwoCeiled(node_u.usedSpace()) - node_u.size(); i > 0; --i) {
+        _incidence_array.push_back(std::numeric_limits<HyperedgeID>::max());
+      }
+    } else {
+      const size_t slot_of_e = node_u.firstEntry() + node_u.usedSpace();
+      ASSERT(_incidence_array[slot_of_e] == std::numeric_limits<HyperedgeID>::max());
+      _incidence_array[slot_of_e] = e;
+      std::swap(_incidence_array[node_u.firstInvalidEntry()],
+                _incidence_array[slot_of_e]);
+      node_u.incrementSize();
+      node_u.incrementUsedSpace();
     }
-    ASSERT(nodeU.firstInvalidEntry() == _incidence_array.size(), "Incidence Info of HN " << u
-           << " is not at the end of the incidence array");
-    _incidence_array.push_back(e);
-    nodeU.incrementSize();
+    ASSERT(_incidence_array[node_u.firstInvalidEntry() - 1] == e);
   }
 
   /*!
@@ -1984,12 +2027,12 @@ class GenericHypergraph {
                                                                                                                     const bool split_nets);
 
   template <typename Hypergraph>
-  friend bool verifyEquivalenceWithoutPartitionInfo(const Hypergraph& expected,
-                                                    const Hypergraph& actual);
+  friend bool verifyEquivalenceWithoutPartitionInfo(Hypergraph& expected,
+                                                    Hypergraph& actual);
 
   template <typename Hypergraph>
-  friend bool verifyEquivalenceWithPartitionInfo(const Hypergraph& expected,
-                                                 const Hypergraph& actual);
+  friend bool verifyEquivalenceWithPartitionInfo(Hypergraph& expected,
+                                                 Hypergraph& actual);
 
   template <typename Hypergraph>
   friend std::pair<std::unique_ptr<Hypergraph>,
@@ -1997,7 +2040,7 @@ class GenericHypergraph {
 };
 
 template <typename Hypergraph>
-bool verifyEquivalenceWithoutPartitionInfo(const Hypergraph& expected, const Hypergraph& actual) {
+bool verifyEquivalenceWithoutPartitionInfo(Hypergraph& expected, Hypergraph& actual) {
   ASSERT(expected._num_hypernodes == actual._num_hypernodes,
          V(expected._num_hypernodes) << V(actual._num_hypernodes));
   ASSERT(expected._num_hyperedges == actual._num_hyperedges,
@@ -2016,13 +2059,27 @@ bool verifyEquivalenceWithoutPartitionInfo(const Hypergraph& expected, const Hyp
   ASSERT(expected._hypernodes == actual._hypernodes, "Error!");
   ASSERT(expected._hyperedges == actual._hyperedges, "Error!");
 
-  std::vector<unsigned int> expected_incidence_array(expected._incidence_array);
-  std::vector<unsigned int> actual_incidence_array(actual._incidence_array);
-  std::sort(expected_incidence_array.begin(), expected_incidence_array.end());
-  std::sort(actual_incidence_array.begin(), actual_incidence_array.end());
+  using HyperedgeID = typename Hypergraph::HyperedgeID;
+  using HypernodeID = typename Hypergraph::HypernodeID;
 
-  ASSERT(expected_incidence_array == actual_incidence_array,
-         "expected._incidence_array != actual._incidence_array");
+  for (const HypernodeID hn : actual.nodes()) {
+    for (const HyperedgeID he : actual.incidentEdges(hn)) {
+      auto actual_pins_begin = actual._incidence_array.begin() +
+                               actual.hyperedge(he).firstEntry();
+      auto actual_pins_end = actual._incidence_array.begin() +
+                             actual.hyperedge(he).firstInvalidEntry();
+
+      auto expected_pins_begin = expected._incidence_array.begin() +
+                                 expected.hyperedge(he).firstEntry();
+      auto expected_pins_end = expected._incidence_array.begin() +
+                               expected.hyperedge(he).firstInvalidEntry();
+
+      std::sort(actual_pins_begin, actual_pins_end);
+      std::sort(expected_pins_begin, expected_pins_end);
+      ASSERT(std::equal(actual_pins_begin, actual_pins_begin,
+                        expected_pins_begin), V(he));
+    }
+  }
 
   return expected._num_hypernodes == actual._num_hypernodes &&
          expected._num_hyperedges == actual._num_hyperedges &&
@@ -2033,12 +2090,11 @@ bool verifyEquivalenceWithoutPartitionInfo(const Hypergraph& expected, const Hyp
          expected._current_num_hyperedges == actual._current_num_hyperedges &&
          expected._current_num_pins == actual._current_num_pins &&
          expected._hypernodes == actual._hypernodes &&
-         expected._hyperedges == actual._hyperedges &&
-         expected_incidence_array == actual_incidence_array;
+         expected._hyperedges == actual._hyperedges;
 }
 
 template <typename Hypergraph>
-bool verifyEquivalenceWithPartitionInfo(const Hypergraph& expected, const Hypergraph& actual) {
+bool verifyEquivalenceWithPartitionInfo(Hypergraph& expected, Hypergraph& actual) {
   using HyperedgeID = typename Hypergraph::HyperedgeID;
   using HypernodeID = typename Hypergraph::HypernodeID;
 
@@ -2108,6 +2164,7 @@ reindex(const Hypergraph& hypergraph) {
     reindexed_hypergraph->_hyperedges[num_hyperedges].setFirstEntry(pin_index);
     for (const HypernodeID pin : hypergraph.pins(he)) {
       reindexed_hypergraph->hyperedge(num_hyperedges).incrementSize();
+      reindexed_hypergraph->hyperedge(num_hyperedges).incrementUsedSpace();
       reindexed_hypergraph->hyperedge(num_hyperedges).hash += math::hash(original_to_reindexed[pin]);
       reindexed_hypergraph->_incidence_array.push_back(original_to_reindexed[pin]);
       reindexed_hypergraph->hypernode(original_to_reindexed[pin]).incrementSize();
@@ -2148,6 +2205,7 @@ reindex(const Hypergraph& hypergraph) {
       reindexed_hypergraph->_incidence_array[
         reindexed_hypergraph->hypernode(pin).firstInvalidEntry()] = he;
       reindexed_hypergraph->hypernode(pin).incrementSize();
+      reindexed_hypergraph->hypernode(pin).incrementUsedSpace();
     }
   }
 
@@ -2204,6 +2262,7 @@ extractPartAsUnpartitionedHypergraphForBisection(const Hypergraph& hypergraph,
         for (const HypernodeID pin : hypergraph.pins(he)) {
           if (hypergraph.partID(pin) == part) {
             subhypergraph->hyperedge(num_hyperedges).incrementSize();
+            subhypergraph->hyperedge(num_hyperedges).incrementUsedSpace();
             subhypergraph->hyperedge(num_hyperedges).hash += math::hash(hypergraph_to_subhypergraph[pin]);
             subhypergraph->_incidence_array.push_back(hypergraph_to_subhypergraph[pin]);
             subhypergraph->hypernode(hypergraph_to_subhypergraph[pin]).incrementSize();
@@ -2228,6 +2287,7 @@ extractPartAsUnpartitionedHypergraphForBisection(const Hypergraph& hypergraph,
           for (const HypernodeID pin : hypergraph.pins(he)) {
             ASSERT(hypergraph.partID(pin) == part, V(pin));
             subhypergraph->hyperedge(num_hyperedges).incrementSize();
+            subhypergraph->hyperedge(num_hyperedges).incrementUsedSpace();
             subhypergraph->hyperedge(num_hyperedges).hash += math::hash(hypergraph_to_subhypergraph[pin]);
             subhypergraph->_incidence_array.push_back(hypergraph_to_subhypergraph[pin]);
             subhypergraph->hypernode(hypergraph_to_subhypergraph[pin]).incrementSize();
@@ -2268,6 +2328,7 @@ extractPartAsUnpartitionedHypergraphForBisection(const Hypergraph& hypergraph,
       for (const HypernodeID pin : subhypergraph->pins(he)) {
         subhypergraph->_incidence_array[subhypergraph->hypernode(pin).firstInvalidEntry()] = he;
         subhypergraph->hypernode(pin).incrementSize();
+        subhypergraph->hypernode(pin).incrementUsedSpace();
       }
     }
   }

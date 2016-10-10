@@ -310,15 +310,6 @@ TEST_F(AnUncontractionOperation, DisconnectsHyperedgesAddedToRepresenativeDuring
   ASSERT_THAT(hypergraph.nodeDegree(4), Eq(2));
 }
 
-TEST_F(AnUncontractionOperation, DeletesIncidenceInfoAddedDuringContraction) {
-  ASSERT_THAT(hypergraph._incidence_array.size(), Eq(24));
-  Memento memento = hypergraph.contract(4, 6);
-  ASSERT_THAT(hypergraph._incidence_array.size(), Eq(27));
-
-  hypergraph.uncontract(memento);
-  ASSERT_THAT(hypergraph._incidence_array.size(), Eq(24));
-}
-
 TEST_F(AnUncontractionOperation, RestoresIncidenceInfoForHyperedgesAddedToRepresentative) {
   ASSERT_THAT(std::count(hypergraph.pins(3).first, hypergraph.pins(3).second, 6), Eq(1));
   ASSERT_THAT(std::count(hypergraph.pins(2).first, hypergraph.pins(2).second, 6), Eq(1));
