@@ -185,12 +185,7 @@ void processCommandLineInput(Configuration& config, int argc, char* argv[]) {
   po::options_description required_options("Required Options", num_columns);
   required_options.add_options()
     ("hypergraph,h",
-    po::value<std::string>(&config.partition.graph_filename)->value_name("<string>")->required()->notifier(
-      [&](const std::string&) {
-    config.partition.graph_partition_filename =
-      config.partition.graph_filename + ".part."
-      + std::to_string(config.partition.k) + ".KaHyPar";
-  }),
+    po::value<std::string>(&config.partition.graph_filename)->value_name("<string>")->required(),
     "Hypergraph filename")
     ("blocks,k",
     po::value<PartitionID>(&config.partition.k)->value_name("<int>")->required()->notifier(
@@ -257,7 +252,7 @@ void processCommandLineInput(Configuration& config, int argc, char* argv[]) {
     po::value<bool>(&config.preprocessing.enable_min_hash_sparsifier)->value_name("<bool>"),
     "Use min-hash pin sparsifier before partitioning \n"
     "(default: false)")
-   ("p-sparsifier-min-median-he-size",
+    ("p-sparsifier-min-median-he-size",
     po::value<HypernodeID>(&config.preprocessing.min_hash_sparsifier.min_median_he_size)->value_name("<int>"),
     "Minimum median hyperedge size necessary for sparsifier application \n"
     "(default: 28)")
@@ -492,6 +487,20 @@ void processCommandLineInput(Configuration& config, int argc, char* argv[]) {
 
   po::store(po::parse_config_file(file, ini_line_options, true), cmd_vm);
   po::notify(cmd_vm);
+
+
+  std::string epsilon_str = std::to_string(config.partition.epsilon);
+  epsilon_str.erase(epsilon_str.find_last_not_of('0') + 1, std::string::npos);
+
+  config.partition.graph_partition_filename =
+    config.partition.graph_filename
+    + ".part"
+    + std::to_string(config.partition.k)
+    + ".epsilon"
+    + epsilon_str
+    + ".seed"
+    + std::to_string(config.partition.seed)
+    + ".KaHyPar";
 }
 
 int main(int argc, char* argv[]) {
@@ -511,6 +520,11 @@ int main(int argc, char* argv[]) {
   Hypergraph hypergraph(
     kahypar::io::createHypergraphFromFile(config.partition.graph_filename,
                                           config.partition.k));
+  Hypergraph hypergraph_2(
+	  kahypar::io::createHypergraphFromFile(config.partition.graph_filename,
+		  config.partition.k)
+  );
+  
 
   if (config.preprocessing.enable_min_hash_sparsifier) {
     // determine whether or not to apply the sparsifier
@@ -531,10 +545,18 @@ int main(int argc, char* argv[]) {
                                      config.partition.graph_filename.substr(
                                        config.partition.graph_filename.find_last_of("/") + 1));
   }
+ 
 
-  Partitioner partitioner;
+
+  Partitioner xyz;
+  xyz.partitionInitialE(hypergraph, config);
+  xyz.partitionInitialE(hypergraph_2, config);
+  
+  combine(hypergraph, hypergraph_2);
+
+  Partitioner partitioner1;
   HighResClockTimepoint start = std::chrono::high_resolution_clock::now();
-  partitioner.partition(hypergraph, config);
+  partitioner1.partition(hypergraph, config);
   HighResClockTimepoint end = std::chrono::high_resolution_clock::now();
   std::chrono::duration<double> elapsed_seconds = end - start;
 
