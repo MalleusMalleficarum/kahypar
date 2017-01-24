@@ -106,7 +106,8 @@ class Partitioner {
   Partitioner& operator= (Partitioner&&) = delete;
 
   inline void partition(Hypergraph& hypergraph, Configuration& config);
-
+  inline void partitionE(Hypergraph & hypergraph, Hypergraph & hypergraph_2, Configuration & config);
+  inline void partitionInitialE(Hypergraph& hypergraph, Configuration& config);
   const std::string internals() const {
     return _internals;
   }
@@ -169,6 +170,7 @@ class Partitioner {
   inline Configuration createConfigurationForInitialPartitioning(const Hypergraph& hg,
                                                                  const Configuration& original_config,
                                                                  double init_alpha) const;
+
 
   inline void postprocess(Hypergraph& hypergraph, const Configuration& config);
   inline void postprocess(Hypergraph& hypergraph, Hypergraph& sparseHypergraph,
@@ -251,7 +253,6 @@ inline void Partitioner::preprocess(Hypergraph& hypergraph, Hypergraph& sparseHy
   if (config.partition.verbose_output) {
     kahypar::io::printHypergraphInfo(sparseHypergraph, "sparsified hypergraph");
   }
-
 }
 
 inline void Partitioner::postprocess(Hypergraph& hypergraph, const Configuration& config) {
@@ -466,6 +467,36 @@ inline void Partitioner::partition(Hypergraph& hypergraph, Configuration& config
     partitionInternal(hypergraph, config);
     postprocess(hypergraph, config);
   }
+}
+inline void Partitioner::partitionE(Hypergraph& hypergraph, Hypergraph& hypergraph_2, Configuration& config) {
+	setupConfig(hypergraph, config);
+
+	if (config.preprocessing.min_hash_sparsifier.is_active) {
+		Hypergraph sparseHypergraph;
+		preprocess(hypergraph, sparseHypergraph, config);
+		partitionInternal(sparseHypergraph, config);
+		postprocess(hypergraph, sparseHypergraph, config);
+	}
+	else {
+		preprocess(hypergraph, config);
+		partitionInternal(hypergraph, config);
+		postprocess(hypergraph, config);
+	}
+}
+inline void Partitioner::partitionInitialE(Hypergraph & hypergraph, Configuration & config){
+	setupConfig(hypergraph, config);
+
+	if (config.preprocessing.min_hash_sparsifier.is_active) {
+		Hypergraph sparseHypergraph;
+		preprocess(hypergraph, sparseHypergraph, config);
+		performInitialPartitioning(sparseHypergraph, config);
+		postprocess(hypergraph, sparseHypergraph, config);
+	}
+	else {
+		preprocess(hypergraph, config);
+		performInitialPartitioning(hypergraph, config);
+		postprocess(hypergraph, config);
+	}
 }
 
 inline void Partitioner::partitionInternal(Hypergraph& hypergraph, const Configuration& config) {

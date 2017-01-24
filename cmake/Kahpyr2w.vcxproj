@@ -1,0 +1,427 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{DF12F9F2-AA76-4A56-9B03-6C76B482505E}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+    </ClCompile>
+    <Link>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\external_tools\googletest\googlemock\src\gmock-all.cc" />
+    <ClCompile Include="..\external_tools\googletest\googlemock\src\gmock-cardinalities.cc" />
+    <ClCompile Include="..\external_tools\googletest\googlemock\src\gmock-internal-utils.cc" />
+    <ClCompile Include="..\external_tools\googletest\googlemock\src\gmock-matchers.cc" />
+    <ClCompile Include="..\external_tools\googletest\googlemock\src\gmock-spec-builders.cc" />
+    <ClCompile Include="..\external_tools\googletest\googlemock\src\gmock.cc" />
+    <ClCompile Include="..\external_tools\googletest\googlemock\src\gmock_main.cc" />
+    <ClCompile Include="..\external_tools\googletest\googlemock\test\gmock-actions_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googlemock\test\gmock-cardinalities_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googlemock\test\gmock-generated-actions_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googlemock\test\gmock-generated-function-mockers_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googlemock\test\gmock-generated-internal-utils_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googlemock\test\gmock-generated-matchers_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googlemock\test\gmock-internal-utils_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googlemock\test\gmock-matchers_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googlemock\test\gmock-more-actions_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googlemock\test\gmock-nice-strict_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googlemock\test\gmock-port_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googlemock\test\gmock-spec-builders_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googlemock\test\gmock_all_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googlemock\test\gmock_ex_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googlemock\test\gmock_leak_test_.cc" />
+    <ClCompile Include="..\external_tools\googletest\googlemock\test\gmock_link2_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googlemock\test\gmock_link_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googlemock\test\gmock_output_test_.cc" />
+    <ClCompile Include="..\external_tools\googletest\googlemock\test\gmock_stress_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googlemock\test\gmock_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\codegear\gtest_all.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\codegear\gtest_link.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\samples\sample1.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\samples\sample10_unittest.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\samples\sample1_unittest.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\samples\sample2.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\samples\sample2_unittest.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\samples\sample3_unittest.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\samples\sample4.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\samples\sample4_unittest.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\samples\sample5_unittest.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\samples\sample6_unittest.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\samples\sample7_unittest.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\samples\sample8_unittest.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\samples\sample9_unittest.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\src\gtest-all.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\src\gtest-death-test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\src\gtest-filepath.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\src\gtest-port.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\src\gtest-printers.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\src\gtest-test-part.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\src\gtest-typed-test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\src\gtest.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\src\gtest_main.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest-death-test_ex_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest-death-test_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest-filepath_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest-linked_ptr_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest-listener_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest-message_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest-options_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest-param-test2_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest-param-test_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest-port_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest-printers_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest-test-part_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest-tuple_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest-typed-test2_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest-typed-test_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest-unittest-api_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest_all_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest_break_on_failure_unittest_.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest_catch_exceptions_test_.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest_color_test_.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest_environment_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest_env_var_test_.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest_filter_unittest_.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest_help_test_.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest_list_tests_unittest_.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest_main_unittest.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest_no_test_unittest.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest_output_test_.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest_pred_impl_unittest.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest_premature_exit_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest_prod_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest_repeat_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest_shuffle_test_.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest_sole_header_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest_stress_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest_throw_on_failure_ex_test.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest_throw_on_failure_test_.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest_uninitialized_test_.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest_unittest.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest_xml_outfile1_test_.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest_xml_outfile2_test_.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\gtest_xml_output_unittest_.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\test\production.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\xcode\samples\frameworksample\widget.cc" />
+    <ClCompile Include="..\external_tools\googletest\googletest\xcode\samples\frameworksample\widget_test.cc" />
+    <ClCompile Include="..\external_tools\sqlplot-tools\examples\sorting-speed\sorting-speed.cpp" />
+    <ClCompile Include="..\external_tools\sqlplot-tools\examples\stats_writer\test.cpp" />
+    <ClCompile Include="..\external_tools\sqlplot-tools\src\common.cpp" />
+    <ClCompile Include="..\external_tools\sqlplot-tools\src\fieldset.cpp" />
+    <ClCompile Include="..\external_tools\sqlplot-tools\src\gnuplot.cpp" />
+    <ClCompile Include="..\external_tools\sqlplot-tools\src\importdata.cpp" />
+    <ClCompile Include="..\external_tools\sqlplot-tools\src\latex.cpp" />
+    <ClCompile Include="..\external_tools\sqlplot-tools\src\mysql.cpp" />
+    <ClCompile Include="..\external_tools\sqlplot-tools\src\pgsql.cpp" />
+    <ClCompile Include="..\external_tools\sqlplot-tools\src\reformat.cpp" />
+    <ClCompile Include="..\external_tools\sqlplot-tools\src\sp-process.cpp" />
+    <ClCompile Include="..\external_tools\sqlplot-tools\src\sql.cpp" />
+    <ClCompile Include="..\external_tools\sqlplot-tools\src\sqlite-functions.cpp" />
+    <ClCompile Include="..\external_tools\sqlplot-tools\src\sqlite.cpp" />
+    <ClCompile Include="..\external_tools\xxhash\xxhash.c" />
+    <ClCompile Include="..\external_tools\xxhash\xxhsum.c" />
+    <ClCompile Include="..\kahypar\application\kahypar.cc" />
+    <ClCompile Include="..\tests\datastructure\binary_heap_test.cc" />
+    <ClCompile Include="..\tests\datastructure\hypergraph_test.cc" />
+    <ClCompile Include="..\tests\datastructure\incidence_set_test.cc" />
+    <ClCompile Include="..\tests\datastructure\kway_priority_queue_test.cc" />
+    <ClCompile Include="..\tests\datastructure\priority_queue_test.cc" />
+    <ClCompile Include="..\tests\datastructure\sparse_map_test.cc" />
+    <ClCompile Include="..\tests\datastructure\sparse_set_test.cc" />
+    <ClCompile Include="..\tests\end_to_end\kahypar_integration_tests.cc" />
+    <ClCompile Include="..\tests\io\hypergraph_io_test.cc" />
+    <ClCompile Include="..\tests\meta\static_multi_dispatch_factory_test.cc" />
+    <ClCompile Include="..\tests\partition\coarsening\full_vertex_pair_coarsener_test.cc" />
+    <ClCompile Include="..\tests\partition\coarsening\heavy_edge_rater_test.cc" />
+    <ClCompile Include="..\tests\partition\coarsening\lazy_vertex_pair_coarsener_test.cc" />
+    <ClCompile Include="..\tests\partition\initial_partitioning\bfs_partitioner_test.cc" />
+    <ClCompile Include="..\tests\partition\initial_partitioning\gain_computation_test.cc" />
+    <ClCompile Include="..\tests\partition\initial_partitioning\greedy_hypergraph_growing_functionality_test.cc" />
+    <ClCompile Include="..\tests\partition\initial_partitioning\greedy_hypergraph_growing_partitioner_test.cc" />
+    <ClCompile Include="..\tests\partition\initial_partitioning\greedy_queue_selection_test.cc" />
+    <ClCompile Include="..\tests\partition\initial_partitioning\initial_partitioner_base_test.cc" />
+    <ClCompile Include="..\tests\partition\initial_partitioning\label_propagation_functionality_test.cc" />
+    <ClCompile Include="..\tests\partition\initial_partitioning\label_propagation_partitioner_test.cc" />
+    <ClCompile Include="..\tests\partition\initial_partitioning\random_partitioner_test.cc" />
+    <ClCompile Include="..\tests\partition\metrics_test.cc" />
+    <ClCompile Include="..\tests\partition\partitioner_test.cc" />
+    <ClCompile Include="..\tests\partition\refinement\k_way_fm_refiner_test.cc" />
+    <ClCompile Include="..\tests\partition\refinement\max_gain_node_k_way_fm_refiner_test.cc" />
+    <ClCompile Include="..\tests\partition\refinement\two_way_fm_refiner_test.cc" />
+    <ClCompile Include="..\tests\utils\math_test.cc" />
+    <ClCompile Include="..\tools\bookshelf_to_hgr_converter.cc" />
+    <ClCompile Include="..\tools\bookshelf_to_hgr_converter_test.cc" />
+    <ClCompile Include="..\tools\cnf_to_hgr_converter.cc" />
+    <ClCompile Include="..\tools\cnf_to_hgr_converter_test.cc" />
+    <ClCompile Include="..\tools\create_weighted_hgr.cc" />
+    <ClCompile Include="..\tools\graph_to_hgr_converter.cc" />
+    <ClCompile Include="..\tools\hgr_to_bipartite_graphml_converter.cc" />
+    <ClCompile Include="..\tools\hgr_to_bipartite_metis_graph_converter.cc" />
+    <ClCompile Include="..\tools\hgr_to_edge_list_conversion_test.cc" />
+    <ClCompile Include="..\tools\hgr_to_edge_list_converter.cc" />
+    <ClCompile Include="..\tools\hgr_to_hypergraphml_converter.cc" />
+    <ClCompile Include="..\tools\hgr_to_patoh_converter.cc" />
+    <ClCompile Include="..\tools\hmetis_lib_test.cc" />
+    <ClCompile Include="..\tools\hypergraph_analyzer.cc" />
+    <ClCompile Include="..\tools\hypergraph_statistics.cc" />
+    <ClCompile Include="..\tools\mtx_to_hgr_conversion.cc" />
+    <ClCompile Include="..\tools\mtx_to_hgr_converter.cc" />
+    <ClCompile Include="..\tools\mtx_to_hgr_converter_test.cc" />
+    <ClCompile Include="..\tools\verify_partition.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\external_tools\googletest\googlemock\include\gmock\gmock-actions.h" />
+    <ClInclude Include="..\external_tools\googletest\googlemock\include\gmock\gmock-cardinalities.h" />
+    <ClInclude Include="..\external_tools\googletest\googlemock\include\gmock\gmock-generated-actions.h" />
+    <ClInclude Include="..\external_tools\googletest\googlemock\include\gmock\gmock-generated-function-mockers.h" />
+    <ClInclude Include="..\external_tools\googletest\googlemock\include\gmock\gmock-generated-matchers.h" />
+    <ClInclude Include="..\external_tools\googletest\googlemock\include\gmock\gmock-generated-nice-strict.h" />
+    <ClInclude Include="..\external_tools\googletest\googlemock\include\gmock\gmock-matchers.h" />
+    <ClInclude Include="..\external_tools\googletest\googlemock\include\gmock\gmock-more-actions.h" />
+    <ClInclude Include="..\external_tools\googletest\googlemock\include\gmock\gmock-more-matchers.h" />
+    <ClInclude Include="..\external_tools\googletest\googlemock\include\gmock\gmock-spec-builders.h" />
+    <ClInclude Include="..\external_tools\googletest\googlemock\include\gmock\gmock.h" />
+    <ClInclude Include="..\external_tools\googletest\googlemock\include\gmock\internal\custom\gmock-generated-actions.h" />
+    <ClInclude Include="..\external_tools\googletest\googlemock\include\gmock\internal\custom\gmock-matchers.h" />
+    <ClInclude Include="..\external_tools\googletest\googlemock\include\gmock\internal\custom\gmock-port.h" />
+    <ClInclude Include="..\external_tools\googletest\googlemock\include\gmock\internal\gmock-generated-internal-utils.h" />
+    <ClInclude Include="..\external_tools\googletest\googlemock\include\gmock\internal\gmock-internal-utils.h" />
+    <ClInclude Include="..\external_tools\googletest\googlemock\include\gmock\internal\gmock-port.h" />
+    <ClInclude Include="..\external_tools\googletest\googlemock\test\gmock_link_test.h" />
+    <ClInclude Include="..\external_tools\googletest\googletest\include\gtest\gtest-death-test.h" />
+    <ClInclude Include="..\external_tools\googletest\googletest\include\gtest\gtest-message.h" />
+    <ClInclude Include="..\external_tools\googletest\googletest\include\gtest\gtest-param-test.h" />
+    <ClInclude Include="..\external_tools\googletest\googletest\include\gtest\gtest-printers.h" />
+    <ClInclude Include="..\external_tools\googletest\googletest\include\gtest\gtest-spi.h" />
+    <ClInclude Include="..\external_tools\googletest\googletest\include\gtest\gtest-test-part.h" />
+    <ClInclude Include="..\external_tools\googletest\googletest\include\gtest\gtest-typed-test.h" />
+    <ClInclude Include="..\external_tools\googletest\googletest\include\gtest\gtest.h" />
+    <ClInclude Include="..\external_tools\googletest\googletest\include\gtest\gtest_pred_impl.h" />
+    <ClInclude Include="..\external_tools\googletest\googletest\include\gtest\gtest_prod.h" />
+    <ClInclude Include="..\external_tools\googletest\googletest\include\gtest\internal\custom\gtest-port.h" />
+    <ClInclude Include="..\external_tools\googletest\googletest\include\gtest\internal\custom\gtest-printers.h" />
+    <ClInclude Include="..\external_tools\googletest\googletest\include\gtest\internal\custom\gtest.h" />
+    <ClInclude Include="..\external_tools\googletest\googletest\include\gtest\internal\gtest-death-test-internal.h" />
+    <ClInclude Include="..\external_tools\googletest\googletest\include\gtest\internal\gtest-filepath.h" />
+    <ClInclude Include="..\external_tools\googletest\googletest\include\gtest\internal\gtest-internal.h" />
+    <ClInclude Include="..\external_tools\googletest\googletest\include\gtest\internal\gtest-linked_ptr.h" />
+    <ClInclude Include="..\external_tools\googletest\googletest\include\gtest\internal\gtest-param-util-generated.h" />
+    <ClInclude Include="..\external_tools\googletest\googletest\include\gtest\internal\gtest-param-util.h" />
+    <ClInclude Include="..\external_tools\googletest\googletest\include\gtest\internal\gtest-port-arch.h" />
+    <ClInclude Include="..\external_tools\googletest\googletest\include\gtest\internal\gtest-port.h" />
+    <ClInclude Include="..\external_tools\googletest\googletest\include\gtest\internal\gtest-string.h" />
+    <ClInclude Include="..\external_tools\googletest\googletest\include\gtest\internal\gtest-tuple.h" />
+    <ClInclude Include="..\external_tools\googletest\googletest\include\gtest\internal\gtest-type-util.h" />
+    <ClInclude Include="..\external_tools\googletest\googletest\samples\prime_tables.h" />
+    <ClInclude Include="..\external_tools\googletest\googletest\samples\sample1.h" />
+    <ClInclude Include="..\external_tools\googletest\googletest\samples\sample2.h" />
+    <ClInclude Include="..\external_tools\googletest\googletest\samples\sample3-inl.h" />
+    <ClInclude Include="..\external_tools\googletest\googletest\samples\sample4.h" />
+    <ClInclude Include="..\external_tools\googletest\googletest\src\gtest-internal-inl.h" />
+    <ClInclude Include="..\external_tools\googletest\googletest\test\gtest-param-test_test.h" />
+    <ClInclude Include="..\external_tools\googletest\googletest\test\gtest-typed-test_test.h" />
+    <ClInclude Include="..\external_tools\googletest\googletest\test\production.h" />
+    <ClInclude Include="..\external_tools\googletest\googletest\xcode\samples\frameworksample\widget.h" />
+    <ClInclude Include="..\external_tools\sqlplot-tools\examples\stats_writer\stats_writer.h" />
+    <ClInclude Include="..\external_tools\sqlplot-tools\src\common.h" />
+    <ClInclude Include="..\external_tools\sqlplot-tools\src\fieldset.h" />
+    <ClInclude Include="..\external_tools\sqlplot-tools\src\importdata.h" />
+    <ClInclude Include="..\external_tools\sqlplot-tools\src\mysql.h" />
+    <ClInclude Include="..\external_tools\sqlplot-tools\src\pgsql.h" />
+    <ClInclude Include="..\external_tools\sqlplot-tools\src\reformat.h" />
+    <ClInclude Include="..\external_tools\sqlplot-tools\src\simpleglob.h" />
+    <ClInclude Include="..\external_tools\sqlplot-tools\src\simpleopt.h" />
+    <ClInclude Include="..\external_tools\sqlplot-tools\src\sql.h" />
+    <ClInclude Include="..\external_tools\sqlplot-tools\src\sqlite.h" />
+    <ClInclude Include="..\external_tools\sqlplot-tools\src\strtools.h" />
+    <ClInclude Include="..\external_tools\sqlplot-tools\src\textlines.h" />
+    <ClInclude Include="..\external_tools\xxhash\xxhash.h" />
+    <ClInclude Include="..\kahypar\datastructure\binary_heap.h" />
+    <ClInclude Include="..\kahypar\datastructure\bucket_queue.h" />
+    <ClInclude Include="..\kahypar\datastructure\connectivity_sets.h" />
+    <ClInclude Include="..\kahypar\datastructure\fast_reset_array.h" />
+    <ClInclude Include="..\kahypar\datastructure\fast_reset_flag_array.h" />
+    <ClInclude Include="..\kahypar\datastructure\hash_table.h" />
+    <ClInclude Include="..\kahypar\datastructure\hypergraph.h" />
+    <ClInclude Include="..\kahypar\datastructure\hypergraph2.h" />
+    <ClInclude Include="..\kahypar\datastructure\incidence_set.h" />
+    <ClInclude Include="..\kahypar\datastructure\kway_priority_queue.h" />
+    <ClInclude Include="..\kahypar\datastructure\sparse_map.h" />
+    <ClInclude Include="..\kahypar\datastructure\sparse_set.h" />
+    <ClInclude Include="..\kahypar\definitions.h" />
+    <ClInclude Include="..\kahypar\io\hypergraph_io.h" />
+    <ClInclude Include="..\kahypar\io\partitioning_output.h" />
+    <ClInclude Include="..\kahypar\io\sql_plottools_serializer.h" />
+    <ClInclude Include="..\kahypar\kahypar.h" />
+    <ClInclude Include="..\kahypar\macros.h" />
+    <ClInclude Include="..\kahypar\meta\abstract_factory.h" />
+    <ClInclude Include="..\kahypar\meta\empty.h" />
+    <ClInclude Include="..\kahypar\meta\function_traits.h" />
+    <ClInclude Include="..\kahypar\meta\int_to_type.h" />
+    <ClInclude Include="..\kahypar\meta\mandatory.h" />
+    <ClInclude Include="..\kahypar\meta\policy_registry.h" />
+    <ClInclude Include="..\kahypar\meta\registrar.h" />
+    <ClInclude Include="..\kahypar\meta\select.h" />
+    <ClInclude Include="..\kahypar\meta\static_double_dispatch_factory.h" />
+    <ClInclude Include="..\kahypar\meta\static_multi_dispatch_factory.h" />
+    <ClInclude Include="..\kahypar\meta\template_parameter_to_string.h" />
+    <ClInclude Include="..\kahypar\meta\typelist.h" />
+    <ClInclude Include="..\kahypar\partition\coarsening\coarsener_base.h" />
+    <ClInclude Include="..\kahypar\partition\coarsening\coarsening_memento.h" />
+    <ClInclude Include="..\kahypar\partition\coarsening\do_nothing_coarsener.h" />
+    <ClInclude Include="..\kahypar\partition\coarsening\full_vertex_pair_coarsener.h" />
+    <ClInclude Include="..\kahypar\partition\coarsening\heavy_edge_rater.h" />
+    <ClInclude Include="..\kahypar\partition\coarsening\hypergraph_pruner.h" />
+    <ClInclude Include="..\kahypar\partition\coarsening\i_coarsener.h" />
+    <ClInclude Include="..\kahypar\partition\coarsening\lazy_vertex_pair_coarsener.h" />
+    <ClInclude Include="..\kahypar\partition\coarsening\ml_coarsener.h" />
+    <ClInclude Include="..\kahypar\partition\coarsening\policies\rating_tie_breaking_policy.h" />
+    <ClInclude Include="..\kahypar\partition\coarsening\vertex_pair_coarsener_base.h" />
+    <ClInclude Include="..\kahypar\partition\configuration.h" />
+    <ClInclude Include="..\kahypar\partition\configuration_enum_classes.h" />
+    <ClInclude Include="..\kahypar\partition\factories.h" />
+    <ClInclude Include="..\kahypar\partition\initial_partitioning\bfs_initial_partitioner.h" />
+    <ClInclude Include="..\kahypar\partition\initial_partitioning\greedy_hypergraph_growing_initial_partitioner.h" />
+    <ClInclude Include="..\kahypar\partition\initial_partitioning\initial_partitioner_base.h" />
+    <ClInclude Include="..\kahypar\partition\initial_partitioning\initial_partitioning.h" />
+    <ClInclude Include="..\kahypar\partition\initial_partitioning\i_initial_partitioner.h" />
+    <ClInclude Include="..\kahypar\partition\initial_partitioning\label_propagation_initial_partitioner.h" />
+    <ClInclude Include="..\kahypar\partition\initial_partitioning\policies\ip_gain_computation_policy.h" />
+    <ClInclude Include="..\kahypar\partition\initial_partitioning\policies\ip_greedy_queue_selection_policy.h" />
+    <ClInclude Include="..\kahypar\partition\initial_partitioning\policies\ip_start_node_selection_policy.h" />
+    <ClInclude Include="..\kahypar\partition\initial_partitioning\pool_initial_partitioner.h" />
+    <ClInclude Include="..\kahypar\partition\initial_partitioning\random_initial_partitioner.h" />
+    <ClInclude Include="..\kahypar\partition\metrics.h" />
+    <ClInclude Include="..\kahypar\partition\partitioner.h" />
+    <ClInclude Include="..\kahypar\partition\preprocessing\adaptive_lsh.h" />
+    <ClInclude Include="..\kahypar\partition\preprocessing\large_hyperedge_remover.h" />
+    <ClInclude Include="..\kahypar\partition\preprocessing\min_hash_sparsifier.h" />
+    <ClInclude Include="..\kahypar\partition\preprocessing\policies\min_hash_policy.h" />
+    <ClInclude Include="..\kahypar\partition\preprocessing\single_node_hyperedge_remover.h" />
+    <ClInclude Include="..\kahypar\partition\refinement\2way_fm_gain_cache.h" />
+    <ClInclude Include="..\kahypar\partition\refinement\2way_fm_refiner.h" />
+    <ClInclude Include="..\kahypar\partition\refinement\do_nothing_refiner.h" />
+    <ClInclude Include="..\kahypar\partition\refinement\fm_refiner_base.h" />
+    <ClInclude Include="..\kahypar\partition\refinement\gain_cache_element.h" />
+    <ClInclude Include="..\kahypar\partition\refinement\i_refiner.h" />
+    <ClInclude Include="..\kahypar\partition\refinement\kway_fm_cut_refiner.h" />
+    <ClInclude Include="..\kahypar\partition\refinement\kway_fm_gain_cache.h" />
+    <ClInclude Include="..\kahypar\partition\refinement\kway_fm_km1_refiner.h" />
+    <ClInclude Include="..\kahypar\partition\refinement\kway_fm_max_gain_node_refiner.h" />
+    <ClInclude Include="..\kahypar\partition\refinement\lp_gain_cache.h" />
+    <ClInclude Include="..\kahypar\partition\refinement\lp_refiner.h" />
+    <ClInclude Include="..\kahypar\partition\refinement\policies\2fm_rebalancing_policy.h" />
+    <ClInclude Include="..\kahypar\partition\refinement\policies\fm_improvement_policy.h" />
+    <ClInclude Include="..\kahypar\partition\refinement\policies\fm_stop_policy.h" />
+    <ClInclude Include="..\kahypar\partition\refinement\uncontraction_gain_changes.h" />
+    <ClInclude Include="..\kahypar\utils\float_compare.h" />
+    <ClInclude Include="..\kahypar\utils\hash_vector.h" />
+    <ClInclude Include="..\kahypar\utils\math.h" />
+    <ClInclude Include="..\kahypar\utils\randomize.h" />
+    <ClInclude Include="..\kahypar\utils\stats.h" />
+    <ClInclude Include="..\kahypar\utils\timer.h" />
+    <ClInclude Include="..\tests\datastructure\hypergraph_test_fixtures.h" />
+    <ClInclude Include="..\tests\io\hypergraph_io_test_fixtures.h" />
+    <ClInclude Include="..\tests\partition\coarsening\vertex_pair_coarsener_test_fixtures.h" />
+    <ClInclude Include="..\tools\bookshelf_to_hgr_converter.h" />
+    <ClInclude Include="..\tools\cnf_to_hgr_conversion.h" />
+    <ClInclude Include="..\tools\hgr_to_edgelist_conversion.h" />
+    <ClInclude Include="..\tools\mtx_to_hgr_conversion.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\external_tools\googletest\googlemock\scripts\generator\README.cppclean" />
+    <None Include="modules\getgitrevisiondescription.cmake_files\indicator.html" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
