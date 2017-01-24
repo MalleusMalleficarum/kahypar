@@ -185,14 +185,14 @@ void processCommandLineInput(Configuration& config, int argc, char* argv[]) {
   po::options_description required_options("Required Options", num_columns);
   required_options.add_options()
     ("hypergraph,h",
-<<<<<<< HEAD
+
     po::value<std::string>(&config.partition.graph_filename)->value_name("<string>")->required(),
-=======
+
     po::value<std::string>(&config.partition.graph_filename)->value_name("<string>")->required()->notifier(
       [&](const std::string&) {
 
   }),
->>>>>>> origin/master
+
     "Hypergraph filename")
     ("blocks,k",
     po::value<PartitionID>(&config.partition.k)->value_name("<int>")->required()->notifier(
@@ -509,14 +509,14 @@ void processCommandLineInput(Configuration& config, int argc, char* argv[]) {
     + ".seed"
     + std::to_string(config.partition.seed)
     + ".KaHyPar";
-=======
+
   int epsilonhelp = std::round(config.partition.epsilon * 100);
   config.partition.graph_partition_filename =
     config.partition.graph_filename + ".part"
     + std::to_string(config.partition.k) + "."
     + std::to_string(epsilonhelp) + "."
     + std::to_string(config.partition.seed) + ".KaHyPar";
->>>>>>> origin/master
+
 }
 
 int main(int argc, char* argv[]) {
