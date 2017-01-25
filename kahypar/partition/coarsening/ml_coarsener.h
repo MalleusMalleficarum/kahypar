@@ -78,53 +78,58 @@ class MLCoarsener final : public ICoarsener,
   MLCoarsener& operator= (MLCoarsener&&) = delete;
 
  private:
-	void coarsenImpl(const HypernodeID limit, const std::vector<PartitionID>& parent_1, const std::vector<PartitionID>& parent_2) override final { }
+	void coarsenImpl(const HypernodeID limit, const std::vector<PartitionID>& parent_1, const std::vector<PartitionID>& parent_2) override final {
+		int pass_nr = 0;
+		std::vector<HypernodeID> current_hns;
+		ds::FastResetFlagArray<> already_matched(_hg.initialNumNodes());
+		while (_hg.currentNumNodes() > limit) {
+			LOGVAR(pass_nr);
+			LOGVAR(_hg.currentNumNodes());
+
+			already_matched.reset();
+			current_hns.clear();
+
+			const HypernodeID num_hns_before_pass = _hg.currentNumNodes();
+			for (const HypernodeID hn : _hg.nodes()) {
+				current_hns.push_back(hn);
+			}
+			Randomize::instance().shuffleVector(current_hns, current_hns.size());
+			// std::sort(std::begin(current_hns), std::end(current_hns),
+			//           [&](const HypernodeID l, const HypernodeID r) {
+			//             return _hg.nodeDegree(l) < _hg.nodeDegree(r);
+			//           });
+
+			for (const HypernodeID hn : current_hns) {
+				if (_hg.nodeIsEnabled(hn)) {
+					const Rating rating = contractionPartner(hn, already_matched);
+
+					if (rating.target != kInvalidTarget) {
+						already_matched.set(hn, true);
+						already_matched.set(rating.target, true);
+						// if (_hg.nodeDegree(hn) > _hg.nodeDegree(rating.target)) {
+						performContraction(hn, rating.target);
+						// } else {
+						//   contract(rating.target, hn);
+						// }
+					}
+
+					if (_hg.currentNumNodes() <= limit) {
+						break;
+					}
+				}
+			}
+			if (num_hns_before_pass == _hg.currentNumNodes()) {
+				break;
+			}
+
+			++pass_nr;
+		}
+	
+	}
   void coarsenImpl(const HypernodeID limit) override final {
-    int pass_nr = 0;
-    std::vector<HypernodeID> current_hns;
-    ds::FastResetFlagArray<> already_matched(_hg.initialNumNodes());
-    while (_hg.currentNumNodes() > limit) {
-      LOGVAR(pass_nr);
-      LOGVAR(_hg.currentNumNodes());
-
-      already_matched.reset();
-      current_hns.clear();
-
-      const HypernodeID num_hns_before_pass = _hg.currentNumNodes();
-      for (const HypernodeID hn : _hg.nodes()) {
-        current_hns.push_back(hn);
-      }
-      Randomize::instance().shuffleVector(current_hns, current_hns.size());
-      // std::sort(std::begin(current_hns), std::end(current_hns),
-      //           [&](const HypernodeID l, const HypernodeID r) {
-      //             return _hg.nodeDegree(l) < _hg.nodeDegree(r);
-      //           });
-
-      for (const HypernodeID hn : current_hns) {
-        if (_hg.nodeIsEnabled(hn)) {
-          const Rating rating = contractionPartner(hn, already_matched);
-
-          if (rating.target != kInvalidTarget) {
-            already_matched.set(hn, true);
-            already_matched.set(rating.target, true);
-            // if (_hg.nodeDegree(hn) > _hg.nodeDegree(rating.target)) {
-            performContraction(hn, rating.target);
-            // } else {
-            //   contract(rating.target, hn);
-            // }
-          }
-
-          if (_hg.currentNumNodes() <= limit) {
-            break;
-          }
-        }
-      }
-      if (num_hns_before_pass == _hg.currentNumNodes()) {
-        break;
-      }
-
-      ++pass_nr;
-    }
+	  std::vector<PartitionID>dummy;
+	  std::vector<PartitionID>dummy2;
+	  coarsenImpl(limit, dummy, dummy2);
   }
 
   Rating contractionPartner(const HypernodeID u, const ds::FastResetFlagArray<>& already_matched) {
