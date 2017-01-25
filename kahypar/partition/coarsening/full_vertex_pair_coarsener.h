@@ -58,7 +58,7 @@ class FullVertexPairCoarsener final : public ICoarsener,
 
  private:
   FRIEND_TEST(ACoarsener, SelectsNodePairToContractBasedOnHighestRating);
-  void coarsenImpl(const HypernodeID limit, const std::vector<PartitionID>& parent_1, const std::vector<PartitionID>& parent_2) override final { 
+  void coarsenImpl(const HypernodeID limit, const std::vector<PartitionID>& parent_1, const std::vector<PartitionID>& parent_2) override final {
 	  _pq.clear();
 
 	  rateAllHypernodes(_rater, _target, parent_1, parent_2);
@@ -98,7 +98,7 @@ class FullVertexPairCoarsener final : public ICoarsener,
 
 		  reRateAffectedHypernodes(rep_node, rerated_hypernodes, invalid_hypernodes);
 	  }
-  
+
   }
   void coarsenImpl(const HypernodeID limit) override final {
 	  std::vector<PartitionID>dummy;

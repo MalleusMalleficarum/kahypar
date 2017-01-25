@@ -185,14 +185,7 @@ void processCommandLineInput(Configuration& config, int argc, char* argv[]) {
   po::options_description required_options("Required Options", num_columns);
   required_options.add_options()
     ("hypergraph,h",
-
     po::value<std::string>(&config.partition.graph_filename)->value_name("<string>")->required(),
-
-    po::value<std::string>(&config.partition.graph_filename)->value_name("<string>")->required()->notifier(
-      [&](const std::string&) {
-
-  }),
-
     "Hypergraph filename")
     ("blocks,k",
     po::value<PartitionID>(&config.partition.k)->value_name("<int>")->required()->notifier(
@@ -496,7 +489,6 @@ void processCommandLineInput(Configuration& config, int argc, char* argv[]) {
   po::notify(cmd_vm);
 
 
-
   std::string epsilon_str = std::to_string(config.partition.epsilon);
   epsilon_str.erase(epsilon_str.find_last_not_of('0') + 1, std::string::npos);
 
@@ -509,38 +501,9 @@ void processCommandLineInput(Configuration& config, int argc, char* argv[]) {
     + ".seed"
     + std::to_string(config.partition.seed)
     + ".KaHyPar";
-
-  int epsilonhelp = std::round(config.partition.epsilon * 100);
-  config.partition.graph_partition_filename =
-    config.partition.graph_filename + ".part"
-    + std::to_string(config.partition.k) + "."
-    + std::to_string(epsilonhelp) + "."
-    + std::to_string(config.partition.seed) + ".KaHyPar";
-
 }
 
 int main(int argc, char* argv[]) {
-	
-
-	std::vector<PartitionID> parent1;
-	std::vector<PartitionID> parent2;
-	std::ifstream inputFile1("parent1");
-	std::ifstream inputFile2("parent2");
-	if (inputFile1 && inputFile2) {
-		PartitionID part_partition_1;
-		while (inputFile1 >> part_partition_1) {
-			parent1.push_back(part_partition_1);
-		}
-		PartitionID part_partition_2;
-		while (inputFile2 >> part_partition_2) {
-			parent1.push_back(part_partition_2);
-		}
-	}
-	else {
-		std::cout << inputFile1.is_open + " and " + inputFile2.is_open;
-		return 1;
-	}
-	
   Configuration config;
 
   processCommandLineInput(config, argc, argv);
@@ -577,12 +540,11 @@ int main(int argc, char* argv[]) {
                                      config.partition.graph_filename.substr(
                                        config.partition.graph_filename.find_last_of("/") + 1));
   }
- 
+  std::vector<PartitionID> dummy;
+  std::vector<PartitionID> dummy2;
   Partitioner partitioner;
-
-  
   HighResClockTimepoint start = std::chrono::high_resolution_clock::now();
-  partitioner.partition(hypergraph, config, parent1, parent2);
+  partitioner.partition(hypergraph, config, dummy, dummy2);
   HighResClockTimepoint end = std::chrono::high_resolution_clock::now();
   std::chrono::duration<double> elapsed_seconds = end - start;
 

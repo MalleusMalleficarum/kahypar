@@ -105,7 +105,7 @@ class Partitioner {
   Partitioner(Partitioner&&) = delete;
   Partitioner& operator= (Partitioner&&) = delete;
 
-  inline void partition(Hypergraph & hypergraph, Configuration & config, const std::vector<PartitionID> parent_1, const std::vector<PartitionID> parent_2);
+  inline void partition(Hypergraph & hypergraph, Configuration & config, const std::vector<PartitionID>& parent_1, const std::vector<PartitionID>& parent_2);
   inline void partitionInternal(Hypergraph & hypergraph, const Configuration & config, const std::vector<PartitionID>& parent_1, const std::vector<PartitionID>& parent_2);
   const std::string internals() const {
     return _internals;
@@ -172,8 +172,6 @@ class Partitioner {
   inline Configuration createConfigurationForInitialPartitioning(const Hypergraph& hg,
                                                                  const Configuration& original_config,
                                                                  double init_alpha) const;
-
-  void partition(Hypergraph & hypergraph, Configuration & config, const std::vector<PartitionID>& parent_1, const std::vector<PartitionID>& parent_2);
 
 
   inline void postprocess(Hypergraph& hypergraph, const Configuration& config);
@@ -505,7 +503,7 @@ inline void Partitioner::performPartitioning(Hypergraph& hypergraph,
   // hypergraph.printGraphState();
 
   start = std::chrono::high_resolution_clock::now();
-  //TODO performInitialPartitioning(hypergraph, config);
+  performInitialPartitioning(hypergraph, config);
   end = std::chrono::high_resolution_clock::now();
   Stats::instance().addToTotal(config, "InitialPartitioning",
                                std::chrono::duration<double>(end - start).count());

@@ -77,12 +77,12 @@ class HeavyEdgeRater {
   HeavyEdgeRater& operator= (HeavyEdgeRater&&) = delete;
 
 
-  HeavyEdgeRating rate(const HypernodeID u, const std::vector<PartitionID>& parent_1, std::vector<PartitionID>& parent_2) {
+  HeavyEdgeRating rate(const HypernodeID u, const std::vector<PartitionID>& parent_1, const std::vector<PartitionID>& parent_2) {
 	  DBG(dbg_partition_rating, "Calculating rating for HN " << u);
 	  const HypernodeWeight weight_u = _hg.nodeWeight(u);
-	  
+
 	  if (parent_1.empty() || parent_2.empty()) {
-		  // If the vectors were not passed it is likely that they should not  be used, in that case 
+		  // If the vectors were not passed it is likely that they should not  be used, in that case
 		  // the graph should be getting an initial partition and part_u should exist.
 		  const PartitionID part_u = _hg.partID(u);
 		  for (const HyperedgeID he : _hg.incidentEdges(u)) {
@@ -91,7 +91,7 @@ class HeavyEdgeRater {
 			  for (const HypernodeID v : _hg.pins(he)) {
 				  if (v != u &&
 					  belowThresholdNodeWeight(weight_u, _hg.nodeWeight(v)) &&
-					  (part_u = _hg.partID(v)) {
+					  (part_u == _hg.partID(v))) {
 					  _tmp_ratings[v] += score;
 				  }
 			  }
@@ -105,13 +105,13 @@ class HeavyEdgeRater {
 			  for (const HypernodeID v : _hg.pins(he)) {
 				  if (v != u &&
 					  belowThresholdNodeWeight(weight_u, _hg.nodeWeight(v)) &&
-					  (parent_1[u] == parent_1[v]) && (parent_2[u] == parent_2[v]) {
+					  (parent_1[u] == parent_1[v]) && (parent_2[u] == parent_2[v])) {
 					  _tmp_ratings[v] += score;
 				  }
 			  }
 		  }
-	  }
-	  
+	  } 
+
 
 	  RatingType max_rating = std::numeric_limits<RatingType>::min();
 	  HypernodeID target = std::numeric_limits<HypernodeID>::max();
