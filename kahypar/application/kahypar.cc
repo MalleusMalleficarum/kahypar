@@ -494,7 +494,7 @@ void processCommandLineInput(Configuration& config, int argc, char* argv[]) {
 
   po::store(po::parse_config_file(file, ini_line_options, true), cmd_vm);
   po::notify(cmd_vm);
-<<<<<<< HEAD
+
 
 
   std::string epsilon_str = std::to_string(config.partition.epsilon);
@@ -520,6 +520,27 @@ void processCommandLineInput(Configuration& config, int argc, char* argv[]) {
 }
 
 int main(int argc, char* argv[]) {
+	
+
+	std::vector<PartitionID> parent1;
+	std::vector<PartitionID> parent2;
+	std::ifstream inputFile1("parent1");
+	std::ifstream inputFile2("parent2");
+	if (inputFile1 && inputFile2) {
+		PartitionID part_partition_1;
+		while (inputFile1 >> part_partition_1) {
+			parent1.push_back(part_partition_1);
+		}
+		PartitionID part_partition_2;
+		while (inputFile2 >> part_partition_2) {
+			parent1.push_back(part_partition_2);
+		}
+	}
+	else {
+		std::cout << inputFile1.is_open + " and " + inputFile2.is_open;
+		return 1;
+	}
+	
   Configuration config;
 
   processCommandLineInput(config, argc, argv);
@@ -536,11 +557,6 @@ int main(int argc, char* argv[]) {
   Hypergraph hypergraph(
     kahypar::io::createHypergraphFromFile(config.partition.graph_filename,
                                           config.partition.k));
-  Hypergraph hypergraph_2(
-	  kahypar::io::createHypergraphFromFile(config.partition.graph_filename,
-		  config.partition.k)
-  );
-  
 
   if (config.preprocessing.enable_min_hash_sparsifier) {
     // determine whether or not to apply the sparsifier
@@ -562,17 +578,11 @@ int main(int argc, char* argv[]) {
                                        config.partition.graph_filename.find_last_of("/") + 1));
   }
  
+  Partitioner partitioner;
 
-
-  Partitioner xyz;
-  xyz.partitionInitialE(hypergraph, config);
-  xyz.partitionInitialE(hypergraph_2, config);
   
-  combine(hypergraph, hypergraph_2);
-
-  Partitioner partitioner1;
   HighResClockTimepoint start = std::chrono::high_resolution_clock::now();
-  partitioner1.partition(hypergraph, config);
+  partitioner.partition(hypergraph, config, parent1, parent2);
   HighResClockTimepoint end = std::chrono::high_resolution_clock::now();
   std::chrono::duration<double> elapsed_seconds = end - start;
 

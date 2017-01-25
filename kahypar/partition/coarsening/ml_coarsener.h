@@ -78,6 +78,7 @@ class MLCoarsener final : public ICoarsener,
   MLCoarsener& operator= (MLCoarsener&&) = delete;
 
  private:
+	void coarsenImpl(const HypernodeID limit, const std::vector<PartitionID>& parent_1, const std::vector<PartitionID>& parent_2) override final { }
   void coarsenImpl(const HypernodeID limit) override final {
     int pass_nr = 0;
     std::vector<HypernodeID> current_hns;

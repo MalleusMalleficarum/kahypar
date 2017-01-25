@@ -38,6 +38,7 @@ class DoNothingCoarsener final : public ICoarsener {
 
  private:
   void coarsenImpl(const HypernodeID) override final { }
+  void coarsenImpl(const HypernodeID, const std::vector<PartitionID>&, const std::vector<PartitionID>&) override final { }
   bool uncoarsenImpl(IRefiner&) override final { return false; }
   std::string policyStringImpl() const override final { return std::string(""); }
 };

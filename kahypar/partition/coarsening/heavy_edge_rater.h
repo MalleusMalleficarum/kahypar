@@ -76,6 +76,76 @@ class HeavyEdgeRater {
   HeavyEdgeRater(HeavyEdgeRater&&) = delete;
   HeavyEdgeRater& operator= (HeavyEdgeRater&&) = delete;
 
+
+  HeavyEdgeRating rate(const HypernodeID u, const std::vector<PartitionID>& parent_1, std::vector<PartitionID>& parent_2) {
+	  DBG(dbg_partition_rating, "Calculating rating for HN " << u);
+	  const HypernodeWeight weight_u = _hg.nodeWeight(u);
+	  
+	  if (parent_1.empty() || parent_2.empty()) {
+		  // If the vectors were not passed it is likely that they should not  be used, in that case 
+		  // the graph should be getting an initial partition and part_u should exist.
+		  const PartitionID part_u = _hg.partID(u);
+		  for (const HyperedgeID he : _hg.incidentEdges(u)) {
+			  ASSERT(_hg.edgeSize(he) > 1, V(he));
+			  const RatingType score = static_cast<RatingType>(_hg.edgeWeight(he)) / (_hg.edgeSize(he) - 1);
+			  for (const HypernodeID v : _hg.pins(he)) {
+				  if (v != u &&
+					  belowThresholdNodeWeight(weight_u, _hg.nodeWeight(v)) &&
+					  (part_u = _hg.partID(v)) {
+					  _tmp_ratings[v] += score;
+				  }
+			  }
+		  }
+	  }
+	  else {
+		  //if both parents are defined
+		  for (const HyperedgeID he : _hg.incidentEdges(u)) {
+			  ASSERT(_hg.edgeSize(he) > 1, V(he));
+			  const RatingType score = static_cast<RatingType>(_hg.edgeWeight(he)) / (_hg.edgeSize(he) - 1);
+			  for (const HypernodeID v : _hg.pins(he)) {
+				  if (v != u &&
+					  belowThresholdNodeWeight(weight_u, _hg.nodeWeight(v)) &&
+					  (parent_1[u] == parent_1[v]) && (parent_2[u] == parent_2[v]) {
+					  _tmp_ratings[v] += score;
+				  }
+			  }
+		  }
+	  }
+	  
+
+	  RatingType max_rating = std::numeric_limits<RatingType>::min();
+	  HypernodeID target = std::numeric_limits<HypernodeID>::max();
+	  for (auto it = _tmp_ratings.end() - 1; it >= _tmp_ratings.begin(); --it) {
+		  const HypernodeID tmp_target = it->key;
+		  const RatingType tmp = it->value /
+			  (weight_u * _hg.nodeWeight(tmp_target));
+		  DBG(false, "r(" << u << "," << tmp_target << ")=" << tmp);
+		  if (acceptRating(tmp, max_rating)) {
+			  max_rating = tmp;
+			  target = tmp_target;
+		  }
+	  }
+	  _tmp_ratings.clear();
+	  HeavyEdgeRating ret;
+	  if (max_rating != std::numeric_limits<RatingType>::min()) {
+		  ASSERT(target != std::numeric_limits<HypernodeID>::max(), "invalid contraction target");
+		  ret.value = max_rating;
+		  ret.target = target;
+		  ret.valid = true;
+	  }
+	  ASSERT([&]() {
+		  bool flag = true;
+		  if (ret.valid && (_hg.partID(u) != _hg.partID(ret.target))) {
+			  flag = false;
+		  }
+		  return flag;
+	  } (), "Representative " << u << " & contraction target " << ret.target
+		  << " are in different parts!");
+	  DBG(dbg_partition_rating, "rating=(" << ret.value << "," << ret.target << ","
+		  << ret.valid << ")");
+	  return ret;
+  }
+
   HeavyEdgeRating rate(const HypernodeID u) {
     DBG(dbg_partition_rating, "Calculating rating for HN " << u);
     const HypernodeWeight weight_u = _hg.nodeWeight(u);
@@ -124,6 +194,7 @@ class HeavyEdgeRater {
         << ret.valid << ")");
     return ret;
   }
+
 
   HypernodeWeight thresholdNodeWeight() const {
     return _config.coarsening.max_allowed_node_weight;

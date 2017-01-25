@@ -58,7 +58,48 @@ class LazyVertexPairCoarsener final : public ICoarsener,
 
  private:
   FRIEND_TEST(ALazyUpdateCoarsener, InvalidatesAdjacentHypernodesInsteadOfReratingThem);
+  //TODO(Robin) CODE DUPLICATION
+  void coarsenImpl(const HypernodeID limit, const std::vector<PartitionID>& parent_1, const std::vector<PartitionID>& parent_2) override final { 
+	  _pq.clear();
 
+	  rateAllHypernodes(_rater, _target, parent_1, parent_2);
+
+	  while (!_pq.empty() && _hg.currentNumNodes() > limit) {
+		  const HypernodeID rep_node = _pq.top();
+
+		  if (_outdated_rating[rep_node]) {
+			  DBG(dbg_coarsening_coarsen,
+				  "Rating for HN" << rep_node << " is invalid: " << _pq.topKey() << "--->"
+				  << _rater.rate(rep_node).value << " target=" << _rater.rate(rep_node).target
+				  << " valid= " << _rater.rate(rep_node).valid);
+			  updatePQandContractionTarget(rep_node, _rater.rate(rep_node));
+		  }
+		  else {
+			  const HypernodeID contracted_node = _target[rep_node];
+
+			  DBG(dbg_coarsening_coarsen, "Contracting: (" << rep_node << ","
+				  << _target[rep_node] << ") prio: " << _pq.topKey() <<
+				  " deg(" << rep_node << ")=" << _hg.nodeDegree(rep_node) <<
+				  " deg(" << contracted_node << ")=" << _hg.nodeDegree(contracted_node));
+
+			  ASSERT(_hg.nodeWeight(rep_node) + _hg.nodeWeight(_target[rep_node])
+				  <= _rater.thresholdNodeWeight());
+			  ASSERT(_pq.topKey() == _rater.rate(rep_node).value,
+				  V(_pq.topKey()) << V(_rater.rate(rep_node).value));
+
+			  performContraction(rep_node, contracted_node);
+			  ASSERT(_pq.contains(contracted_node), V(contracted_node));
+			  _pq.remove(contracted_node);
+
+			  // this also invalidates rep_node, however rep_node
+			  // will be re-rated and updated afterwards
+			  invalidateAffectedHypernodes(rep_node);
+
+			  updatePQandContractionTarget(rep_node, _rater.rate(rep_node));
+		  }
+	  }
+  }
+  //DIRTY CODE DUPLICATION (POINTER SOLUTION)
   void coarsenImpl(const HypernodeID limit) override final {
     _pq.clear();
 
