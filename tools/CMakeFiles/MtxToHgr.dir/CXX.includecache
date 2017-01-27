@@ -1,0 +1,44 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/andre/server-home/myHyparHypar/kahypar/tools/mtx_to_hgr_conversion.cc
+sstream
+-
+string
+-
+kahypar/macros.h
+/home/andre/server-home/myHyparHypar/kahypar/tools/kahypar/macros.h
+tools/mtx_to_hgr_conversion.h
+/home/andre/server-home/myHyparHypar/kahypar/tools/tools/mtx_to_hgr_conversion.h
+
+/home/andre/server-home/myHyparHypar/kahypar/tools/mtx_to_hgr_converter.cc
+iostream
+-
+string
+-
+kahypar/macros.h
+/home/andre/server-home/myHyparHypar/kahypar/tools/kahypar/macros.h
+tools/mtx_to_hgr_conversion.h
+/home/andre/server-home/myHyparHypar/kahypar/tools/tools/mtx_to_hgr_conversion.h
+
+kahypar/macros.h
+cstdlib
+-
+gperftools/profiler.h
+-
+iostream
+-
+
+tools/mtx_to_hgr_conversion.h
+fstream
+-
+string
+-
+vector
+-
+

@@ -26,7 +26,7 @@
 #include "gmock/gmock.h"
 
 #include "kahypar/io/hypergraph_io.h"
-#include "bfs_initial_partitioner.h"
+#include "kahypar/partition/initial_partitioning/bfs_initial_partitioner.h"
 #include "kahypar/partition/initial_partitioning/initial_partitioner_base.h"
 #include "kahypar/partition/initial_partitioning/policies/ip_start_node_selection_policy.h"
 #include "kahypar/partition/metrics.h"

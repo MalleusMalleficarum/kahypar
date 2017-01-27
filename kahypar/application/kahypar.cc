@@ -542,6 +542,31 @@ int main(int argc, char* argv[]) {
   }
   std::vector<PartitionID> dummy;
   std::vector<PartitionID> dummy2;
+  std::ifstream part_file_1("../../../Testcases/Test1");
+  std::ifstream part_file_2("../../../Testcases/Test2");
+  if (part_file_1) {
+    std::cout << "####DATEI 1 vorhanden####";
+    std::cout << std::endl;
+    PartitionID value;
+    while(part_file_1 >> value) {
+      dummy.push_back(value);
+    }
+  }
+  if (part_file_2) {
+    std::cout << "####DATEI 2 vorhanden####";
+    std::cout << std::endl;
+    PartitionID value;
+    while(part_file_2 >> value) {
+      dummy2.push_back(value);
+    }
+  }
+  
+		std::cout << "################";
+		std::cout << std::endl;
+		std::cout << "MAIN Method";
+		std::cout << std::endl;
+		std::cout << "################";
+		std::cout << std::endl;
   Partitioner partitioner;
   HighResClockTimepoint start = std::chrono::high_resolution_clock::now();
   partitioner.partition(hypergraph, config, dummy, dummy2);

@@ -36,6 +36,12 @@ class ICoarsener {
   ICoarsener& operator= (ICoarsener&&) = delete;
 
   void coarsen(const HypernodeID limit, const std::vector<PartitionID>& parent_1, const std::vector<PartitionID>& parent_2) {
+				std::cout << "################";
+		std::cout << std::endl;
+		std::cout << "Coarsen you mofo";
+		std::cout << std::endl;
+		std::cout << "################";
+		std::cout << std::endl;
 	  coarsenImpl(limit, parent_1, parent_2);
   }
   void coarsen(const HypernodeID limit) {

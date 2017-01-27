@@ -98,10 +98,20 @@ class VertexPairCoarsenerBase : public CoarsenerBase {
 
 
     initializeRefiner(refiner);
+	std::cout << "This was a triumph";
+	std::cout << std::endl;
     std::vector<HypernodeID> refinement_nodes(2, 0);
+	std::cout << "I'm making a note here";
+	std::cout << std::endl;
     UncontractionGainChanges changes;
+	std::cout << "Huge Success";
+	std::cout << std::endl;
     changes.representative.push_back(0);
+	std::cout << "Even though";
+	std::cout << std::endl;
     changes.contraction_partner.push_back(0);
+	std::cout << "You broke my heart";
+	std::cout << std::endl;
     while (!_history.empty()) {
       restoreParallelHyperedges();
       restoreSingleNodeHyperedges();

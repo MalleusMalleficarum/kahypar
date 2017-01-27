@@ -1,0 +1,28 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/andre/server-home/myHyparHypar/kahypar/tools/graph_to_hgr_converter.cc
+fstream
+-
+iostream
+-
+sstream
+-
+string
+-
+kahypar/macros.h
+/home/andre/server-home/myHyparHypar/kahypar/tools/kahypar/macros.h
+
+kahypar/macros.h
+cstdlib
+-
+gperftools/profiler.h
+-
+iostream
+-
+

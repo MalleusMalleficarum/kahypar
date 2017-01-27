@@ -60,6 +60,12 @@ class LazyVertexPairCoarsener final : public ICoarsener,
   FRIEND_TEST(ALazyUpdateCoarsener, InvalidatesAdjacentHypernodesInsteadOfReratingThem);
 
   void coarsenImpl(const HypernodeID limit, const std::vector<PartitionID>& parent_1, const std::vector<PartitionID>& parent_2) override final {
+		std::cout << "################";
+		std::cout << std::endl;
+		std::cout << "lazy vertex pair coarsner";
+		std::cout << std::endl;
+		std::cout << "################";
+		std::cout << std::endl;
 	  _pq.clear();
 
 	  rateAllHypernodes(_rater, _target, parent_1, parent_2);

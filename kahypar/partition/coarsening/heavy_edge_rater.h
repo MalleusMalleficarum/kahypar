@@ -78,10 +78,21 @@ class HeavyEdgeRater {
 
 
   HeavyEdgeRating rate(const HypernodeID u, const std::vector<PartitionID>& parent_1, const std::vector<PartitionID>& parent_2) {
+		std::cout << "################";
+		std::cout << std::endl;
+		std::cout << "Good Rate :)";
+		std::cout << std::endl;
+		std::cout << "################";
+		std::cout << std::endl;
 	  DBG(dbg_partition_rating, "Calculating rating for HN " << u);
 	  const HypernodeWeight weight_u = _hg.nodeWeight(u);
 
 	  if (parent_1.empty() || parent_2.empty()) {
+				std::cout << "################";
+		std::cout << std::endl;
+		std::cout << "No parents :(";
+		std::cout << std::endl;
+		std::cout << "################";
 		  // If the vectors were not passed it is likely that they should not  be used, in that case
 		  // the graph should be getting an initial partition and part_u should exist.
 		  const PartitionID part_u = _hg.partID(u);
@@ -98,8 +109,14 @@ class HeavyEdgeRater {
 		  }
 	  }
 	  else {
+		std::cout << "################";
+		std::cout << std::endl;
+		std::cout << "Parents :)";
+		std::cout << std::endl;
+		std::cout << "################";
 		  //if both parents are defined
 		  for (const HyperedgeID he : _hg.incidentEdges(u)) {
+
 			  ASSERT(_hg.edgeSize(he) > 1, V(he));
 			  const RatingType score = static_cast<RatingType>(_hg.edgeWeight(he)) / (_hg.edgeSize(he) - 1);
 			  for (const HypernodeID v : _hg.pins(he)) {
@@ -147,6 +164,12 @@ class HeavyEdgeRater {
   }
 
   HeavyEdgeRating rate(const HypernodeID u) {
+		std::cout << "################";
+		std::cout << std::endl;
+		std::cout << "Stupid RATE" << u;
+		std::cout << std::endl;
+		std::cout << "################";
+		std::cout << std::endl;
     DBG(dbg_partition_rating, "Calculating rating for HN " << u);
     const HypernodeWeight weight_u = _hg.nodeWeight(u);
     const PartitionID part_u = _hg.partID(u);
