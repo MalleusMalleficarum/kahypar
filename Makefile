@@ -92,7 +92,7 @@ rebuild_cache/fast: rebuild_cache
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
-	/usr/bin/ccmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/usr/local/bin/ccmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -121,17 +121,6 @@ install/local: preinstall
 install/local/fast: install/local
 
 .PHONY : install/local/fast
-
-# Special rule for the target install/strip
-install/strip: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
-	/usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip
-
-# Special rule for the target install/strip
-install/strip/fast: install/strip
-
-.PHONY : install/strip/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -738,19 +727,6 @@ greedy_queue_selection_test/fast:
 .PHONY : greedy_queue_selection_test/fast
 
 #=============================================================================
-# Target rules for targets named greedy_hypergraph_growing_functionality_test
-
-# Build rule for target.
-greedy_hypergraph_growing_functionality_test: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 greedy_hypergraph_growing_functionality_test
-.PHONY : greedy_hypergraph_growing_functionality_test
-
-# fast build rule for target.
-greedy_hypergraph_growing_functionality_test/fast:
-	$(MAKE) -f tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/build.make tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/build
-.PHONY : greedy_hypergraph_growing_functionality_test/fast
-
-#=============================================================================
 # Target rules for targets named gain_computation_test
 
 # Build rule for target.
@@ -816,6 +792,19 @@ label_propagation_functionality_test/fast:
 .PHONY : label_propagation_functionality_test/fast
 
 #=============================================================================
+# Target rules for targets named greedy_hypergraph_growing_functionality_test
+
+# Build rule for target.
+greedy_hypergraph_growing_functionality_test: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 greedy_hypergraph_growing_functionality_test
+.PHONY : greedy_hypergraph_growing_functionality_test
+
+# fast build rule for target.
+greedy_hypergraph_growing_functionality_test/fast:
+	$(MAKE) -f tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/build.make tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/build
+.PHONY : greedy_hypergraph_growing_functionality_test/fast
+
+#=============================================================================
 # Target rules for targets named two_way_fm_refiner_test
 
 # Build rule for target.
@@ -866,10 +855,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... test"
 	@echo "... doc"
+	@echo "... install/local"
 	@echo "... AnalyzeModifiedSources"
 	@echo "... AnalyzeAllSources"
-	@echo "... install/local"
-	@echo "... install/strip"
 	@echo "... gmock"
 	@echo "... gmock_main"
 	@echo "... gtest"
@@ -911,12 +899,12 @@ help:
 	@echo "... random_partitioner_test"
 	@echo "... initial_partitioner_base_test"
 	@echo "... greedy_queue_selection_test"
-	@echo "... greedy_hypergraph_growing_functionality_test"
 	@echo "... gain_computation_test"
 	@echo "... label_propagation_partitioner_test"
 	@echo "... greedy_hypergraph_growing_partitioner_test"
 	@echo "... bfs_partitioner_test"
 	@echo "... label_propagation_functionality_test"
+	@echo "... greedy_hypergraph_growing_functionality_test"
 	@echo "... two_way_fm_refiner_test"
 	@echo "... k_way_fm_refiner_test"
 	@echo "... max_gain_node_k_way_fm_refiner_test"

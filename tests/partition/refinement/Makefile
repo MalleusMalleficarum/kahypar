@@ -92,7 +92,7 @@ rebuild_cache/fast: rebuild_cache
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
-	/usr/bin/ccmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/usr/local/bin/ccmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -121,17 +121,6 @@ install/local: preinstall
 install/local/fast: install/local
 
 .PHONY : install/local/fast
-
-# Special rule for the target install/strip
-install/strip: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
-	/usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip
-
-# Special rule for the target install/strip
-install/strip/fast: install/strip
-
-.PHONY : install/strip/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -303,10 +292,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... test"
 	@echo "... two_way_fm_refiner_test"
-	@echo "... install/local"
 	@echo "... k_way_fm_refiner_test"
-	@echo "... install/strip"
 	@echo "... max_gain_node_k_way_fm_refiner_test"
+	@echo "... install/local"
 	@echo "... k_way_fm_refiner_test.o"
 	@echo "... k_way_fm_refiner_test.i"
 	@echo "... k_way_fm_refiner_test.s"

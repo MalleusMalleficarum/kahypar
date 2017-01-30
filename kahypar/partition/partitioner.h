@@ -173,7 +173,7 @@ class Partitioner {
                                                                  const Configuration& original_config,
                                                                  double init_alpha) const;
 
-
+  inline void setPartitionVector(Hypergraph& hypergraph, const std::vector<PartitionID>& parent);
   inline void postprocess(Hypergraph& hypergraph, const Configuration& config);
   inline void postprocess(Hypergraph& hypergraph, Hypergraph& sparseHypergraph,
                           const Configuration& config);
@@ -539,10 +539,30 @@ inline void Partitioner::performPartitioning(Hypergraph& hypergraph,
 		  performInitialPartitioning(hypergraph, config);
 	} 
 	else {
-	for (HypernodeID u : hypergraph.nodes()) {
-		//TODO maybe smart set thingymabobs?
-		hypergraph.setNodePart(u, parent_1[u]);
-	}
+		setPartitionVector(hypergraph, parent_1);
+		HyperedgeWeight parentWeight1 = metrics::km1(hypergraph);
+		hypergraph.resetPartitioning();
+		setPartitionVector(hypergraph, parent_2);
+		HyperedgeWeight parentWeight2 = metrics::km1(hypergraph);
+		std::cout << "XXXXXXXXXXXXXXXX";
+		std::cout << std::endl;
+		std::cout << parentWeight1;
+		std::cout << std::endl;
+		std::cout << parentWeight2;
+		std::cout << std::endl;
+		std::cout << "XXXXXXXXXXXXXXXX";
+		std::cout << std::endl;
+		if(parentWeight1 < parentWeight2) {
+		std::cout << "Jo ich bin jetzt neu hier";
+		std::cout << std::endl;
+			hypergraph.resetPartitioning();
+			setPartitionVector(hypergraph, parent_1);
+		}
+		else {
+			//Just for correctness, because the Hypergraph has partition 2
+			//Which is already better
+		}
+	
 }
 
   end = std::chrono::high_resolution_clock::now();
@@ -557,7 +577,12 @@ inline void Partitioner::performPartitioning(Hypergraph& hypergraph,
   Stats::instance().addToTotal(config, "UncoarseningRefinement",
                                std::chrono::duration<double>(end - start).count());
 }
-
+inline void Partitioner::setPartitionVector(Hypergraph& hypergraph, const std::vector<PartitionID>& parent) {
+	for (HypernodeID u : hypergraph.nodes()) {
+		
+		hypergraph.setNodePart(u, parent[u]);
+	}
+}
 inline bool Partitioner::partitionVCycle(Hypergraph& hypergraph, ICoarsener& coarsener,
                                          IRefiner& refiner, const Configuration& config, const std::vector<PartitionID>& parent_1, const std::vector<PartitionID>& parent_2) {
 		std::cout << "################";

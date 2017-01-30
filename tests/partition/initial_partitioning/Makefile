@@ -56,6 +56,16 @@ CMAKE_BINARY_DIR = /home/andre/server-home/myHyparHypar/kahypar
 #=============================================================================
 # Targets provided globally by CMake.
 
+# Special rule for the target list_install_components
+list_install_components:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"Unspecified\""
+.PHONY : list_install_components
+
+# Special rule for the target list_install_components
+list_install_components/fast: list_install_components
+
+.PHONY : list_install_components/fast
+
 # Special rule for the target install
 install: preinstall
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
@@ -82,24 +92,13 @@ rebuild_cache/fast: rebuild_cache
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
-	/usr/bin/ccmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/usr/local/bin/ccmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
 edit_cache/fast: edit_cache
 
 .PHONY : edit_cache/fast
-
-# Special rule for the target install/local
-install/local: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
-	/usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local
-
-# Special rule for the target install/local
-install/local/fast: install/local
-
-.PHONY : install/local/fast
 
 # Special rule for the target test
 test:
@@ -112,26 +111,16 @@ test/fast: test
 
 .PHONY : test/fast
 
-# Special rule for the target list_install_components
-list_install_components:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"Unspecified\""
-.PHONY : list_install_components
+# Special rule for the target install/local
+install/local: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	/usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local
 
-# Special rule for the target list_install_components
-list_install_components/fast: list_install_components
+# Special rule for the target install/local
+install/local/fast: install/local
 
-.PHONY : list_install_components/fast
-
-# Special rule for the target install/strip
-install/strip: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing the project stripped..."
-	/usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-.PHONY : install/strip
-
-# Special rule for the target install/strip
-install/strip/fast: install/strip
-
-.PHONY : install/strip/fast
+.PHONY : install/local/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -211,21 +200,6 @@ greedy_queue_selection_test/fast:
 .PHONY : greedy_queue_selection_test/fast
 
 # Convenience name for target.
-tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/rule:
-	cd /home/andre/server-home/myHyparHypar/kahypar && $(MAKE) -f CMakeFiles/Makefile2 tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/rule
-.PHONY : tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/rule
-
-# Convenience name for target.
-greedy_hypergraph_growing_functionality_test: tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/rule
-
-.PHONY : greedy_hypergraph_growing_functionality_test
-
-# fast build rule for target.
-greedy_hypergraph_growing_functionality_test/fast:
-	cd /home/andre/server-home/myHyparHypar/kahypar && $(MAKE) -f tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/build.make tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/build
-.PHONY : greedy_hypergraph_growing_functionality_test/fast
-
-# Convenience name for target.
 tests/partition/initial_partitioning/CMakeFiles/gain_computation_test.dir/rule:
 	cd /home/andre/server-home/myHyparHypar/kahypar && $(MAKE) -f CMakeFiles/Makefile2 tests/partition/initial_partitioning/CMakeFiles/gain_computation_test.dir/rule
 .PHONY : tests/partition/initial_partitioning/CMakeFiles/gain_computation_test.dir/rule
@@ -299,6 +273,21 @@ label_propagation_functionality_test: tests/partition/initial_partitioning/CMake
 label_propagation_functionality_test/fast:
 	cd /home/andre/server-home/myHyparHypar/kahypar && $(MAKE) -f tests/partition/initial_partitioning/CMakeFiles/label_propagation_functionality_test.dir/build.make tests/partition/initial_partitioning/CMakeFiles/label_propagation_functionality_test.dir/build
 .PHONY : label_propagation_functionality_test/fast
+
+# Convenience name for target.
+tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/rule:
+	cd /home/andre/server-home/myHyparHypar/kahypar && $(MAKE) -f CMakeFiles/Makefile2 tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/rule
+.PHONY : tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/rule
+
+# Convenience name for target.
+greedy_hypergraph_growing_functionality_test: tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/rule
+
+.PHONY : greedy_hypergraph_growing_functionality_test
+
+# fast build rule for target.
+greedy_hypergraph_growing_functionality_test/fast:
+	cd /home/andre/server-home/myHyparHypar/kahypar && $(MAKE) -f tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/build.make tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/build
+.PHONY : greedy_hypergraph_growing_functionality_test/fast
 
 bfs_partitioner_test.o: bfs_partitioner_test.cc.o
 
@@ -549,22 +538,21 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
+	@echo "... list_install_components"
 	@echo "... install"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... random_partitioner_test"
 	@echo "... initial_partitioner_base_test"
 	@echo "... greedy_queue_selection_test"
-	@echo "... install/local"
-	@echo "... greedy_hypergraph_growing_functionality_test"
 	@echo "... test"
 	@echo "... gain_computation_test"
 	@echo "... label_propagation_partitioner_test"
 	@echo "... greedy_hypergraph_growing_partitioner_test"
 	@echo "... bfs_partitioner_test"
 	@echo "... label_propagation_functionality_test"
-	@echo "... list_install_components"
-	@echo "... install/strip"
+	@echo "... greedy_hypergraph_growing_functionality_test"
+	@echo "... install/local"
 	@echo "... bfs_partitioner_test.o"
 	@echo "... bfs_partitioner_test.i"
 	@echo "... bfs_partitioner_test.s"

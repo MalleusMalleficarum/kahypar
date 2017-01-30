@@ -107,7 +107,7 @@ class MLCoarsener final : public ICoarsener,
 
 			for (const HypernodeID hn : current_hns) {
 				if (_hg.nodeIsEnabled(hn)) {
-					const Rating rating = contractionPartner(hn, already_matched);
+					const Rating rating = contractionPartner(hn, already_matched, parent_1, parent_2);
 
 					if (rating.target != kInvalidTarget) {
 						already_matched.set(hn, true);
@@ -138,18 +138,27 @@ class MLCoarsener final : public ICoarsener,
 	  coarsenImpl(limit, dummy, dummy2);
   }
 
-  Rating contractionPartner(const HypernodeID u, const ds::FastResetFlagArray<>& already_matched) {
+  Rating contractionPartner(const HypernodeID u, const ds::FastResetFlagArray<>& already_matched, const std::vector<PartitionID>& parent_1, const std::vector<PartitionID>& parent_2) {
     DBG(dbg_partition_rating, "Calculating rating for HN " << u);
     const HypernodeWeight weight_u = _hg.nodeWeight(u);
     for (const HyperedgeID he : _hg.incidentEdges(u)) {
       ASSERT(_hg.edgeSize(he) > 1, V(he));
       if (_hg.edgeSize(he) <= _config.partition.hyperedge_size_threshold) {
         const RatingType score = static_cast<RatingType>(_hg.edgeWeight(he)) / (_hg.edgeSize(he) - 1);
-        for (const HypernodeID v : _hg.pins(he)) {
-          if ((v != u && belowThresholdNodeWeight(weight_u, _hg.nodeWeight(v)))) {
-            _tmp_ratings[v] += score;
-          }
-        }
+	if(parent_1.size()==0 || parent_2.size()==0){
+		for (const HypernodeID v : _hg.pins(he)) {
+          	if ((v != u && belowThresholdNodeWeight(weight_u, _hg.nodeWeight(v)))) {
+           	 _tmp_ratings[v] += score;
+          	}
+       	 }
+	} else {
+	for (const HypernodeID v : _hg.pins(he)) {
+          	if ((v != u && belowThresholdNodeWeight(weight_u, _hg.nodeWeight(v))) && (parent_1[u] == parent_1[v]) && (parent_2[u] == parent_2[v])) {
+           	 _tmp_ratings[v] += score;
+          	}
+       	 }
+	}
+        
       }
     }
     ASSERT(!_tmp_ratings.contains(u), V(u));

@@ -1897,12 +1897,12 @@ clean: tests/partition/coarsening/CMakeFiles/heavy_edge_rater_test.dir/clean
 tests/partition/initial_partitioning/all: tests/partition/initial_partitioning/CMakeFiles/random_partitioner_test.dir/all
 tests/partition/initial_partitioning/all: tests/partition/initial_partitioning/CMakeFiles/initial_partitioner_base_test.dir/all
 tests/partition/initial_partitioning/all: tests/partition/initial_partitioning/CMakeFiles/greedy_queue_selection_test.dir/all
-tests/partition/initial_partitioning/all: tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/all
 tests/partition/initial_partitioning/all: tests/partition/initial_partitioning/CMakeFiles/gain_computation_test.dir/all
 tests/partition/initial_partitioning/all: tests/partition/initial_partitioning/CMakeFiles/label_propagation_partitioner_test.dir/all
 tests/partition/initial_partitioning/all: tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_partitioner_test.dir/all
 tests/partition/initial_partitioning/all: tests/partition/initial_partitioning/CMakeFiles/bfs_partitioner_test.dir/all
 tests/partition/initial_partitioning/all: tests/partition/initial_partitioning/CMakeFiles/label_propagation_functionality_test.dir/all
+tests/partition/initial_partitioning/all: tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/all
 
 .PHONY : tests/partition/initial_partitioning/all
 
@@ -1910,12 +1910,12 @@ tests/partition/initial_partitioning/all: tests/partition/initial_partitioning/C
 tests/partition/initial_partitioning/clean: tests/partition/initial_partitioning/CMakeFiles/random_partitioner_test.dir/clean
 tests/partition/initial_partitioning/clean: tests/partition/initial_partitioning/CMakeFiles/initial_partitioner_base_test.dir/clean
 tests/partition/initial_partitioning/clean: tests/partition/initial_partitioning/CMakeFiles/greedy_queue_selection_test.dir/clean
-tests/partition/initial_partitioning/clean: tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/clean
 tests/partition/initial_partitioning/clean: tests/partition/initial_partitioning/CMakeFiles/gain_computation_test.dir/clean
 tests/partition/initial_partitioning/clean: tests/partition/initial_partitioning/CMakeFiles/label_propagation_partitioner_test.dir/clean
 tests/partition/initial_partitioning/clean: tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_partitioner_test.dir/clean
 tests/partition/initial_partitioning/clean: tests/partition/initial_partitioning/CMakeFiles/bfs_partitioner_test.dir/clean
 tests/partition/initial_partitioning/clean: tests/partition/initial_partitioning/CMakeFiles/label_propagation_functionality_test.dir/clean
+tests/partition/initial_partitioning/clean: tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/clean
 
 .PHONY : tests/partition/initial_partitioning/clean
 
@@ -2035,44 +2035,6 @@ tests/partition/initial_partitioning/CMakeFiles/greedy_queue_selection_test.dir/
 
 # clean rule for target.
 clean: tests/partition/initial_partitioning/CMakeFiles/greedy_queue_selection_test.dir/clean
-
-.PHONY : clean
-
-#=============================================================================
-# Target rules for target tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir
-
-# All Build rule for target.
-tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/all: external_tools/googletest/googlemock/gtest/CMakeFiles/gtest.dir/all
-tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/all: external_tools/googletest/googlemock/gtest/CMakeFiles/gtest_main.dir/all
-	$(MAKE) -f tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/build.make tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/depend
-	$(MAKE) -f tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/build.make tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=47,48 "Built target greedy_hypergraph_growing_functionality_test"
-.PHONY : tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/all
-
-# Include target in all.
-all: tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/all
-
-.PHONY : all
-
-# Build rule for subdir invocation for target.
-tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 6
-	$(MAKE) -f CMakeFiles/Makefile2 tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 0
-.PHONY : tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/rule
-
-# Convenience name for target.
-greedy_hypergraph_growing_functionality_test: tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/rule
-
-.PHONY : greedy_hypergraph_growing_functionality_test
-
-# clean rule for target.
-tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/clean:
-	$(MAKE) -f tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/build.make tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/clean
-.PHONY : tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/clean
-
-# clean rule for target.
-clean: tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/clean
 
 .PHONY : clean
 
@@ -2263,6 +2225,44 @@ tests/partition/initial_partitioning/CMakeFiles/label_propagation_functionality_
 
 # clean rule for target.
 clean: tests/partition/initial_partitioning/CMakeFiles/label_propagation_functionality_test.dir/clean
+
+.PHONY : clean
+
+#=============================================================================
+# Target rules for target tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir
+
+# All Build rule for target.
+tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/all: external_tools/googletest/googlemock/gtest/CMakeFiles/gtest.dir/all
+tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/all: external_tools/googletest/googlemock/gtest/CMakeFiles/gtest_main.dir/all
+	$(MAKE) -f tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/build.make tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/depend
+	$(MAKE) -f tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/build.make tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=47,48 "Built target greedy_hypergraph_growing_functionality_test"
+.PHONY : tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/all
+
+# Include target in all.
+all: tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/all
+
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 6
+	$(MAKE) -f CMakeFiles/Makefile2 tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 0
+.PHONY : tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/rule
+
+# Convenience name for target.
+greedy_hypergraph_growing_functionality_test: tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/rule
+
+.PHONY : greedy_hypergraph_growing_functionality_test
+
+# clean rule for target.
+tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/clean:
+	$(MAKE) -f tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/build.make tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/clean
+.PHONY : tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/clean
+
+# clean rule for target.
+clean: tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/clean
 
 .PHONY : clean
 
