@@ -164,7 +164,7 @@ class Partitioner {
 
   inline void performPartitioning(Hypergraph& hypergraph, ICoarsener& coarsener, IRefiner& refiner,
                                   const Configuration& config);
-
+  inline void mutateHypergraphPartition(Hypergraph& hypergraph, const Configuration& config);
   inline void performInitialPartitioning(Hypergraph& hg, const Configuration& config);
   inline void createMappingsForInitialPartitioning(HmetisToCoarsenedMapping& hmetis_to_hg,
                                                    CoarsenedToHmetisMapping& hg_to_hmetis,
@@ -283,7 +283,11 @@ inline void Partitioner::postprocess(Hypergraph& hypergraph, Hypergraph& sparseH
                                std::chrono::duration<double>(end - start).count());
   postprocess(hypergraph, config);
 }
-
+ inline void Partitioner::mutateHypergraphPartition(Hypergraph& hypergraph, const Configuration& config) {
+   //TODO ASSERT THAT THE GRAPH IS PARTITIONED
+   hypergraph.resetPartitioning();
+   performInitialPartitioning(hypergraph, config);
+ }
 inline void Partitioner::performInitialPartitioning(Hypergraph& hg, const Configuration& config) {
 		std::cout << "################";
 		std::cout << std::endl;
@@ -535,9 +539,15 @@ inline void Partitioner::performPartitioning(Hypergraph& hypergraph,
   // hypergraph.printGraphState();
 
   start = std::chrono::high_resolution_clock::now();
+  bool mutate = false;
+  if(mutate) {
+    mutateHypergraphPartition(hypergraph, config);
+  }
+
+  
 	if (parent_1.size() == 0 || parent_2.size() == 0) {
 		  performInitialPartitioning(hypergraph, config);
-	} 
+	}
 	else {
 		setPartitionVector(hypergraph, parent_1);
 		HyperedgeWeight parentWeight1 = metrics::km1(hypergraph);

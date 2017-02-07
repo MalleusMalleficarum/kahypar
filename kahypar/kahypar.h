@@ -34,6 +34,7 @@
 #include "kahypar/partition/metrics.h"
 #include "kahypar/partition/partitioner.h"
 #include "kahypar/partition/refinement/do_nothing_refiner.h"
+#include "kahypar/partition/evolutionary/population.h"
 
 #define REGISTER_COARSENER(id, coarsener)                              \
   static meta::Registrar<CoarsenerFactory> register_ ## coarsener(     \

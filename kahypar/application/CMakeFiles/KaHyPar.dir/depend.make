@@ -850,6 +850,10 @@ kahypar/application/CMakeFiles/KaHyPar.dir/kahypar.cc.o: kahypar/partition/coars
 kahypar/application/CMakeFiles/KaHyPar.dir/kahypar.cc.o: kahypar/partition/coarsening/vertex_pair_coarsener_base.h
 kahypar/application/CMakeFiles/KaHyPar.dir/kahypar.cc.o: kahypar/partition/configuration.h
 kahypar/application/CMakeFiles/KaHyPar.dir/kahypar.cc.o: kahypar/partition/configuration_enum_classes.h
+kahypar/application/CMakeFiles/KaHyPar.dir/kahypar.cc.o: kahypar/partition/evolutionary/i_combine.h
+kahypar/application/CMakeFiles/KaHyPar.dir/kahypar.cc.o: kahypar/partition/evolutionary/i_mutate.h
+kahypar/application/CMakeFiles/KaHyPar.dir/kahypar.cc.o: kahypar/partition/evolutionary/individuum.h
+kahypar/application/CMakeFiles/KaHyPar.dir/kahypar.cc.o: kahypar/partition/evolutionary/population.h
 kahypar/application/CMakeFiles/KaHyPar.dir/kahypar.cc.o: kahypar/partition/factories.h
 kahypar/application/CMakeFiles/KaHyPar.dir/kahypar.cc.o: kahypar/partition/initial_partitioning/bfs_initial_partitioner.h
 kahypar/application/CMakeFiles/KaHyPar.dir/kahypar.cc.o: kahypar/partition/initial_partitioning/greedy_hypergraph_growing_initial_partitioner.h

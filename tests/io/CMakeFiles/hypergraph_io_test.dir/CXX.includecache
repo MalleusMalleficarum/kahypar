@@ -751,6 +751,8 @@ kahypar/partition/partitioner.h
 kahypar/kahypar/partition/partitioner.h
 kahypar/partition/refinement/do_nothing_refiner.h
 kahypar/kahypar/partition/refinement/do_nothing_refiner.h
+kahypar/partition/evolutionary/population.h
+kahypar/kahypar/partition/evolutionary/population.h
 
 kahypar/macros.h
 cstdlib
@@ -1045,6 +1047,28 @@ iostream
 -
 string
 -
+
+kahypar/partition/evolutionary/i_combine.h
+individuum.h
+kahypar/partition/evolutionary/individuum.h
+
+kahypar/partition/evolutionary/i_mutate.h
+
+kahypar/partition/evolutionary/individuum.h
+vector
+-
+kahypar/definitions.h
+kahypar/partition/evolutionary/kahypar/definitions.h
+
+kahypar/partition/evolutionary/population.h
+i_combine.h
+kahypar/partition/evolutionary/i_combine.h
+i_mutate.h
+kahypar/partition/evolutionary/i_mutate.h
+individuum.h
+kahypar/partition/evolutionary/individuum.h
+kahypar/definitions.h
+kahypar/partition/evolutionary/kahypar/definitions.h
 
 kahypar/partition/factories.h
 kahypar/meta/abstract_factory.h

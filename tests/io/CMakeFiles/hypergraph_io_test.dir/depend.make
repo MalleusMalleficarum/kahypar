@@ -83,6 +83,10 @@ tests/io/CMakeFiles/hypergraph_io_test.dir/hypergraph_io_test.cc.o: kahypar/part
 tests/io/CMakeFiles/hypergraph_io_test.dir/hypergraph_io_test.cc.o: kahypar/partition/coarsening/vertex_pair_coarsener_base.h
 tests/io/CMakeFiles/hypergraph_io_test.dir/hypergraph_io_test.cc.o: kahypar/partition/configuration.h
 tests/io/CMakeFiles/hypergraph_io_test.dir/hypergraph_io_test.cc.o: kahypar/partition/configuration_enum_classes.h
+tests/io/CMakeFiles/hypergraph_io_test.dir/hypergraph_io_test.cc.o: kahypar/partition/evolutionary/i_combine.h
+tests/io/CMakeFiles/hypergraph_io_test.dir/hypergraph_io_test.cc.o: kahypar/partition/evolutionary/i_mutate.h
+tests/io/CMakeFiles/hypergraph_io_test.dir/hypergraph_io_test.cc.o: kahypar/partition/evolutionary/individuum.h
+tests/io/CMakeFiles/hypergraph_io_test.dir/hypergraph_io_test.cc.o: kahypar/partition/evolutionary/population.h
 tests/io/CMakeFiles/hypergraph_io_test.dir/hypergraph_io_test.cc.o: kahypar/partition/factories.h
 tests/io/CMakeFiles/hypergraph_io_test.dir/hypergraph_io_test.cc.o: kahypar/partition/initial_partitioning/bfs_initial_partitioner.h
 tests/io/CMakeFiles/hypergraph_io_test.dir/hypergraph_io_test.cc.o: kahypar/partition/initial_partitioning/greedy_hypergraph_growing_initial_partitioner.h

@@ -494,6 +494,7 @@ void processCommandLineInput(Configuration& config, int argc, char* argv[]) {
 
   config.partition.graph_partition_filename =
     config.partition.graph_filename
+    + ".result"
     + ".part"
     + std::to_string(config.partition.k)
     + ".epsilon"
@@ -542,8 +543,37 @@ int main(int argc, char* argv[]) {
   }
   std::vector<PartitionID> dummy;
   std::vector<PartitionID> dummy2;
-  std::ifstream part_file_1("../../../Testcases/Test1");
-  std::ifstream part_file_2("../../../Testcases/Test2");
+  std::string epsilon_str = std::to_string(config.partition.epsilon);
+  epsilon_str.erase(epsilon_str.find_last_not_of('0') + 1, std::string::npos);
+
+  std::string file1  =
+    config.partition.graph_filename
+    + ".part"
+    + std::to_string(config.partition.k)
+    + ".epsilon"
+    + epsilon_str
+    + ".seed"
+    + std::to_string(1)
+    + ".KaHyPar";
+    std::string file2  =
+    config.partition.graph_filename
+    + ".part"
+    + std::to_string(config.partition.k)
+    + ".epsilon"
+    + epsilon_str
+    + ".seed"
+    + std::to_string(2)
+    + ".KaHyPar";
+  std::cout << "XXXXXXXXXXXXXXXXXX";
+  std::cout << std::endl;
+  std::cout << file1;
+  std::cout << std::endl;
+  std::cout << file2;
+  std::cout << std::endl;
+  std::cout << "XXXXXXXXXXXXXXXXXX";
+  std::cout << std::endl;
+  std::ifstream part_file_1(file1);
+  std::ifstream part_file_2(file2);
   if (part_file_1) {
     std::cout << "####DATEI 1 vorhanden####";
     std::cout << std::endl;
