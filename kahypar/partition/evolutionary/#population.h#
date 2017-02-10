@@ -29,14 +29,16 @@ class Population{
   inline void performMutation(Individuum &target, IMutate &mutator);
   inline double fitness(Individuum &targetIndividuum);
 
-  inline void replace(Individuum &in, unsigned position);//TODO
-  inline void replace(Individuum &in, Individuum &out); //TODO
+  inline void replace(Individuum &in, unsigned position);
+  inline void replace(Individuum &in, Individuum &out); 
   inline void insertIndividuum(Individuum &insertTarget);
   inline Individuum getIndividuum(unsigned position);
   inline Individuum getRandomIndividuum();
   inline Individuum getIndividuumTournament();
   inline unsigned worstIndividuumPosition();
   inline Individuum generateRandomIndividuum();//TODO
+  inline Individuum crossCombineMetric(); //TODO
+  inline Individuum crossCombine(); //TODO
  
  
   private: 

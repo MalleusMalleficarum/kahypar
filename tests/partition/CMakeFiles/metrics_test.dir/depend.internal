@@ -84,6 +84,10 @@ tests/partition/CMakeFiles/metrics_test.dir/metrics_test.cc.o
  kahypar/partition/coarsening/vertex_pair_coarsener_base.h
  kahypar/partition/configuration.h
  kahypar/partition/configuration_enum_classes.h
+ kahypar/partition/evolutionary/i_combine.h
+ kahypar/partition/evolutionary/i_mutate.h
+ kahypar/partition/evolutionary/individuum.h
+ kahypar/partition/evolutionary/population.h
  kahypar/partition/factories.h
  kahypar/partition/initial_partitioning/bfs_initial_partitioner.h
  kahypar/partition/initial_partitioning/greedy_hypergraph_growing_initial_partitioner.h
