@@ -5,29 +5,23 @@
 namespace kahypar{
   class Individuum {
   public:
-  Individuum(std::vector<PartitionID> &partition, double fitness):
+  Individuum(std::vector<PartitionID> &partition, HyperedgeWeight fitness):
     _partition(partition),
       _fitness(fitness) {}
-    inline double getFitness()const {
+    inline HyperedgeWeight getFitness()const {
       return _fitness;
     }
-  Individuum(const Individuum &obj) :
-    _partition(obj._partition),
-      _fitness(obj._fitness) {}
-    /* ~Individuum() {
-
-       }*/
-    /* Individuum(const Individuum &obj) { */
-    /*   _partition = obj._partition; */
-    /*   _fitness=obj._fitness; */
+    /* inline void setFitness(HyperedgeWeight fitness) { */
+    /*   _fitness = fitness; */
     /* } */
+    inline std::vector<PartitionID> getPartition() const{
+      return _partition;
+    }
+
   private:   
     std::vector<PartitionID> _partition;
-    double _fitness;
+    HyperedgeWeight _fitness;
   };
-  /*Individuum(std::vector<int> &partition, double fitness){
-_partition = partition;
-_fitness = fitness;
-}*/
+
 
 }

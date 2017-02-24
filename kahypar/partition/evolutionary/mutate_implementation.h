@@ -2,12 +2,18 @@
 #include "kahypar/definitions.h"
 #include "kahypar/partition/partitioner.h"
 namespace kahypar {
-  class MutateBaseImplementation final : public IMutate{
+  class MutatorBaseImplementation final : public IMutate{
   public:
-
+	MutatorBaseImplementation(Hypergraph & hypergraph, Configuration &config) :
+	_config(config),
+        _hypergraph(hypergraph) {}
   private:
+    Configuration &_config;
+    Hypergraph &_hypergraph;
     void mutateImpl(Individuum &target) override final {
-      Partitioner::mutate(target);
+      Partitioner partitioner;
+      std::vector<PartitionID> vect = target.getPartition();
+      partitioner.mutateHypergraphPartition(_hypergraph, _config, vect);
     };
 
   };

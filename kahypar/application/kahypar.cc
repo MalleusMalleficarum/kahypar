@@ -41,6 +41,10 @@
 #include "kahypar/macros.h"
 #include "kahypar/utils/math.h"
 #include "kahypar/utils/randomize.h"
+#include "kahypar/partition/evolutionary/population.h"
+#include "kahypar/partition/evolutionary/individuum.h"
+#include "kahypar/partition/evolutionary/combine_implementation.h"
+#include "kahypar/partition/evolutionary/mutate_implementation.h"
 
 namespace po = boost::program_options;
 
@@ -59,6 +63,10 @@ using kahypar::InitialPartitionerAlgorithm;
 using kahypar::RefinementStoppingRule;
 using kahypar::GlobalRebalancingMode;
 using kahypar::InitialPartitioningTechnique;
+using kahypar::Population;
+using kahypar::Individuum;
+using kahypar::CombinatorBaseImplementation;
+using kahypar::MutatorBaseImplementation;
 
 int getTerminalWidth() {
   int columns = 0;
@@ -541,65 +549,45 @@ int main(int argc, char* argv[]) {
                                      config.partition.graph_filename.substr(
                                        config.partition.graph_filename.find_last_of("/") + 1));
   }
-  std::vector<PartitionID> dummy;
-  std::vector<PartitionID> dummy2;
+
+
   std::string epsilon_str = std::to_string(config.partition.epsilon);
   epsilon_str.erase(epsilon_str.find_last_not_of('0') + 1, std::string::npos);
+  Population populus(hypergraph, 0);
+  for(int i = 1; i <= 10; i++) {
+    std::string file  =
+      config.partition.graph_filename
+      + ".part"
+      + std::to_string(config.partition.k)
+      + ".epsilon"
+      + epsilon_str
+      + ".seed"
+      + std::to_string(i)
+      + ".KaHyPar";
+    std::cout << "READING FILE: " + file;
+    std::cout <<  std::endl;
+      populus.insertIndividuumFromFile(file);
+  }
+  populus.printInfo();
+   
+ 
 
-  std::string file1  =
-    config.partition.graph_filename
-    + ".part"
-    + std::to_string(config.partition.k)
-    + ".epsilon"
-    + epsilon_str
-    + ".seed"
-    + std::to_string(1)
-    + ".KaHyPar";
-    std::string file2  =
-    config.partition.graph_filename
-    + ".part"
-    + std::to_string(config.partition.k)
-    + ".epsilon"
-    + epsilon_str
-    + ".seed"
-    + std::to_string(2)
-    + ".KaHyPar";
-  std::cout << "XXXXXXXXXXXXXXXXXX";
+
+
+
+  CombinatorBaseImplementation comb(hypergraph, config);
+  MutatorBaseImplementation mut(hypergraph, config);
+  populus.printInfo();
+  Individuum ind = populus.getIndividuum(populus.getRandomIndividuum());
+  std::cout << "******";
   std::cout << std::endl;
-  std::cout << file1;
+  std::cout << ind.getFitness();
   std::cout << std::endl;
-  std::cout << file2;
+  std::cout << "******";
   std::cout << std::endl;
-  std::cout << "XXXXXXXXXXXXXXXXXX";
-  std::cout << std::endl;
-  std::ifstream part_file_1(file1);
-  std::ifstream part_file_2(file2);
-  if (part_file_1) {
-    std::cout << "####DATEI 1 vorhanden####";
-    std::cout << std::endl;
-    PartitionID value;
-    while(part_file_1 >> value) {
-      dummy.push_back(value);
-    }
-  }
-  if (part_file_2) {
-    std::cout << "####DATEI 2 vorhanden####";
-    std::cout << std::endl;
-    PartitionID value;
-    while(part_file_2 >> value) {
-      dummy2.push_back(value);
-    }
-  }
-  
-		std::cout << "################";
-		std::cout << std::endl;
-		std::cout << "MAIN Method";
-		std::cout << std::endl;
-		std::cout << "################";
-		std::cout << std::endl;
   Partitioner partitioner;
   HighResClockTimepoint start = std::chrono::high_resolution_clock::now();
-  partitioner.partition(hypergraph, config, dummy, dummy2);
+  //partitioner.partition(hypergraph, config, dummy, dummy2);
   HighResClockTimepoint end = std::chrono::high_resolution_clock::now();
   std::chrono::duration<double> elapsed_seconds = end - start;
 

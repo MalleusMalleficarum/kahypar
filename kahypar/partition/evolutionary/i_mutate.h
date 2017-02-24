@@ -1,5 +1,6 @@
 #pragma once
 #include "individuum.h"
+#include "kahypar/definitions.h"
 namespace kahypar{
   class IMutate {
   public:
