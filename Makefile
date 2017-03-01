@@ -259,6 +259,19 @@ KaHyPar/fast:
 .PHONY : KaHyPar/fast
 
 #=============================================================================
+# Target rules for targets named KaHyParE
+
+# Build rule for target.
+KaHyParE: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 KaHyParE
+.PHONY : KaHyParE
+
+# fast build rule for target.
+KaHyParE/fast:
+	$(MAKE) -f kahypar/application/CMakeFiles/KaHyParE.dir/build.make kahypar/application/CMakeFiles/KaHyParE.dir/build
+.PHONY : KaHyParE/fast
+
+#=============================================================================
 # Target rules for targets named HgrToHypergraphML
 
 # Build rule for target.
@@ -863,6 +876,7 @@ help:
 	@echo "... gtest"
 	@echo "... gtest_main"
 	@echo "... KaHyPar"
+	@echo "... KaHyParE"
 	@echo "... HgrToHypergraphML"
 	@echo "... HgrToEdgeList"
 	@echo "... HgrToBipartiteMetisGraph"

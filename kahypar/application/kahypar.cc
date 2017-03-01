@@ -511,7 +511,32 @@ void processCommandLineInput(Configuration& config, int argc, char* argv[]) {
     + std::to_string(config.partition.seed)
     + ".KaHyPar";
 }
-
+void clearFile(std::string filename) {
+  std::size_t found = filename.find_last_of("/");
+  std::string useThis = filename.substr(found + 1);
+  std::cout << "::"+ useThis +"::";
+  std::ofstream out_file("../../../Results/" + useThis);
+  out_file.close();
+}
+void writeShit(int i, std::string filename, std::chrono::duration<double> duration, Hypergraph &hypergraph, Configuration &config) {
+  std::size_t found = filename.find_last_of("/");
+  std::string useThis = filename.substr(found + 1);
+  std::ofstream out_file;
+  
+  out_file.open("../../../Results/" + useThis, std::ios_base::app);
+  out_file << "RESULT" << " k=" << config.partition.k
+           << " epsilon=" << config.partition.epsilon
+	   << " seed=" << config.partition.seed
+	   << " iteration=" << i
+	   << " duration=" << duration.count()
+	   << " cut=" << kahypar::metrics::hyperedgeCut(hypergraph)
+	   << " SOED=" << kahypar::metrics::soed(hypergraph)
+	   << " km-1=" << kahypar::metrics::km1(hypergraph)
+	   << " absorption=" << kahypar::metrics::absorption(hypergraph)
+	   << std::endl;
+  
+  out_file.close();
+}
 int main(int argc, char* argv[]) {
   Configuration config;
 
@@ -549,45 +574,19 @@ int main(int argc, char* argv[]) {
                                      config.partition.graph_filename.substr(
                                        config.partition.graph_filename.find_last_of("/") + 1));
   }
-
-
-  std::string epsilon_str = std::to_string(config.partition.epsilon);
-  epsilon_str.erase(epsilon_str.find_last_not_of('0') + 1, std::string::npos);
-  Population populus(hypergraph, 0);
-  for(int i = 1; i <= 10; i++) {
-    std::string file  =
-      config.partition.graph_filename
-      + ".part"
-      + std::to_string(config.partition.k)
-      + ".epsilon"
-      + epsilon_str
-      + ".seed"
-      + std::to_string(i)
-      + ".KaHyPar";
-    std::cout << "READING FILE: " + file;
-    std::cout <<  std::endl;
-      populus.insertIndividuumFromFile(file);
-  }
-  populus.printInfo();
-   
- 
-
-
-
-
-  CombinatorBaseImplementation comb(hypergraph, config);
-  MutatorBaseImplementation mut(hypergraph, config);
-  populus.printInfo();
-  Individuum ind = populus.getIndividuum(populus.getRandomIndividuum());
-  std::cout << "******";
-  std::cout << std::endl;
-  std::cout << ind.getFitness();
-  std::cout << std::endl;
-  std::cout << "******";
-  std::cout << std::endl;
+  
   Partitioner partitioner;
   HighResClockTimepoint start = std::chrono::high_resolution_clock::now();
-  //partitioner.partition(hypergraph, config, dummy, dummy2);
+  std::vector<PartitionID> dummy;
+  std::vector<PartitionID> dummy2;
+  clearFile(config.partition.graph_filename);
+  for(int i = 0; i < 40; i++) {
+    HighResClockTimepoint startIteration = std::chrono::high_resolution_clock::now();
+    partitioner.partition(hypergraph, config, dummy, dummy2);
+    HighResClockTimepoint endIteration = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed_secondsIteration = endIteration - startIteration;
+    writeShit(i, config.partition.graph_filename, elapsed_secondsIteration, hypergraph,config);
+  }
   HighResClockTimepoint end = std::chrono::high_resolution_clock::now();
   std::chrono::duration<double> elapsed_seconds = end - start;
 

@@ -78,17 +78,6 @@ install/fast: preinstall/fast
 	/usr/bin/cmake -P cmake_install.cmake
 .PHONY : install/fast
 
-# Special rule for the target rebuild_cache
-rebuild_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/usr/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
-.PHONY : rebuild_cache
-
-# Special rule for the target rebuild_cache
-rebuild_cache/fast: rebuild_cache
-
-.PHONY : rebuild_cache/fast
-
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
@@ -99,6 +88,17 @@ edit_cache:
 edit_cache/fast: edit_cache
 
 .PHONY : edit_cache/fast
+
+# Special rule for the target rebuild_cache
+rebuild_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
+	/usr/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+.PHONY : rebuild_cache
+
+# Special rule for the target rebuild_cache
+rebuild_cache/fast: rebuild_cache
+
+.PHONY : rebuild_cache/fast
 
 # Special rule for the target install/local
 install/local: preinstall
@@ -169,6 +169,21 @@ KaHyPar/fast:
 	cd /home/andre/server-home/myHyparHypar/kahypar && $(MAKE) -f kahypar/application/CMakeFiles/KaHyPar.dir/build.make kahypar/application/CMakeFiles/KaHyPar.dir/build
 .PHONY : KaHyPar/fast
 
+# Convenience name for target.
+kahypar/application/CMakeFiles/KaHyParE.dir/rule:
+	cd /home/andre/server-home/myHyparHypar/kahypar && $(MAKE) -f CMakeFiles/Makefile2 kahypar/application/CMakeFiles/KaHyParE.dir/rule
+.PHONY : kahypar/application/CMakeFiles/KaHyParE.dir/rule
+
+# Convenience name for target.
+KaHyParE: kahypar/application/CMakeFiles/KaHyParE.dir/rule
+
+.PHONY : KaHyParE
+
+# fast build rule for target.
+KaHyParE/fast:
+	cd /home/andre/server-home/myHyparHypar/kahypar && $(MAKE) -f kahypar/application/CMakeFiles/KaHyParE.dir/build.make kahypar/application/CMakeFiles/KaHyParE.dir/build
+.PHONY : KaHyParE/fast
+
 kahypar.o: kahypar.cc.o
 
 .PHONY : kahypar.o
@@ -196,6 +211,33 @@ kahypar.cc.s:
 	cd /home/andre/server-home/myHyparHypar/kahypar && $(MAKE) -f kahypar/application/CMakeFiles/KaHyPar.dir/build.make kahypar/application/CMakeFiles/KaHyPar.dir/kahypar.cc.s
 .PHONY : kahypar.cc.s
 
+kahyparE.o: kahyparE.cc.o
+
+.PHONY : kahyparE.o
+
+# target to build an object file
+kahyparE.cc.o:
+	cd /home/andre/server-home/myHyparHypar/kahypar && $(MAKE) -f kahypar/application/CMakeFiles/KaHyParE.dir/build.make kahypar/application/CMakeFiles/KaHyParE.dir/kahyparE.cc.o
+.PHONY : kahyparE.cc.o
+
+kahyparE.i: kahyparE.cc.i
+
+.PHONY : kahyparE.i
+
+# target to preprocess a source file
+kahyparE.cc.i:
+	cd /home/andre/server-home/myHyparHypar/kahypar && $(MAKE) -f kahypar/application/CMakeFiles/KaHyParE.dir/build.make kahypar/application/CMakeFiles/KaHyParE.dir/kahyparE.cc.i
+.PHONY : kahyparE.cc.i
+
+kahyparE.s: kahyparE.cc.s
+
+.PHONY : kahyparE.s
+
+# target to generate assembly for a file
+kahyparE.cc.s:
+	cd /home/andre/server-home/myHyparHypar/kahypar && $(MAKE) -f kahypar/application/CMakeFiles/KaHyParE.dir/build.make kahypar/application/CMakeFiles/KaHyParE.dir/kahyparE.cc.s
+.PHONY : kahyparE.cc.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -204,14 +246,18 @@ help:
 	@echo "... depend"
 	@echo "... list_install_components"
 	@echo "... install"
+	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... KaHyPar"
-	@echo "... edit_cache"
+	@echo "... KaHyParE"
 	@echo "... install/local"
 	@echo "... test"
 	@echo "... kahypar.o"
 	@echo "... kahypar.i"
 	@echo "... kahypar.s"
+	@echo "... kahyparE.o"
+	@echo "... kahyparE.i"
+	@echo "... kahyparE.s"
 .PHONY : help
 
 

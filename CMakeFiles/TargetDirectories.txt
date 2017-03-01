@@ -31,9 +31,10 @@
 /home/andre/server-home/myHyparHypar/kahypar/external_tools/googletest/googlemock/gtest/CMakeFiles/test.dir
 /home/andre/server-home/myHyparHypar/kahypar/kahypar/application/CMakeFiles/list_install_components.dir
 /home/andre/server-home/myHyparHypar/kahypar/kahypar/application/CMakeFiles/install.dir
+/home/andre/server-home/myHyparHypar/kahypar/kahypar/application/CMakeFiles/edit_cache.dir
 /home/andre/server-home/myHyparHypar/kahypar/kahypar/application/CMakeFiles/rebuild_cache.dir
 /home/andre/server-home/myHyparHypar/kahypar/kahypar/application/CMakeFiles/KaHyPar.dir
-/home/andre/server-home/myHyparHypar/kahypar/kahypar/application/CMakeFiles/edit_cache.dir
+/home/andre/server-home/myHyparHypar/kahypar/kahypar/application/CMakeFiles/KaHyParE.dir
 /home/andre/server-home/myHyparHypar/kahypar/kahypar/application/CMakeFiles/install/local.dir
 /home/andre/server-home/myHyparHypar/kahypar/kahypar/application/CMakeFiles/test.dir
 /home/andre/server-home/myHyparHypar/kahypar/tools/CMakeFiles/list_install_components.dir

@@ -39,7 +39,7 @@ inline void setPartitionVector(Hypergraph &hypergraph, const std::vector<Partiti
   inline void insertIndividuumFromFile(std::string filename);
   inline Individuum getIndividuumTournament();
   inline unsigned worstIndividuumPosition();
-  inline Individuum generateRandomIndividuum();//TODO
+  inline Individuum generateIndividuum(Configuration &config);//TODO
   inline Individuum crossCombineMetric(); //TODO
   inline Individuum crossCombine(); //TODO
   inline std::size_t getRandomExcept(std::size_t except);
@@ -87,7 +87,7 @@ inline void Population::setPartitionVector(Hypergraph& hypergraph, const std::ve
     /* Enforces placement even if the insertion target is worse than
        everything in the current population*/
     inline void Population::insertIndividuum(Individuum &insertTarget) {
-       if(size() <= _maxPopulationLimit) {
+       if(size() < _maxPopulationLimit) {
 	_internalPopulation.push_back(insertTarget);
       } else {
 	unsigned replaceTargetPosition = worstIndividuumPosition();
@@ -151,9 +151,25 @@ inline void Population::setPartitionVector(Hypergraph& hypergraph, const std::ve
       }
       return currentPosition;
     }
+    inline Individuum Population::generateIndividuum(Configuration &config) {
+      _hypergraph.resetPartitioning();
+      Partitioner partitioner;
+      std::vector<PartitionID> dummy;
+      std::vector<PartitionID> dummy2;
+      partitioner.partition(_hypergraph, config, dummy, dummy2);
+      std::vector<PartitionID> result;
+      	for (HypernodeID u : _hypergraph.nodes()) {
+		
+	  result.push_back(_hypergraph.partID(u));
+	}
+      HyperedgeWeight weight = metrics::km1(_hypergraph);
+      Individuum ind(result, weight);
+      insertIndividuum(ind);
+      return ind;
+    }
     inline Individuum Population::getIndividuumTournament() {
       if(size() == 0) {
-	return generateRandomIndividuum();
+	//TODO MASSIVE ERROR
       }
       if(size() == 1) {
 	return _internalPopulation.at(0); 

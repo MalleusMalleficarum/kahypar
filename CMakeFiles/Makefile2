@@ -66,7 +66,7 @@ CMAKE_BINARY_DIR = /home/andre/server-home/myHyparHypar/kahypar
 CMakeFiles/doc.dir/all:
 	$(MAKE) -f CMakeFiles/doc.dir/build.make CMakeFiles/doc.dir/depend
 	$(MAKE) -f CMakeFiles/doc.dir/build.make CMakeFiles/doc.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=35 "Built target doc"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=37 "Built target doc"
 .PHONY : CMakeFiles/doc.dir/all
 
 # Build rule for subdir invocation for target.
@@ -202,7 +202,7 @@ external_tools/googletest/googlemock/preinstall: external_tools/googletest/googl
 external_tools/googletest/googlemock/CMakeFiles/gmock.dir/all:
 	$(MAKE) -f external_tools/googletest/googlemock/CMakeFiles/gmock.dir/build.make external_tools/googletest/googlemock/CMakeFiles/gmock.dir/depend
 	$(MAKE) -f external_tools/googletest/googlemock/CMakeFiles/gmock.dir/build.make external_tools/googletest/googlemock/CMakeFiles/gmock.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=40,41,42 "Built target gmock"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=41,42,43 "Built target gmock"
 .PHONY : external_tools/googletest/googlemock/CMakeFiles/gmock.dir/all
 
 # Include target in all.
@@ -239,7 +239,7 @@ clean: external_tools/googletest/googlemock/CMakeFiles/gmock.dir/clean
 external_tools/googletest/googlemock/CMakeFiles/gmock_main.dir/all:
 	$(MAKE) -f external_tools/googletest/googlemock/CMakeFiles/gmock_main.dir/build.make external_tools/googletest/googlemock/CMakeFiles/gmock_main.dir/depend
 	$(MAKE) -f external_tools/googletest/googlemock/CMakeFiles/gmock_main.dir/build.make external_tools/googletest/googlemock/CMakeFiles/gmock_main.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=43,44,45,46 "Built target gmock_main"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=44,45,46,47 "Built target gmock_main"
 .PHONY : external_tools/googletest/googlemock/CMakeFiles/gmock_main.dir/all
 
 # Include target in all.
@@ -296,7 +296,7 @@ external_tools/googletest/googlemock/gtest/preinstall:
 external_tools/googletest/googlemock/gtest/CMakeFiles/gtest.dir/all:
 	$(MAKE) -f external_tools/googletest/googlemock/gtest/CMakeFiles/gtest.dir/build.make external_tools/googletest/googlemock/gtest/CMakeFiles/gtest.dir/depend
 	$(MAKE) -f external_tools/googletest/googlemock/gtest/CMakeFiles/gtest.dir/build.make external_tools/googletest/googlemock/gtest/CMakeFiles/gtest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=52,53 "Built target gtest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=53,54 "Built target gtest"
 .PHONY : external_tools/googletest/googlemock/gtest/CMakeFiles/gtest.dir/all
 
 # Include target in all.
@@ -333,7 +333,7 @@ clean: external_tools/googletest/googlemock/gtest/CMakeFiles/gtest.dir/clean
 external_tools/googletest/googlemock/gtest/CMakeFiles/gtest_main.dir/all: external_tools/googletest/googlemock/gtest/CMakeFiles/gtest.dir/all
 	$(MAKE) -f external_tools/googletest/googlemock/gtest/CMakeFiles/gtest_main.dir/build.make external_tools/googletest/googlemock/gtest/CMakeFiles/gtest_main.dir/depend
 	$(MAKE) -f external_tools/googletest/googlemock/gtest/CMakeFiles/gtest_main.dir/build.make external_tools/googletest/googlemock/gtest/CMakeFiles/gtest_main.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=54,55 "Built target gtest_main"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=55,56 "Built target gtest_main"
 .PHONY : external_tools/googletest/googlemock/gtest/CMakeFiles/gtest_main.dir/all
 
 # Include target in all.
@@ -368,11 +368,13 @@ clean: external_tools/googletest/googlemock/gtest/CMakeFiles/gtest_main.dir/clea
 
 # Convenience name for "all" pass in the directory.
 kahypar/application/all: kahypar/application/CMakeFiles/KaHyPar.dir/all
+kahypar/application/all: kahypar/application/CMakeFiles/KaHyParE.dir/all
 
 .PHONY : kahypar/application/all
 
 # Convenience name for "clean" pass in the directory.
 kahypar/application/clean: kahypar/application/CMakeFiles/KaHyPar.dir/clean
+kahypar/application/clean: kahypar/application/CMakeFiles/KaHyParE.dir/clean
 
 .PHONY : kahypar/application/clean
 
@@ -415,6 +417,43 @@ kahypar/application/CMakeFiles/KaHyPar.dir/clean:
 
 # clean rule for target.
 clean: kahypar/application/CMakeFiles/KaHyPar.dir/clean
+
+.PHONY : clean
+
+#=============================================================================
+# Target rules for target kahypar/application/CMakeFiles/KaHyParE.dir
+
+# All Build rule for target.
+kahypar/application/CMakeFiles/KaHyParE.dir/all:
+	$(MAKE) -f kahypar/application/CMakeFiles/KaHyParE.dir/build.make kahypar/application/CMakeFiles/KaHyParE.dir/depend
+	$(MAKE) -f kahypar/application/CMakeFiles/KaHyParE.dir/build.make kahypar/application/CMakeFiles/KaHyParE.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=23,24 "Built target KaHyParE"
+.PHONY : kahypar/application/CMakeFiles/KaHyParE.dir/all
+
+# Include target in all.
+all: kahypar/application/CMakeFiles/KaHyParE.dir/all
+
+.PHONY : all
+
+# Build rule for subdir invocation for target.
+kahypar/application/CMakeFiles/KaHyParE.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 2
+	$(MAKE) -f CMakeFiles/Makefile2 kahypar/application/CMakeFiles/KaHyParE.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 0
+.PHONY : kahypar/application/CMakeFiles/KaHyParE.dir/rule
+
+# Convenience name for target.
+KaHyParE: kahypar/application/CMakeFiles/KaHyParE.dir/rule
+
+.PHONY : KaHyParE
+
+# clean rule for target.
+kahypar/application/CMakeFiles/KaHyParE.dir/clean:
+	$(MAKE) -f kahypar/application/CMakeFiles/KaHyParE.dir/build.make kahypar/application/CMakeFiles/KaHyParE.dir/clean
+.PHONY : kahypar/application/CMakeFiles/KaHyParE.dir/clean
+
+# clean rule for target.
+clean: kahypar/application/CMakeFiles/KaHyParE.dir/clean
 
 .PHONY : clean
 
@@ -475,7 +514,7 @@ tools/preinstall:
 tools/CMakeFiles/HgrToHypergraphML.dir/all:
 	$(MAKE) -f tools/CMakeFiles/HgrToHypergraphML.dir/build.make tools/CMakeFiles/HgrToHypergraphML.dir/depend
 	$(MAKE) -f tools/CMakeFiles/HgrToHypergraphML.dir/build.make tools/CMakeFiles/HgrToHypergraphML.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=14,15 "Built target HgrToHypergraphML"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=13,14 "Built target HgrToHypergraphML"
 .PHONY : tools/CMakeFiles/HgrToHypergraphML.dir/all
 
 # Include target in all.
@@ -512,7 +551,7 @@ clean: tools/CMakeFiles/HgrToHypergraphML.dir/clean
 tools/CMakeFiles/HgrToEdgeList.dir/all:
 	$(MAKE) -f tools/CMakeFiles/HgrToEdgeList.dir/build.make tools/CMakeFiles/HgrToEdgeList.dir/depend
 	$(MAKE) -f tools/CMakeFiles/HgrToEdgeList.dir/build.make tools/CMakeFiles/HgrToEdgeList.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=12,13 "Built target HgrToEdgeList"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=12 "Built target HgrToEdgeList"
 .PHONY : tools/CMakeFiles/HgrToEdgeList.dir/all
 
 # Include target in all.
@@ -522,7 +561,7 @@ all: tools/CMakeFiles/HgrToEdgeList.dir/all
 
 # Build rule for subdir invocation for target.
 tools/CMakeFiles/HgrToEdgeList.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 1
 	$(MAKE) -f CMakeFiles/Makefile2 tools/CMakeFiles/HgrToEdgeList.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 0
 .PHONY : tools/CMakeFiles/HgrToEdgeList.dir/rule
@@ -661,7 +700,7 @@ tools/CMakeFiles/hgr_to_edge_list_conversion_test.dir/all: external_tools/google
 tools/CMakeFiles/hgr_to_edge_list_conversion_test.dir/all: external_tools/googletest/googlemock/gtest/CMakeFiles/gtest_main.dir/all
 	$(MAKE) -f tools/CMakeFiles/hgr_to_edge_list_conversion_test.dir/build.make tools/CMakeFiles/hgr_to_edge_list_conversion_test.dir/depend
 	$(MAKE) -f tools/CMakeFiles/hgr_to_edge_list_conversion_test.dir/build.make tools/CMakeFiles/hgr_to_edge_list_conversion_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=58,59 "Built target hgr_to_edge_list_conversion_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=59,60 "Built target hgr_to_edge_list_conversion_test"
 .PHONY : tools/CMakeFiles/hgr_to_edge_list_conversion_test.dir/all
 
 # Include target in all.
@@ -698,7 +737,7 @@ clean: tools/CMakeFiles/hgr_to_edge_list_conversion_test.dir/clean
 tools/CMakeFiles/MtxToHgr.dir/all:
 	$(MAKE) -f tools/CMakeFiles/MtxToHgr.dir/build.make tools/CMakeFiles/MtxToHgr.dir/depend
 	$(MAKE) -f tools/CMakeFiles/MtxToHgr.dir/build.make tools/CMakeFiles/MtxToHgr.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=23,24,25 "Built target MtxToHgr"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=25,26 "Built target MtxToHgr"
 .PHONY : tools/CMakeFiles/MtxToHgr.dir/all
 
 # Include target in all.
@@ -708,7 +747,7 @@ all: tools/CMakeFiles/MtxToHgr.dir/all
 
 # Build rule for subdir invocation for target.
 tools/CMakeFiles/MtxToHgr.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 3
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 2
 	$(MAKE) -f CMakeFiles/Makefile2 tools/CMakeFiles/MtxToHgr.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 0
 .PHONY : tools/CMakeFiles/MtxToHgr.dir/rule
@@ -773,7 +812,7 @@ tools/CMakeFiles/bookshelf_to_hgr_converter_test.dir/all: external_tools/googlet
 tools/CMakeFiles/bookshelf_to_hgr_converter_test.dir/all: external_tools/googletest/googlemock/gtest/CMakeFiles/gtest_main.dir/all
 	$(MAKE) -f tools/CMakeFiles/bookshelf_to_hgr_converter_test.dir/build.make tools/CMakeFiles/bookshelf_to_hgr_converter_test.dir/depend
 	$(MAKE) -f tools/CMakeFiles/bookshelf_to_hgr_converter_test.dir/build.make tools/CMakeFiles/bookshelf_to_hgr_converter_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=32,33 "Built target bookshelf_to_hgr_converter_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=33,34 "Built target bookshelf_to_hgr_converter_test"
 .PHONY : tools/CMakeFiles/bookshelf_to_hgr_converter_test.dir/all
 
 # Include target in all.
@@ -810,7 +849,7 @@ clean: tools/CMakeFiles/bookshelf_to_hgr_converter_test.dir/clean
 tools/CMakeFiles/HgrToPaToH.dir/all:
 	$(MAKE) -f tools/CMakeFiles/HgrToPaToH.dir/build.make tools/CMakeFiles/HgrToPaToH.dir/depend
 	$(MAKE) -f tools/CMakeFiles/HgrToPaToH.dir/build.make tools/CMakeFiles/HgrToPaToH.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=16 "Built target HgrToPaToH"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=15,16 "Built target HgrToPaToH"
 .PHONY : tools/CMakeFiles/HgrToPaToH.dir/all
 
 # Include target in all.
@@ -820,7 +859,7 @@ all: tools/CMakeFiles/HgrToPaToH.dir/all
 
 # Build rule for subdir invocation for target.
 tools/CMakeFiles/HgrToPaToH.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 1
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 2
 	$(MAKE) -f CMakeFiles/Makefile2 tools/CMakeFiles/HgrToPaToH.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 0
 .PHONY : tools/CMakeFiles/HgrToPaToH.dir/rule
@@ -921,7 +960,7 @@ clean: tools/CMakeFiles/BookshelfToHgr.dir/clean
 tools/CMakeFiles/VerifyPartition.dir/all:
 	$(MAKE) -f tools/CMakeFiles/VerifyPartition.dir/build.make tools/CMakeFiles/VerifyPartition.dir/depend
 	$(MAKE) -f tools/CMakeFiles/VerifyPartition.dir/build.make tools/CMakeFiles/VerifyPartition.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=26,27 "Built target VerifyPartition"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=27,28 "Built target VerifyPartition"
 .PHONY : tools/CMakeFiles/VerifyPartition.dir/all
 
 # Include target in all.
@@ -996,7 +1035,7 @@ tools/CMakeFiles/mtx_to_hgr_converter_test.dir/all: external_tools/googletest/go
 tools/CMakeFiles/mtx_to_hgr_converter_test.dir/all: external_tools/googletest/googlemock/gtest/CMakeFiles/gtest_main.dir/all
 	$(MAKE) -f tools/CMakeFiles/mtx_to_hgr_converter_test.dir/build.make tools/CMakeFiles/mtx_to_hgr_converter_test.dir/depend
 	$(MAKE) -f tools/CMakeFiles/mtx_to_hgr_converter_test.dir/build.make tools/CMakeFiles/mtx_to_hgr_converter_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=84,85,86 "Built target mtx_to_hgr_converter_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=85,86,87 "Built target mtx_to_hgr_converter_test"
 .PHONY : tools/CMakeFiles/mtx_to_hgr_converter_test.dir/all
 
 # Include target in all.
@@ -1071,7 +1110,7 @@ tools/CMakeFiles/cnf_to_hgr_converter_test.dir/all: external_tools/googletest/go
 tools/CMakeFiles/cnf_to_hgr_converter_test.dir/all: external_tools/googletest/googlemock/gtest/CMakeFiles/gtest_main.dir/all
 	$(MAKE) -f tools/CMakeFiles/cnf_to_hgr_converter_test.dir/build.make tools/CMakeFiles/cnf_to_hgr_converter_test.dir/depend
 	$(MAKE) -f tools/CMakeFiles/cnf_to_hgr_converter_test.dir/build.make tools/CMakeFiles/cnf_to_hgr_converter_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=34 "Built target cnf_to_hgr_converter_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=35,36 "Built target cnf_to_hgr_converter_test"
 .PHONY : tools/CMakeFiles/cnf_to_hgr_converter_test.dir/all
 
 # Include target in all.
@@ -1081,7 +1120,7 @@ all: tools/CMakeFiles/cnf_to_hgr_converter_test.dir/all
 
 # Build rule for subdir invocation for target.
 tools/CMakeFiles/cnf_to_hgr_converter_test.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 5
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 6
 	$(MAKE) -f CMakeFiles/Makefile2 tools/CMakeFiles/cnf_to_hgr_converter_test.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 0
 .PHONY : tools/CMakeFiles/cnf_to_hgr_converter_test.dir/rule
@@ -1225,7 +1264,7 @@ tests/end_to_end/CMakeFiles/integration_tests.dir/all: external_tools/googletest
 tests/end_to_end/CMakeFiles/integration_tests.dir/all: external_tools/googletest/googlemock/gtest/CMakeFiles/gtest_main.dir/all
 	$(MAKE) -f tests/end_to_end/CMakeFiles/integration_tests.dir/build.make tests/end_to_end/CMakeFiles/integration_tests.dir/depend
 	$(MAKE) -f tests/end_to_end/CMakeFiles/integration_tests.dir/build.make tests/end_to_end/CMakeFiles/integration_tests.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=67,68 "Built target integration_tests"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=68,69 "Built target integration_tests"
 .PHONY : tests/end_to_end/CMakeFiles/integration_tests.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1326,7 +1365,7 @@ tests/datastructure/CMakeFiles/kway_priority_queue_test.dir/all: external_tools/
 tests/datastructure/CMakeFiles/kway_priority_queue_test.dir/all: external_tools/googletest/googlemock/gtest/CMakeFiles/gtest_main.dir/all
 	$(MAKE) -f tests/datastructure/CMakeFiles/kway_priority_queue_test.dir/build.make tests/datastructure/CMakeFiles/kway_priority_queue_test.dir/depend
 	$(MAKE) -f tests/datastructure/CMakeFiles/kway_priority_queue_test.dir/build.make tests/datastructure/CMakeFiles/kway_priority_queue_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=71,72 "Built target kway_priority_queue_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=72,73 "Built target kway_priority_queue_test"
 .PHONY : tests/datastructure/CMakeFiles/kway_priority_queue_test.dir/all
 
 # Include target in all.
@@ -1364,7 +1403,7 @@ tests/datastructure/CMakeFiles/hypergraph_test.dir/all: external_tools/googletes
 tests/datastructure/CMakeFiles/hypergraph_test.dir/all: external_tools/googletest/googlemock/gtest/CMakeFiles/gtest_main.dir/all
 	$(MAKE) -f tests/datastructure/CMakeFiles/hypergraph_test.dir/build.make tests/datastructure/CMakeFiles/hypergraph_test.dir/depend
 	$(MAKE) -f tests/datastructure/CMakeFiles/hypergraph_test.dir/build.make tests/datastructure/CMakeFiles/hypergraph_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=62,63 "Built target hypergraph_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=63 "Built target hypergraph_test"
 .PHONY : tests/datastructure/CMakeFiles/hypergraph_test.dir/all
 
 # Include target in all.
@@ -1374,7 +1413,7 @@ all: tests/datastructure/CMakeFiles/hypergraph_test.dir/all
 
 # Build rule for subdir invocation for target.
 tests/datastructure/CMakeFiles/hypergraph_test.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 6
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 5
 	$(MAKE) -f CMakeFiles/Makefile2 tests/datastructure/CMakeFiles/hypergraph_test.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 0
 .PHONY : tests/datastructure/CMakeFiles/hypergraph_test.dir/rule
@@ -1440,7 +1479,7 @@ tests/datastructure/CMakeFiles/binary_heap_test.dir/all: external_tools/googlete
 tests/datastructure/CMakeFiles/binary_heap_test.dir/all: external_tools/googletest/googlemock/gtest/CMakeFiles/gtest_main.dir/all
 	$(MAKE) -f tests/datastructure/CMakeFiles/binary_heap_test.dir/build.make tests/datastructure/CMakeFiles/binary_heap_test.dir/depend
 	$(MAKE) -f tests/datastructure/CMakeFiles/binary_heap_test.dir/build.make tests/datastructure/CMakeFiles/binary_heap_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=30,31 "Built target binary_heap_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=31,32 "Built target binary_heap_test"
 .PHONY : tests/datastructure/CMakeFiles/binary_heap_test.dir/all
 
 # Include target in all.
@@ -1572,7 +1611,7 @@ tests/io/CMakeFiles/hypergraph_io_test.dir/all: external_tools/googletest/google
 tests/io/CMakeFiles/hypergraph_io_test.dir/all: external_tools/googletest/googlemock/gtest/CMakeFiles/gtest_main.dir/all
 	$(MAKE) -f tests/io/CMakeFiles/hypergraph_io_test.dir/build.make tests/io/CMakeFiles/hypergraph_io_test.dir/depend
 	$(MAKE) -f tests/io/CMakeFiles/hypergraph_io_test.dir/build.make tests/io/CMakeFiles/hypergraph_io_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=60,61 "Built target hypergraph_io_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=61,62 "Built target hypergraph_io_test"
 .PHONY : tests/io/CMakeFiles/hypergraph_io_test.dir/all
 
 # Include target in all.
@@ -1686,7 +1725,7 @@ tests/partition/CMakeFiles/partitioner_test.dir/all: external_tools/googletest/g
 tests/partition/CMakeFiles/partitioner_test.dir/all: external_tools/googletest/googlemock/gtest/CMakeFiles/gtest_main.dir/all
 	$(MAKE) -f tests/partition/CMakeFiles/partitioner_test.dir/build.make tests/partition/CMakeFiles/partitioner_test.dir/depend
 	$(MAKE) -f tests/partition/CMakeFiles/partitioner_test.dir/build.make tests/partition/CMakeFiles/partitioner_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=87,88 "Built target partitioner_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=88 "Built target partitioner_test"
 .PHONY : tests/partition/CMakeFiles/partitioner_test.dir/all
 
 # Include target in all.
@@ -1696,7 +1735,7 @@ all: tests/partition/CMakeFiles/partitioner_test.dir/all
 
 # Build rule for subdir invocation for target.
 tests/partition/CMakeFiles/partitioner_test.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 6
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 5
 	$(MAKE) -f CMakeFiles/Makefile2 tests/partition/CMakeFiles/partitioner_test.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 0
 .PHONY : tests/partition/CMakeFiles/partitioner_test.dir/rule
@@ -1724,7 +1763,7 @@ tests/partition/CMakeFiles/metrics_test.dir/all: external_tools/googletest/googl
 tests/partition/CMakeFiles/metrics_test.dir/all: external_tools/googletest/googlemock/gtest/CMakeFiles/gtest_main.dir/all
 	$(MAKE) -f tests/partition/CMakeFiles/metrics_test.dir/build.make tests/partition/CMakeFiles/metrics_test.dir/depend
 	$(MAKE) -f tests/partition/CMakeFiles/metrics_test.dir/build.make tests/partition/CMakeFiles/metrics_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=83 "Built target metrics_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=83,84 "Built target metrics_test"
 .PHONY : tests/partition/CMakeFiles/metrics_test.dir/all
 
 # Include target in all.
@@ -1734,7 +1773,7 @@ all: tests/partition/CMakeFiles/metrics_test.dir/all
 
 # Build rule for subdir invocation for target.
 tests/partition/CMakeFiles/metrics_test.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 5
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 6
 	$(MAKE) -f CMakeFiles/Makefile2 tests/partition/CMakeFiles/metrics_test.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 0
 .PHONY : tests/partition/CMakeFiles/metrics_test.dir/rule
@@ -1784,7 +1823,7 @@ tests/partition/coarsening/CMakeFiles/full_vertex_pair_coarsener_test.dir/all: e
 tests/partition/coarsening/CMakeFiles/full_vertex_pair_coarsener_test.dir/all: external_tools/googletest/googlemock/gtest/CMakeFiles/gtest_main.dir/all
 	$(MAKE) -f tests/partition/coarsening/CMakeFiles/full_vertex_pair_coarsener_test.dir/build.make tests/partition/coarsening/CMakeFiles/full_vertex_pair_coarsener_test.dir/depend
 	$(MAKE) -f tests/partition/coarsening/CMakeFiles/full_vertex_pair_coarsener_test.dir/build.make tests/partition/coarsening/CMakeFiles/full_vertex_pair_coarsener_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=36,37 "Built target full_vertex_pair_coarsener_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=38 "Built target full_vertex_pair_coarsener_test"
 .PHONY : tests/partition/coarsening/CMakeFiles/full_vertex_pair_coarsener_test.dir/all
 
 # Include target in all.
@@ -1794,7 +1833,7 @@ all: tests/partition/coarsening/CMakeFiles/full_vertex_pair_coarsener_test.dir/a
 
 # Build rule for subdir invocation for target.
 tests/partition/coarsening/CMakeFiles/full_vertex_pair_coarsener_test.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 6
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 5
 	$(MAKE) -f CMakeFiles/Makefile2 tests/partition/coarsening/CMakeFiles/full_vertex_pair_coarsener_test.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 0
 .PHONY : tests/partition/coarsening/CMakeFiles/full_vertex_pair_coarsener_test.dir/rule
@@ -1860,7 +1899,7 @@ tests/partition/coarsening/CMakeFiles/heavy_edge_rater_test.dir/all: external_to
 tests/partition/coarsening/CMakeFiles/heavy_edge_rater_test.dir/all: external_tools/googletest/googlemock/gtest/CMakeFiles/gtest_main.dir/all
 	$(MAKE) -f tests/partition/coarsening/CMakeFiles/heavy_edge_rater_test.dir/build.make tests/partition/coarsening/CMakeFiles/heavy_edge_rater_test.dir/depend
 	$(MAKE) -f tests/partition/coarsening/CMakeFiles/heavy_edge_rater_test.dir/build.make tests/partition/coarsening/CMakeFiles/heavy_edge_rater_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=56,57 "Built target heavy_edge_rater_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=57,58 "Built target heavy_edge_rater_test"
 .PHONY : tests/partition/coarsening/CMakeFiles/heavy_edge_rater_test.dir/all
 
 # Include target in all.
@@ -1970,7 +2009,7 @@ tests/partition/initial_partitioning/CMakeFiles/initial_partitioner_base_test.di
 tests/partition/initial_partitioning/CMakeFiles/initial_partitioner_base_test.dir/all: external_tools/googletest/googlemock/gtest/CMakeFiles/gtest_main.dir/all
 	$(MAKE) -f tests/partition/initial_partitioning/CMakeFiles/initial_partitioner_base_test.dir/build.make tests/partition/initial_partitioning/CMakeFiles/initial_partitioner_base_test.dir/depend
 	$(MAKE) -f tests/partition/initial_partitioning/CMakeFiles/initial_partitioner_base_test.dir/build.make tests/partition/initial_partitioning/CMakeFiles/initial_partitioner_base_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=66 "Built target initial_partitioner_base_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=66,67 "Built target initial_partitioner_base_test"
 .PHONY : tests/partition/initial_partitioning/CMakeFiles/initial_partitioner_base_test.dir/all
 
 # Include target in all.
@@ -1980,7 +2019,7 @@ all: tests/partition/initial_partitioning/CMakeFiles/initial_partitioner_base_te
 
 # Build rule for subdir invocation for target.
 tests/partition/initial_partitioning/CMakeFiles/initial_partitioner_base_test.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 5
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 6
 	$(MAKE) -f CMakeFiles/Makefile2 tests/partition/initial_partitioning/CMakeFiles/initial_partitioner_base_test.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 0
 .PHONY : tests/partition/initial_partitioning/CMakeFiles/initial_partitioner_base_test.dir/rule
@@ -2008,7 +2047,7 @@ tests/partition/initial_partitioning/CMakeFiles/greedy_queue_selection_test.dir/
 tests/partition/initial_partitioning/CMakeFiles/greedy_queue_selection_test.dir/all: external_tools/googletest/googlemock/gtest/CMakeFiles/gtest_main.dir/all
 	$(MAKE) -f tests/partition/initial_partitioning/CMakeFiles/greedy_queue_selection_test.dir/build.make tests/partition/initial_partitioning/CMakeFiles/greedy_queue_selection_test.dir/depend
 	$(MAKE) -f tests/partition/initial_partitioning/CMakeFiles/greedy_queue_selection_test.dir/build.make tests/partition/initial_partitioning/CMakeFiles/greedy_queue_selection_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=51 "Built target greedy_queue_selection_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=51,52 "Built target greedy_queue_selection_test"
 .PHONY : tests/partition/initial_partitioning/CMakeFiles/greedy_queue_selection_test.dir/all
 
 # Include target in all.
@@ -2018,7 +2057,7 @@ all: tests/partition/initial_partitioning/CMakeFiles/greedy_queue_selection_test
 
 # Build rule for subdir invocation for target.
 tests/partition/initial_partitioning/CMakeFiles/greedy_queue_selection_test.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 5
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 6
 	$(MAKE) -f CMakeFiles/Makefile2 tests/partition/initial_partitioning/CMakeFiles/greedy_queue_selection_test.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 0
 .PHONY : tests/partition/initial_partitioning/CMakeFiles/greedy_queue_selection_test.dir/rule
@@ -2046,7 +2085,7 @@ tests/partition/initial_partitioning/CMakeFiles/gain_computation_test.dir/all: e
 tests/partition/initial_partitioning/CMakeFiles/gain_computation_test.dir/all: external_tools/googletest/googlemock/gtest/CMakeFiles/gtest_main.dir/all
 	$(MAKE) -f tests/partition/initial_partitioning/CMakeFiles/gain_computation_test.dir/build.make tests/partition/initial_partitioning/CMakeFiles/gain_computation_test.dir/depend
 	$(MAKE) -f tests/partition/initial_partitioning/CMakeFiles/gain_computation_test.dir/build.make tests/partition/initial_partitioning/CMakeFiles/gain_computation_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=38,39 "Built target gain_computation_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=39,40 "Built target gain_computation_test"
 .PHONY : tests/partition/initial_partitioning/CMakeFiles/gain_computation_test.dir/all
 
 # Include target in all.
@@ -2084,7 +2123,7 @@ tests/partition/initial_partitioning/CMakeFiles/label_propagation_partitioner_te
 tests/partition/initial_partitioning/CMakeFiles/label_propagation_partitioner_test.dir/all: external_tools/googletest/googlemock/gtest/CMakeFiles/gtest_main.dir/all
 	$(MAKE) -f tests/partition/initial_partitioning/CMakeFiles/label_propagation_partitioner_test.dir/build.make tests/partition/initial_partitioning/CMakeFiles/label_propagation_partitioner_test.dir/depend
 	$(MAKE) -f tests/partition/initial_partitioning/CMakeFiles/label_propagation_partitioner_test.dir/build.make tests/partition/initial_partitioning/CMakeFiles/label_propagation_partitioner_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=75,76 "Built target label_propagation_partitioner_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=76 "Built target label_propagation_partitioner_test"
 .PHONY : tests/partition/initial_partitioning/CMakeFiles/label_propagation_partitioner_test.dir/all
 
 # Include target in all.
@@ -2094,7 +2133,7 @@ all: tests/partition/initial_partitioning/CMakeFiles/label_propagation_partition
 
 # Build rule for subdir invocation for target.
 tests/partition/initial_partitioning/CMakeFiles/label_propagation_partitioner_test.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 6
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 5
 	$(MAKE) -f CMakeFiles/Makefile2 tests/partition/initial_partitioning/CMakeFiles/label_propagation_partitioner_test.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 0
 .PHONY : tests/partition/initial_partitioning/CMakeFiles/label_propagation_partitioner_test.dir/rule
@@ -2122,7 +2161,7 @@ tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_partit
 tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_partitioner_test.dir/all: external_tools/googletest/googlemock/gtest/CMakeFiles/gtest_main.dir/all
 	$(MAKE) -f tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_partitioner_test.dir/build.make tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_partitioner_test.dir/depend
 	$(MAKE) -f tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_partitioner_test.dir/build.make tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_partitioner_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=49,50 "Built target greedy_hypergraph_growing_partitioner_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=50 "Built target greedy_hypergraph_growing_partitioner_test"
 .PHONY : tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_partitioner_test.dir/all
 
 # Include target in all.
@@ -2132,7 +2171,7 @@ all: tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_p
 
 # Build rule for subdir invocation for target.
 tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_partitioner_test.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 6
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 5
 	$(MAKE) -f CMakeFiles/Makefile2 tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_partitioner_test.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/andre/server-home/myHyparHypar/kahypar/CMakeFiles 0
 .PHONY : tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_partitioner_test.dir/rule
@@ -2160,7 +2199,7 @@ tests/partition/initial_partitioning/CMakeFiles/bfs_partitioner_test.dir/all: ex
 tests/partition/initial_partitioning/CMakeFiles/bfs_partitioner_test.dir/all: external_tools/googletest/googlemock/gtest/CMakeFiles/gtest_main.dir/all
 	$(MAKE) -f tests/partition/initial_partitioning/CMakeFiles/bfs_partitioner_test.dir/build.make tests/partition/initial_partitioning/CMakeFiles/bfs_partitioner_test.dir/depend
 	$(MAKE) -f tests/partition/initial_partitioning/CMakeFiles/bfs_partitioner_test.dir/build.make tests/partition/initial_partitioning/CMakeFiles/bfs_partitioner_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=28,29 "Built target bfs_partitioner_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=29,30 "Built target bfs_partitioner_test"
 .PHONY : tests/partition/initial_partitioning/CMakeFiles/bfs_partitioner_test.dir/all
 
 # Include target in all.
@@ -2198,7 +2237,7 @@ tests/partition/initial_partitioning/CMakeFiles/label_propagation_functionality_
 tests/partition/initial_partitioning/CMakeFiles/label_propagation_functionality_test.dir/all: external_tools/googletest/googlemock/gtest/CMakeFiles/gtest_main.dir/all
 	$(MAKE) -f tests/partition/initial_partitioning/CMakeFiles/label_propagation_functionality_test.dir/build.make tests/partition/initial_partitioning/CMakeFiles/label_propagation_functionality_test.dir/depend
 	$(MAKE) -f tests/partition/initial_partitioning/CMakeFiles/label_propagation_functionality_test.dir/build.make tests/partition/initial_partitioning/CMakeFiles/label_propagation_functionality_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=73,74 "Built target label_propagation_functionality_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=74,75 "Built target label_propagation_functionality_test"
 .PHONY : tests/partition/initial_partitioning/CMakeFiles/label_propagation_functionality_test.dir/all
 
 # Include target in all.
@@ -2236,7 +2275,7 @@ tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functi
 tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/all: external_tools/googletest/googlemock/gtest/CMakeFiles/gtest_main.dir/all
 	$(MAKE) -f tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/build.make tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/depend
 	$(MAKE) -f tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/build.make tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=47,48 "Built target greedy_hypergraph_growing_functionality_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=48,49 "Built target greedy_hypergraph_growing_functionality_test"
 .PHONY : tests/partition/initial_partitioning/CMakeFiles/greedy_hypergraph_growing_functionality_test.dir/all
 
 # Include target in all.
@@ -2334,7 +2373,7 @@ tests/partition/refinement/CMakeFiles/k_way_fm_refiner_test.dir/all: external_to
 tests/partition/refinement/CMakeFiles/k_way_fm_refiner_test.dir/all: external_tools/googletest/googlemock/gtest/CMakeFiles/gtest_main.dir/all
 	$(MAKE) -f tests/partition/refinement/CMakeFiles/k_way_fm_refiner_test.dir/build.make tests/partition/refinement/CMakeFiles/k_way_fm_refiner_test.dir/depend
 	$(MAKE) -f tests/partition/refinement/CMakeFiles/k_way_fm_refiner_test.dir/build.make tests/partition/refinement/CMakeFiles/k_way_fm_refiner_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=69,70 "Built target k_way_fm_refiner_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=70,71 "Built target k_way_fm_refiner_test"
 .PHONY : tests/partition/refinement/CMakeFiles/k_way_fm_refiner_test.dir/all
 
 # Include target in all.
