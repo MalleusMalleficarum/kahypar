@@ -518,23 +518,44 @@ void clearFile(std::string filename) {
   std::ofstream out_file("../../../Results/" + useThis);
   out_file.close();
 }
-void writeShit(int i, std::string filename, std::chrono::duration<double> duration, Hypergraph &hypergraph, Configuration &config) {
+void writeShit(int i, std::string filename, std::chrono::duration<double> duration, Hypergraph &hypergraph, Configuration &config, int currentMinimum) {
   std::size_t found = filename.find_last_of("/");
   std::string useThis = filename.substr(found + 1);
   std::ofstream out_file;
   
   out_file.open("../../../Results/" + useThis, std::ios_base::app);
-  out_file << "RESULT" << " k=" << config.partition.k
+  /* out_file << "RESULT" << " k=" << config.partition.k
            << " epsilon=" << config.partition.epsilon
 	   << " seed=" << config.partition.seed
 	   << " iteration=" << i
 	   << " duration=" << duration.count()
+	   << " bestSoFar=" << currentMinimum
 	   << " cut=" << kahypar::metrics::hyperedgeCut(hypergraph)
 	   << " SOED=" << kahypar::metrics::soed(hypergraph)
 	   << " km-1=" << kahypar::metrics::km1(hypergraph)
 	   << " absorption=" << kahypar::metrics::absorption(hypergraph)
-	   << std::endl;
+	   << std::endl;*/
+  out_file << config.partition.k << " "
+	   << config.partition.epsilon  << " "
+	   << config.partition.seed  << " "
+	   << i  << " "
+	   << duration.count() << " "
+	   << currentMinimum << " "
+	   << kahypar::metrics::hyperedgeCut(hypergraph) << " "
+	   << kahypar::metrics::soed(hypergraph) << " "
+	   << kahypar::metrics::km1(hypergraph) << " "
+	   << kahypar::metrics::absorption(hypergraph) << " "
+	   <<std::endl;
   
+  out_file.close();
+}
+void emptyLine(std::string filename) {
+    std::size_t found = filename.find_last_of("/");
+  std::string useThis = filename.substr(found + 1);
+  std::ofstream out_file;
+  
+  out_file.open(std::string("../../../Results/")  + useThis, std::ios_base::app);
+  out_file << "##################################" << std::endl;
   out_file.close();
 }
 int main(int argc, char* argv[]) {
@@ -577,19 +598,36 @@ int main(int argc, char* argv[]) {
   
   Partitioner partitioner;
   HighResClockTimepoint start = std::chrono::high_resolution_clock::now();
+  HighResClockTimepoint currentTime = std::chrono::high_resolution_clock::now();
+  std::chrono::duration<double> currentTimeTaken = currentTime - start;
   std::vector<PartitionID> dummy;
   std::vector<PartitionID> dummy2;
-  clearFile(config.partition.graph_filename);
-  for(int i = 0; i < 40; i++) {
+  // clearFile(config.partition.graph_filename);
+  int best = INT_MAX;
+  std::string filename = config.partition.graph_filename
+    + ".result"
+    + ".part"
+    + std::to_string(config.partition.k)
+    + ".KaHyPar";
+  int i = 1;
+  while(currentTimeTaken.count() < 3600) {
+    
     HighResClockTimepoint startIteration = std::chrono::high_resolution_clock::now();
     partitioner.partition(hypergraph, config, dummy, dummy2);
     HighResClockTimepoint endIteration = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed_secondsIteration = endIteration - startIteration;
-    writeShit(i, config.partition.graph_filename, elapsed_secondsIteration, hypergraph,config);
+    int cur = kahypar::metrics::km1(hypergraph);
+    if (cur < best) {
+      best = cur;
+    }
+    writeShit(i, filename, elapsed_secondsIteration, hypergraph,config, best);
+    i++;
+    currentTime = std::chrono::high_resolution_clock::now();
+    currentTimeTaken = currentTime - start;
   }
   HighResClockTimepoint end = std::chrono::high_resolution_clock::now();
   std::chrono::duration<double> elapsed_seconds = end - start;
-
+  //emptyLine(filename);
 #ifdef GATHER_STATS
   LOG("*******************************");
   LOG("***** GATHER_STATS ACTIVE *****");

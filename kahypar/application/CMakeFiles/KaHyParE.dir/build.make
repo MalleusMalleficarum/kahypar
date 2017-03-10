@@ -90,7 +90,7 @@ KaHyParE_EXTERNAL_OBJECTS =
 
 kahypar/application/KaHyParE: kahypar/application/CMakeFiles/KaHyParE.dir/kahyparE.cc.o
 kahypar/application/KaHyParE: kahypar/application/CMakeFiles/KaHyParE.dir/build.make
-kahypar/application/KaHyParE: /home/andre/server-software/boost/1.62.0/lib/libboost_program_options.so
+kahypar/application/KaHyParE: /home/andre/server-software/boost/1.58.0/lib/libboost_program_options.so
 kahypar/application/KaHyParE: kahypar/application/CMakeFiles/KaHyParE.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable KaHyParE"
 	cd /home/andre/server-home/myHyparHypar/kahypar/kahypar/application && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/KaHyParE.dir/link.txt --verbose=$(VERBOSE)

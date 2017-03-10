@@ -45,6 +45,7 @@ inline void setPartitionVector(Hypergraph &hypergraph, const std::vector<Partiti
   inline std::size_t getRandomExcept(std::size_t except);
   inline void printInfo();
   inline void setTheBest();
+  inline double getAverageFitness();
  
   private: 
   std::vector<Individuum> _internalPopulation;
@@ -236,5 +237,13 @@ inline void Population::setPartitionVector(Hypergraph& hypergraph, const std::ve
       }
        _hypergraph.resetPartitioning();
        setPartitionVector(_hypergraph, _internalPopulation.at(bestPosition).getPartition());
+    }
+    inline double Population::getAverageFitness() {
+      double result = 0;
+      for(unsigned i = 0; i < _internalPopulation.size(); i++) {
+	result += _internalPopulation[i].getFitness();
+      }
+      result = result / _internalPopulation.size();
+      return result;
     }
 } // end of namespace kahypar

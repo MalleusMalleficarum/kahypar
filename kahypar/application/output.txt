@@ -1,0 +1,939 @@
+################
+Partition
+################
+*********************Partitioning Configuration**********************
+KaHyPar Partitioning Parameters:
+  Hypergraph:                         ../../../Testcases/as-caida/as-caida.mtx.hgr
+  Partition File:                     ../../../Testcases/as-caida/as-caida.mtx.hgr.result.part2.epsilon0.03.seed-1.KaHyPar
+  Mode:                               direct
+  Objective:                          km1
+  k:                                  2
+  epsilon:                            0.03
+  seed:                               -1
+  # V-cycles:                         0
+  hyperedge size threshold:           1000
+  total hypergraph weight:            31379
+  L_opt0:                             15690
+  L_opt1:                             15690
+  L_max0:                             16160
+  L_max1:                             16160
+---------------------------------------------------------------------
+Preprocessing Parameters:
+  enable min hash sparsifier:         true
+  remove parallel HEs:                false
+  remove HEs that always will be cut: false
+---------------------------------------------------------------------
+MinHash Sparsifier Parameters:
+  max hyperedge size:                 1200
+  max cluster size:                   10
+  min cluster size:                   2
+  number of hash functions:           5
+  number of combined hash functions:  100
+  active at median net size >=:       28
+  sparsifier is active:               false
+---------------------------------------------------------------------
+Coarsening Parameters:
+  Algorithm:                          ml_style
+  max-allowed-weight-multiplier:      1
+  contraction-limit-multiplier:       160
+  hypernode weight fraction:          0.003125
+  max. allowed hypernode weight:      99
+  contraction limit:                  320
+---------------------------------------------------------------------
+Initial Partitioning Parameters:
+  # IP trials:                        20
+  Mode:                               recursive
+  Technique:                          multilevel
+  Algorithm:                          pool
+IP Coarsening:                        
+Coarsening Parameters:
+  Algorithm:                          ml_style
+  max-allowed-weight-multiplier:      1
+  contraction-limit-multiplier:       150
+IP Local Search:                      
+Local Search Parameters:
+  Algorithm:                          twoway_fm
+  iterations per level:               2147483647
+  stopping rule:                      simple
+  max. # fruitless moves:             50
+  use global rebalancing:             off
+---------------------------------------------------------------------
+Local Search Parameters:
+  Algorithm:                          kway_fm_km1
+  iterations per level:               2147483647
+  stopping rule:                      adaptive_opt
+  adaptive stopping alpha:            1
+  use global rebalancing:             off
+---------------------------------------------------------------------
+
+
+################
+partitionInternal
+################
+################
+Kway
+################
+################
+performPartitioning
+################
+################
+Coarsen you mofo
+################
+################
+ml coarsener...
+################
+coarsenImpl(): pass_nr=0
+coarsenImpl(): _hg.currentNumNodes()=31379
+coarsenImpl(): pass_nr=1
+coarsenImpl(): _hg.currentNumNodes()=17257
+coarsenImpl(): pass_nr=2
+coarsenImpl(): _hg.currentNumNodes()=11395
+coarsenImpl(): pass_nr=3
+coarsenImpl(): _hg.currentNumNodes()=8487
+coarsenImpl(): pass_nr=4
+coarsenImpl(): _hg.currentNumNodes()=7328
+coarsenImpl(): pass_nr=5
+coarsenImpl(): _hg.currentNumNodes()=6619
+coarsenImpl(): pass_nr=6
+coarsenImpl(): _hg.currentNumNodes()=5956
+coarsenImpl(): pass_nr=7
+coarsenImpl(): _hg.currentNumNodes()=5530
+coarsenImpl(): pass_nr=8
+coarsenImpl(): _hg.currentNumNodes()=5337
+coarsenImpl(): pass_nr=9
+coarsenImpl(): _hg.currentNumNodes()=5262
+coarsenImpl(): pass_nr=10
+coarsenImpl(): _hg.currentNumNodes()=5234
+coarsenImpl(): pass_nr=11
+coarsenImpl(): _hg.currentNumNodes()=5225
+################
+InitialPartitioning NOOOOOOOO
+################
+################
+partitionInternal
+################
+################
+Bisection
+################
+################
+performPartitioning
+################
+################
+Coarsen you mofo
+################
+################
+ml coarsener...
+################
+coarsenImpl(): pass_nr=0
+coarsenImpl(): _hg.currentNumNodes()=5225
+coarsenImpl(): pass_nr=1
+coarsenImpl(): _hg.currentNumNodes()=5192
+################
+InitialPartitioning NOOOOOOOO
+################
+partitionImpl(): greedy_round current_cut=3410  current_imbalance=0.0260038 
+partitionImpl(): greedy_sequential current_cut=2420  current_imbalance=0.0248566 
+partitionImpl(): skipping maxpin
+partitionImpl(): skipping maxpin
+partitionImpl(): greedy_global_maxnet current_cut=1438  current_imbalance=0.0254939 
+partitionImpl(): greedy_round_maxnet current_cut=1431  current_imbalance=0.0288082 
+partitionImpl(): lp current_cut=2263  current_imbalance=0.0272785 
+partitionImpl(): bfs current_cut=1604  current_imbalance=0.0296367 
+partitionImpl(): random current_cut=3178  current_imbalance=0.0290631 
+This was a triumph
+I'm making a note here
+Huge Success
+Even though
+You broke my heart
+This was a triumph
+I'm making a note here
+Huge Success
+Even though
+You broke my heart
+performDirectKwayPartitioning(): PartitioningResult: cut=470
+Population INFO: 
+470 0
+################
+Partition
+################
+*********************Partitioning Configuration**********************
+KaHyPar Partitioning Parameters:
+  Hypergraph:                         ../../../Testcases/as-caida/as-caida.mtx.hgr
+  Partition File:                     ../../../Testcases/as-caida/as-caida.mtx.hgr.result.part2.epsilon0.03.seed-1.KaHyPar
+  Mode:                               direct
+  Objective:                          km1
+  k:                                  2
+  epsilon:                            0.03
+  seed:                               -1
+  # V-cycles:                         0
+  hyperedge size threshold:           1000
+  total hypergraph weight:            31379
+  L_opt0:                             15690
+  L_opt1:                             15690
+  L_max0:                             16160
+  L_max1:                             16160
+---------------------------------------------------------------------
+Preprocessing Parameters:
+  enable min hash sparsifier:         true
+  remove parallel HEs:                false
+  remove HEs that always will be cut: false
+---------------------------------------------------------------------
+MinHash Sparsifier Parameters:
+  max hyperedge size:                 1200
+  max cluster size:                   10
+  min cluster size:                   2
+  number of hash functions:           5
+  number of combined hash functions:  100
+  active at median net size >=:       28
+  sparsifier is active:               false
+---------------------------------------------------------------------
+Coarsening Parameters:
+  Algorithm:                          ml_style
+  max-allowed-weight-multiplier:      1
+  contraction-limit-multiplier:       160
+  hypernode weight fraction:          0.003125
+  max. allowed hypernode weight:      99
+  contraction limit:                  320
+---------------------------------------------------------------------
+Initial Partitioning Parameters:
+  # IP trials:                        20
+  Mode:                               recursive
+  Technique:                          multilevel
+  Algorithm:                          pool
+IP Coarsening:                        
+Coarsening Parameters:
+  Algorithm:                          ml_style
+  max-allowed-weight-multiplier:      1
+  contraction-limit-multiplier:       150
+IP Local Search:                      
+Local Search Parameters:
+  Algorithm:                          twoway_fm
+  iterations per level:               2147483647
+  stopping rule:                      simple
+  max. # fruitless moves:             50
+  use global rebalancing:             off
+---------------------------------------------------------------------
+Local Search Parameters:
+  Algorithm:                          kway_fm_km1
+  iterations per level:               2147483647
+  stopping rule:                      adaptive_opt
+  adaptive stopping alpha:            1
+  use global rebalancing:             off
+---------------------------------------------------------------------
+
+
+################
+partitionInternal
+################
+################
+Kway
+################
+################
+performPartitioning
+################
+################
+Coarsen you mofo
+################
+################
+ml coarsener...
+################
+coarsenImpl(): pass_nr=0
+coarsenImpl(): _hg.currentNumNodes()=31379
+coarsenImpl(): pass_nr=1
+coarsenImpl(): _hg.currentNumNodes()=17299
+coarsenImpl(): pass_nr=2
+coarsenImpl(): _hg.currentNumNodes()=11389
+coarsenImpl(): pass_nr=3
+coarsenImpl(): _hg.currentNumNodes()=8533
+coarsenImpl(): pass_nr=4
+coarsenImpl(): _hg.currentNumNodes()=7357
+coarsenImpl(): pass_nr=5
+coarsenImpl(): _hg.currentNumNodes()=6635
+coarsenImpl(): pass_nr=6
+coarsenImpl(): _hg.currentNumNodes()=5927
+coarsenImpl(): pass_nr=7
+coarsenImpl(): _hg.currentNumNodes()=5514
+coarsenImpl(): pass_nr=8
+coarsenImpl(): _hg.currentNumNodes()=5328
+coarsenImpl(): pass_nr=9
+coarsenImpl(): _hg.currentNumNodes()=5257
+coarsenImpl(): pass_nr=10
+coarsenImpl(): _hg.currentNumNodes()=5233
+coarsenImpl(): pass_nr=11
+coarsenImpl(): _hg.currentNumNodes()=5224
+################
+InitialPartitioning NOOOOOOOO
+################
+################
+partitionInternal
+################
+################
+Bisection
+################
+################
+performPartitioning
+################
+################
+Coarsen you mofo
+################
+################
+ml coarsener...
+################
+coarsenImpl(): pass_nr=0
+coarsenImpl(): _hg.currentNumNodes()=5224
+coarsenImpl(): pass_nr=1
+coarsenImpl(): _hg.currentNumNodes()=5190
+################
+InitialPartitioning NOOOOOOOO
+################
+partitionImpl(): greedy_round current_cut=3264  current_imbalance=0.0259401 
+partitionImpl(): greedy_sequential current_cut=2676  current_imbalance=0.0267049 
+partitionImpl(): skipping maxpin
+partitionImpl(): skipping maxpin
+partitionImpl(): greedy_global_maxnet current_cut=1483  current_imbalance=0.0298279 
+partitionImpl(): greedy_round_maxnet current_cut=1517  current_imbalance=0.024028 
+partitionImpl(): lp current_cut=2344  current_imbalance=0.00796686 
+partitionImpl(): bfs current_cut=3886  current_imbalance=0.0299554 
+partitionImpl(): random current_cut=2980  current_imbalance=0.024283 
+This was a triumph
+I'm making a note here
+Huge Success
+Even though
+You broke my heart
+This was a triumph
+I'm making a note here
+Huge Success
+Even though
+You broke my heart
+performDirectKwayPartitioning(): PartitioningResult: cut=408
+Population INFO: 
+470 0
+408 1
+################
+Partition
+################
+*********************Partitioning Configuration**********************
+KaHyPar Partitioning Parameters:
+  Hypergraph:                         ../../../Testcases/as-caida/as-caida.mtx.hgr
+  Partition File:                     ../../../Testcases/as-caida/as-caida.mtx.hgr.result.part2.epsilon0.03.seed-1.KaHyPar
+  Mode:                               direct
+  Objective:                          km1
+  k:                                  2
+  epsilon:                            0.03
+  seed:                               -1
+  # V-cycles:                         0
+  hyperedge size threshold:           1000
+  total hypergraph weight:            31379
+  L_opt0:                             15690
+  L_opt1:                             15690
+  L_max0:                             16160
+  L_max1:                             16160
+---------------------------------------------------------------------
+Preprocessing Parameters:
+  enable min hash sparsifier:         true
+  remove parallel HEs:                false
+  remove HEs that always will be cut: false
+---------------------------------------------------------------------
+MinHash Sparsifier Parameters:
+  max hyperedge size:                 1200
+  max cluster size:                   10
+  min cluster size:                   2
+  number of hash functions:           5
+  number of combined hash functions:  100
+  active at median net size >=:       28
+  sparsifier is active:               false
+---------------------------------------------------------------------
+Coarsening Parameters:
+  Algorithm:                          ml_style
+  max-allowed-weight-multiplier:      1
+  contraction-limit-multiplier:       160
+  hypernode weight fraction:          0.003125
+  max. allowed hypernode weight:      99
+  contraction limit:                  320
+---------------------------------------------------------------------
+Initial Partitioning Parameters:
+  # IP trials:                        20
+  Mode:                               recursive
+  Technique:                          multilevel
+  Algorithm:                          pool
+IP Coarsening:                        
+Coarsening Parameters:
+  Algorithm:                          ml_style
+  max-allowed-weight-multiplier:      1
+  contraction-limit-multiplier:       150
+IP Local Search:                      
+Local Search Parameters:
+  Algorithm:                          twoway_fm
+  iterations per level:               2147483647
+  stopping rule:                      simple
+  max. # fruitless moves:             50
+  use global rebalancing:             off
+---------------------------------------------------------------------
+Local Search Parameters:
+  Algorithm:                          kway_fm_km1
+  iterations per level:               2147483647
+  stopping rule:                      adaptive_opt
+  adaptive stopping alpha:            1
+  use global rebalancing:             off
+---------------------------------------------------------------------
+
+
+################
+partitionInternal
+################
+################
+Kway
+################
+################
+performPartitioning
+################
+################
+Coarsen you mofo
+################
+################
+ml coarsener...
+################
+coarsenImpl(): pass_nr=0
+coarsenImpl(): _hg.currentNumNodes()=31379
+coarsenImpl(): pass_nr=1
+coarsenImpl(): _hg.currentNumNodes()=17296
+coarsenImpl(): pass_nr=2
+coarsenImpl(): _hg.currentNumNodes()=11378
+coarsenImpl(): pass_nr=3
+coarsenImpl(): _hg.currentNumNodes()=8488
+coarsenImpl(): pass_nr=4
+coarsenImpl(): _hg.currentNumNodes()=7331
+coarsenImpl(): pass_nr=5
+coarsenImpl(): _hg.currentNumNodes()=6616
+coarsenImpl(): pass_nr=6
+coarsenImpl(): _hg.currentNumNodes()=6028
+coarsenImpl(): pass_nr=7
+coarsenImpl(): _hg.currentNumNodes()=5552
+coarsenImpl(): pass_nr=8
+coarsenImpl(): _hg.currentNumNodes()=5332
+coarsenImpl(): pass_nr=9
+coarsenImpl(): _hg.currentNumNodes()=5247
+coarsenImpl(): pass_nr=10
+coarsenImpl(): _hg.currentNumNodes()=5220
+coarsenImpl(): pass_nr=11
+coarsenImpl(): _hg.currentNumNodes()=5210
+coarsenImpl(): pass_nr=12
+coarsenImpl(): _hg.currentNumNodes()=5207
+################
+InitialPartitioning NOOOOOOOO
+################
+################
+partitionInternal
+################
+################
+Bisection
+################
+################
+performPartitioning
+################
+################
+Coarsen you mofo
+################
+################
+ml coarsener...
+################
+coarsenImpl(): pass_nr=0
+coarsenImpl(): _hg.currentNumNodes()=5207
+coarsenImpl(): pass_nr=1
+coarsenImpl(): _hg.currentNumNodes()=5180
+################
+InitialPartitioning NOOOOOOOO
+################
+partitionImpl(): greedy_round current_cut=2721  current_imbalance=0.0260676 
+partitionImpl(): greedy_sequential current_cut=2769  current_imbalance=0.0290631 
+partitionImpl(): skipping maxpin
+partitionImpl(): skipping maxpin
+partitionImpl(): greedy_global_maxnet current_cut=1465  current_imbalance=0.0293818 
+partitionImpl(): greedy_round_maxnet current_cut=1501  current_imbalance=0.0244742 
+partitionImpl(): lp current_cut=2604  current_imbalance=0.0298917 
+partitionImpl(): bfs current_cut=5444  current_imbalance=0.0299554 
+partitionImpl(): random current_cut=2616  current_imbalance=0.0272785 
+This was a triumph
+I'm making a note here
+Huge Success
+Even though
+You broke my heart
+This was a triumph
+I'm making a note here
+Huge Success
+Even though
+You broke my heart
+performDirectKwayPartitioning(): PartitioningResult: cut=421
+Population INFO: 
+470 0
+408 1
+421 2
+################
+Partition
+################
+*********************Partitioning Configuration**********************
+KaHyPar Partitioning Parameters:
+  Hypergraph:                         ../../../Testcases/as-caida/as-caida.mtx.hgr
+  Partition File:                     ../../../Testcases/as-caida/as-caida.mtx.hgr.result.part2.epsilon0.03.seed-1.KaHyPar
+  Mode:                               direct
+  Objective:                          km1
+  k:                                  2
+  epsilon:                            0.03
+  seed:                               -1
+  # V-cycles:                         0
+  hyperedge size threshold:           1000
+  total hypergraph weight:            31379
+  L_opt0:                             15690
+  L_opt1:                             15690
+  L_max0:                             16160
+  L_max1:                             16160
+---------------------------------------------------------------------
+Preprocessing Parameters:
+  enable min hash sparsifier:         true
+  remove parallel HEs:                false
+  remove HEs that always will be cut: false
+---------------------------------------------------------------------
+MinHash Sparsifier Parameters:
+  max hyperedge size:                 1200
+  max cluster size:                   10
+  min cluster size:                   2
+  number of hash functions:           5
+  number of combined hash functions:  100
+  active at median net size >=:       28
+  sparsifier is active:               false
+---------------------------------------------------------------------
+Coarsening Parameters:
+  Algorithm:                          ml_style
+  max-allowed-weight-multiplier:      1
+  contraction-limit-multiplier:       160
+  hypernode weight fraction:          0.003125
+  max. allowed hypernode weight:      99
+  contraction limit:                  320
+---------------------------------------------------------------------
+Initial Partitioning Parameters:
+  # IP trials:                        20
+  Mode:                               recursive
+  Technique:                          multilevel
+  Algorithm:                          pool
+IP Coarsening:                        
+Coarsening Parameters:
+  Algorithm:                          ml_style
+  max-allowed-weight-multiplier:      1
+  contraction-limit-multiplier:       150
+IP Local Search:                      
+Local Search Parameters:
+  Algorithm:                          twoway_fm
+  iterations per level:               2147483647
+  stopping rule:                      simple
+  max. # fruitless moves:             50
+  use global rebalancing:             off
+---------------------------------------------------------------------
+Local Search Parameters:
+  Algorithm:                          kway_fm_km1
+  iterations per level:               2147483647
+  stopping rule:                      adaptive_opt
+  adaptive stopping alpha:            1
+  use global rebalancing:             off
+---------------------------------------------------------------------
+
+
+################
+partitionInternal
+################
+################
+Kway
+################
+################
+performPartitioning
+################
+################
+Coarsen you mofo
+################
+################
+ml coarsener...
+################
+coarsenImpl(): pass_nr=0
+coarsenImpl(): _hg.currentNumNodes()=31379
+coarsenImpl(): pass_nr=1
+coarsenImpl(): _hg.currentNumNodes()=17316
+coarsenImpl(): pass_nr=2
+coarsenImpl(): _hg.currentNumNodes()=11400
+coarsenImpl(): pass_nr=3
+coarsenImpl(): _hg.currentNumNodes()=8493
+coarsenImpl(): pass_nr=4
+coarsenImpl(): _hg.currentNumNodes()=7317
+coarsenImpl(): pass_nr=5
+coarsenImpl(): _hg.currentNumNodes()=6601
+coarsenImpl(): pass_nr=6
+coarsenImpl(): _hg.currentNumNodes()=5903
+coarsenImpl(): pass_nr=7
+coarsenImpl(): _hg.currentNumNodes()=5490
+coarsenImpl(): pass_nr=8
+coarsenImpl(): _hg.currentNumNodes()=5306
+coarsenImpl(): pass_nr=9
+coarsenImpl(): _hg.currentNumNodes()=5236
+coarsenImpl(): pass_nr=10
+coarsenImpl(): _hg.currentNumNodes()=5212
+coarsenImpl(): pass_nr=11
+coarsenImpl(): _hg.currentNumNodes()=5204
+################
+InitialPartitioning NOOOOOOOO
+################
+################
+partitionInternal
+################
+################
+Bisection
+################
+################
+performPartitioning
+################
+################
+Coarsen you mofo
+################
+################
+ml coarsener...
+################
+coarsenImpl(): pass_nr=0
+coarsenImpl(): _hg.currentNumNodes()=5204
+coarsenImpl(): pass_nr=1
+coarsenImpl(): _hg.currentNumNodes()=5181
+################
+InitialPartitioning NOOOOOOOO
+################
+partitionImpl(): greedy_round current_cut=3530  current_imbalance=0.0251753 
+partitionImpl(): greedy_sequential current_cut=2373  current_imbalance=0.0275335 
+partitionImpl(): skipping maxpin
+partitionImpl(): skipping maxpin
+partitionImpl(): greedy_global_maxnet current_cut=1401  current_imbalance=0.0289356 
+partitionImpl(): greedy_round_maxnet current_cut=1405  current_imbalance=0.0287444 
+partitionImpl(): lp current_cut=2337  current_imbalance=0.0256851 
+partitionImpl(): bfs current_cut=5717  current_imbalance=0.0298917 
+partitionImpl(): random current_cut=2881  current_imbalance=0.0242192 
+This was a triumph
+I'm making a note here
+Huge Success
+Even though
+You broke my heart
+This was a triumph
+I'm making a note here
+Huge Success
+Even though
+You broke my heart
+performDirectKwayPartitioning(): PartitioningResult: cut=440
+Population INFO: 
+470 0
+408 1
+421 2
+440 3
+################
+Partition
+################
+*********************Partitioning Configuration**********************
+KaHyPar Partitioning Parameters:
+  Hypergraph:                         ../../../Testcases/as-caida/as-caida.mtx.hgr
+  Partition File:                     ../../../Testcases/as-caida/as-caida.mtx.hgr.result.part2.epsilon0.03.seed-1.KaHyPar
+  Mode:                               direct
+  Objective:                          km1
+  k:                                  2
+  epsilon:                            0.03
+  seed:                               -1
+  # V-cycles:                         0
+  hyperedge size threshold:           1000
+  total hypergraph weight:            31379
+  L_opt0:                             15690
+  L_opt1:                             15690
+  L_max0:                             16160
+  L_max1:                             16160
+---------------------------------------------------------------------
+Preprocessing Parameters:
+  enable min hash sparsifier:         true
+  remove parallel HEs:                false
+  remove HEs that always will be cut: false
+---------------------------------------------------------------------
+MinHash Sparsifier Parameters:
+  max hyperedge size:                 1200
+  max cluster size:                   10
+  min cluster size:                   2
+  number of hash functions:           5
+  number of combined hash functions:  100
+  active at median net size >=:       28
+  sparsifier is active:               false
+---------------------------------------------------------------------
+Coarsening Parameters:
+  Algorithm:                          ml_style
+  max-allowed-weight-multiplier:      1
+  contraction-limit-multiplier:       160
+  hypernode weight fraction:          0.003125
+  max. allowed hypernode weight:      99
+  contraction limit:                  320
+---------------------------------------------------------------------
+Initial Partitioning Parameters:
+  # IP trials:                        20
+  Mode:                               recursive
+  Technique:                          multilevel
+  Algorithm:                          pool
+IP Coarsening:                        
+Coarsening Parameters:
+  Algorithm:                          ml_style
+  max-allowed-weight-multiplier:      1
+  contraction-limit-multiplier:       150
+IP Local Search:                      
+Local Search Parameters:
+  Algorithm:                          twoway_fm
+  iterations per level:               2147483647
+  stopping rule:                      simple
+  max. # fruitless moves:             50
+  use global rebalancing:             off
+---------------------------------------------------------------------
+Local Search Parameters:
+  Algorithm:                          kway_fm_km1
+  iterations per level:               2147483647
+  stopping rule:                      adaptive_opt
+  adaptive stopping alpha:            1
+  use global rebalancing:             off
+---------------------------------------------------------------------
+
+
+################
+partitionInternal
+################
+################
+Kway
+################
+################
+performPartitioning
+################
+################
+Coarsen you mofo
+################
+################
+ml coarsener...
+################
+coarsenImpl(): pass_nr=0
+coarsenImpl(): _hg.currentNumNodes()=31379
+coarsenImpl(): pass_nr=1
+coarsenImpl(): _hg.currentNumNodes()=17323
+coarsenImpl(): pass_nr=2
+coarsenImpl(): _hg.currentNumNodes()=11420
+coarsenImpl(): pass_nr=3
+coarsenImpl(): _hg.currentNumNodes()=8499
+coarsenImpl(): pass_nr=4
+coarsenImpl(): _hg.currentNumNodes()=7321
+coarsenImpl(): pass_nr=5
+coarsenImpl(): _hg.currentNumNodes()=6606
+coarsenImpl(): pass_nr=6
+coarsenImpl(): _hg.currentNumNodes()=5882
+coarsenImpl(): pass_nr=7
+coarsenImpl(): _hg.currentNumNodes()=5475
+coarsenImpl(): pass_nr=8
+coarsenImpl(): _hg.currentNumNodes()=5304
+coarsenImpl(): pass_nr=9
+coarsenImpl(): _hg.currentNumNodes()=5242
+coarsenImpl(): pass_nr=10
+coarsenImpl(): _hg.currentNumNodes()=5222
+coarsenImpl(): pass_nr=11
+coarsenImpl(): _hg.currentNumNodes()=5215
+################
+InitialPartitioning NOOOOOOOO
+################
+################
+partitionInternal
+################
+################
+Bisection
+################
+################
+performPartitioning
+################
+################
+Coarsen you mofo
+################
+################
+ml coarsener...
+################
+coarsenImpl(): pass_nr=0
+coarsenImpl(): _hg.currentNumNodes()=5215
+coarsenImpl(): pass_nr=1
+coarsenImpl(): _hg.currentNumNodes()=5184
+################
+InitialPartitioning NOOOOOOOO
+################
+partitionImpl(): greedy_round current_cut=2688  current_imbalance=0.0253665 
+partitionImpl(): greedy_sequential current_cut=2456  current_imbalance=0.0268324 
+partitionImpl(): skipping maxpin
+partitionImpl(): skipping maxpin
+partitionImpl(): greedy_global_maxnet current_cut=1517  current_imbalance=0.0295092 
+partitionImpl(): greedy_round_maxnet current_cut=1606  current_imbalance=0.0242192 
+partitionImpl(): lp current_cut=2647  current_imbalance=0.0245379 
+partitionImpl(): bfs current_cut=3357  current_imbalance=0.0297642 
+partitionImpl(): random current_cut=3376  current_imbalance=0.0270873 
+This was a triumph
+I'm making a note here
+Huge Success
+Even though
+You broke my heart
+This was a triumph
+I'm making a note here
+Huge Success
+Even though
+You broke my heart
+performDirectKwayPartitioning(): PartitioningResult: cut=486
+Population INFO: 
+470 0
+408 1
+421 2
+440 3
+486 4
+################
+Partition
+################
+*********************Partitioning Configuration**********************
+KaHyPar Partitioning Parameters:
+  Hypergraph:                         ../../../Testcases/as-caida/as-caida.mtx.hgr
+  Partition File:                     ../../../Testcases/as-caida/as-caida.mtx.hgr.result.part2.epsilon0.03.seed-1.KaHyPar
+  Mode:                               direct
+  Objective:                          km1
+  k:                                  2
+  epsilon:                            0.03
+  seed:                               -1
+  # V-cycles:                         0
+  hyperedge size threshold:           1000
+  total hypergraph weight:            31379
+  L_opt0:                             15690
+  L_opt1:                             15690
+  L_max0:                             16160
+  L_max1:                             16160
+---------------------------------------------------------------------
+Preprocessing Parameters:
+  enable min hash sparsifier:         true
+  remove parallel HEs:                false
+  remove HEs that always will be cut: false
+---------------------------------------------------------------------
+MinHash Sparsifier Parameters:
+  max hyperedge size:                 1200
+  max cluster size:                   10
+  min cluster size:                   2
+  number of hash functions:           5
+  number of combined hash functions:  100
+  active at median net size >=:       28
+  sparsifier is active:               false
+---------------------------------------------------------------------
+Coarsening Parameters:
+  Algorithm:                          ml_style
+  max-allowed-weight-multiplier:      1
+  contraction-limit-multiplier:       160
+  hypernode weight fraction:          0.003125
+  max. allowed hypernode weight:      99
+  contraction limit:                  320
+---------------------------------------------------------------------
+Initial Partitioning Parameters:
+  # IP trials:                        20
+  Mode:                               recursive
+  Technique:                          multilevel
+  Algorithm:                          pool
+IP Coarsening:                        
+Coarsening Parameters:
+  Algorithm:                          ml_style
+  max-allowed-weight-multiplier:      1
+  contraction-limit-multiplier:       150
+IP Local Search:                      
+Local Search Parameters:
+  Algorithm:                          twoway_fm
+  iterations per level:               2147483647
+  stopping rule:                      simple
+  max. # fruitless moves:             50
+  use global rebalancing:             off
+---------------------------------------------------------------------
+Local Search Parameters:
+  Algorithm:                          kway_fm_km1
+  iterations per level:               2147483647
+  stopping rule:                      adaptive_opt
+  adaptive stopping alpha:            1
+  use global rebalancing:             off
+---------------------------------------------------------------------
+
+
+################
+partitionInternal
+################
+################
+Kway
+################
+################
+performPartitioning
+################
+################
+Coarsen you mofo
+################
+################
+ml coarsener...
+################
+coarsenImpl(): pass_nr=0
+coarsenImpl(): _hg.currentNumNodes()=31379
+coarsenImpl(): pass_nr=1
+coarsenImpl(): _hg.currentNumNodes()=17265
+coarsenImpl(): pass_nr=2
+coarsenImpl(): _hg.currentNumNodes()=11372
+coarsenImpl(): pass_nr=3
+coarsenImpl(): _hg.currentNumNodes()=8446
+coarsenImpl(): pass_nr=4
+coarsenImpl(): _hg.currentNumNodes()=7298
+coarsenImpl(): pass_nr=5
+coarsenImpl(): _hg.currentNumNodes()=6603
+coarsenImpl(): pass_nr=6
+coarsenImpl(): _hg.currentNumNodes()=5918
+coarsenImpl(): pass_nr=7
+coarsenImpl(): _hg.currentNumNodes()=5501
+coarsenImpl(): pass_nr=8
+coarsenImpl(): _hg.currentNumNodes()=5319
+coarsenImpl(): pass_nr=9
+coarsenImpl(): _hg.currentNumNodes()=5245
+coarsenImpl(): pass_nr=10
+coarsenImpl(): _hg.currentNumNodes()=5218
+coarsenImpl(): pass_nr=11
+coarsenImpl(): _hg.currentNumNodes()=5211
+################
+InitialPartitioning NOOOOOOOO
+################
+################
+partitionInternal
+################
+################
+Bisection
+################
+################
+performPartitioning
+################
+################
+Coarsen you mofo
+################
+################
+ml coarsener...
+################
+coarsenImpl(): pass_nr=0
+coarsenImpl(): _hg.currentNumNodes()=5211
+coarsenImpl(): pass_nr=1
+coarsenImpl(): _hg.currentNumNodes()=5183
+################
+InitialPartitioning NOOOOOOOO
+################
+partitionImpl(): greedy_round current_cut=2637  current_imbalance=0.0254939 
+partitionImpl(): greedy_sequential current_cut=2253  current_imbalance=0.0269598 
+partitionImpl(): skipping maxpin
+partitionImpl(): skipping maxpin
+partitionImpl(): greedy_global_maxnet current_cut=1429  current_imbalance=0.0238368 
+partitionImpl(): greedy_round_maxnet current_cut=1394  current_imbalance=0.0289356 
+partitionImpl(): lp current_cut=2540  current_imbalance=0.0272148 
+partitionImpl(): bfs current_cut=5899  current_imbalance=0.0299554 
+partitionImpl(): random current_cut=2967  current_imbalance=0.0279796 
+This was a triumph
+I'm making a note here
+Huge Success
+Even though
+You broke my heart
+This was a triumph
+I'm making a note here
+Huge Success
+Even though
+You broke my heart
