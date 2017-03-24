@@ -26,11 +26,11 @@ class Population {
 inline void setPartitionVector(Hypergraph &hypergraph, const std::vector<PartitionID>&parent);
   inline Individuum combine(Individuum &parent_1, Individuum &parent_2, ICombine &combinator);
   inline Individuum combine(std::size_t pos1, std::size_t pos2, ICombine &combinator);
-  inline void mutate(Individuum &targetIndividuum, IMutate &mutator);
-  inline void mutate(std::size_t position, IMutate &mutator);
+  inline Individuum mutate(Individuum &targetIndividuum, IMutate &mutator);
+  inline Individuum mutate(std::size_t position, IMutate &mutator);
   inline double fitness(Individuum &targetIndividuum);
 
- 
+  inline unsigned replaceDiverse(Individuum &in);
   inline void replace(Individuum &in, unsigned position);
   inline void replace(Individuum &in, Individuum &out); 
   inline void insertIndividuum(Individuum &insertTarget);
@@ -68,13 +68,13 @@ inline void Population::setPartitionVector(Hypergraph& hypergraph, const std::ve
    //TODO bound check
    return combine(ind1, ind2, combinator);
  }
- inline void Population::mutate(Individuum &targetIndividuum, IMutate &mutator) {
-      mutator.mutate(targetIndividuum);
+ inline Individuum Population::mutate(Individuum &targetIndividuum, IMutate &mutator) {
+      return mutator.mutate(targetIndividuum);
 }
 
- inline void Population::mutate(std::size_t position, IMutate &mutator) {
+ inline Individuum Population::mutate(std::size_t position, IMutate &mutator) {
    Individuum ind = getIndividuum(position);
-   mutate(ind, mutator);
+   return mutate(ind, mutator);
 
  }
     inline double Population::fitness(Individuum &targetIndividuum) {
@@ -125,8 +125,14 @@ inline void Population::setPartitionVector(Hypergraph& hypergraph, const std::ve
       }
       _hypergraph.resetPartitioning();
       setPartitionVector(_hypergraph, partition);
+      	std::vector<HyperedgeID> cutEdges;
+	for(HyperedgeID v : _hypergraph.edges()) {
+	  if(_hypergraph.connectivity(v) > 1) {
+	    cutEdges.push_back(v);
+	  }
+	}
       HyperedgeWeight weight = metrics::km1(_hypergraph);
-      Individuum individuum(partition, weight);
+      Individuum individuum(partition,cutEdges , weight);
       insertIndividuum(individuum);
       _hypergraph.resetPartitioning();
       
@@ -163,8 +169,14 @@ inline void Population::setPartitionVector(Hypergraph& hypergraph, const std::ve
 		
 	  result.push_back(_hypergraph.partID(u));
 	}
+	std::vector<HyperedgeID> cutEdges;
+	for(HyperedgeID v : _hypergraph.edges()) {
+	  if(_hypergraph.connectivity(v) > 1) {
+	    cutEdges.push_back(v);
+	  }
+	}
       HyperedgeWeight weight = metrics::km1(_hypergraph);
-      Individuum ind(result, weight);
+      Individuum ind(result, cutEdges, weight);
       insertIndividuum(ind);
       return ind;
     }
@@ -205,6 +217,64 @@ inline void Population::setPartitionVector(Hypergraph& hypergraph, const std::ve
       else {
 	return target;
       }
+    }
+    
+    inline unsigned Population::replaceDiverse(Individuum &in) {
+      unsigned max_similarity = std::numeric_limits<unsigned>::max();
+      unsigned max_similarity_id = 0;
+      if(in.getFitness() > getIndividuum(worstIndividuumPosition()).getFitness()) {
+	//DO WE REALLY WANT A BAD ELEMENT?
+	std::cout << "COLLAPSE";
+	return std::numeric_limits<unsigned>::max();
+      } 
+      for(unsigned i = 0; i < size(); i ++) {
+        if(_internalPopulation[i].getFitness() >= in.getFitness()) {
+	  // int diff_size = _internalPopulation[i].getCutEdges().size() + in.getCutEdges().size();
+	  // std::cout << in.getCutEdges().size() <<  ' ' << _internalPopulation[i].getCutEdges().size() << std::endl;
+      
+      
+      // std::vector<HyperedgeID> output_diff(diff_size, std::numeric_limits<HyperedgeID>::max());
+      std::vector<HyperedgeID> output_diff;
+      std::vector<HyperedgeID> one(_internalPopulation[i].getCutEdges());
+      std::vector<HyperedgeID> two(in.getCutEdges());
+      std::set_symmetric_difference(one.begin(),
+				    one.end(),
+				    two.begin(),
+				    two.end(),
+				    std::back_inserter(output_diff));
+     
+
+      
+      /*for (auto gi: output_diff)
+  std::cout << gi << ' ';
+
+  std::cout << std::endl;*/
+      /*for (auto gi: one)
+  std::cout << gi << ' ';
+
+      std::cout << std::endl;
+      for (auto gi:two)
+  std::cout << gi << ' ';
+
+  std::cout << std::endl;*/
+       unsigned similarity = output_diff.size();
+				    /*for(unsigned j = 0; j < output_diff.size(); j++) {
+      if(output_diff[j] < std::numeric_limits<HyperedgeID>::max()) {
+      similarity++;
+      }
+      else {
+      break;
+      }
+      }*/
+      std::cout << "SYMMETRIC DIFFERENCE: " << similarity << " from " << i <<std::endl;
+      if(similarity < max_similarity) {
+      max_similarity = similarity;
+      max_similarity_id = i;
+    }
+    }
+      }
+      replace(in, max_similarity_id);
+      return max_similarity_id;
     }
     inline void Population::printInfo() {
       std::cout << "Population INFO: ";

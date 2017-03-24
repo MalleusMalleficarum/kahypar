@@ -520,10 +520,10 @@ void clearFile(std::string filename) {
 }
 void writeShitEvo(int i, std::string filename, std::chrono::duration<double> duration, Hypergraph &hypergraph, Configuration &config,double currentFitness, std::size_t parent1, std::size_t parent2, unsigned worstPos, double averageFitness, double best) {
   std::size_t found = filename.find_last_of("/");
-  std::string useThis = filename.substr(found + 1);
+   std::string useThis = filename.substr(found + 1);
   std::ofstream out_file;
   
-  out_file.open(std::string("../../../Results/") +std::string("EVOLUTIONARY.") + useThis, std::ios_base::app);
+  out_file.open(std::string("../../../Results/") +std::string("EVOLUTIONARY"), std::ios_base::app);
   /*  out_file << "RESULT" << " k=" << config.partition.k
            << " epsilon=" << config.partition.epsilon
 	   << " seed=" << config.partition.seed
@@ -539,6 +539,7 @@ void writeShitEvo(int i, std::string filename, std::chrono::duration<double> dur
 	   << " absorption=" << kahypar::metrics::absorption(hypergraph)
 	   << " best=" << best
 	   << std::endl;*/
+  
   out_file << config.partition.k << " "
 	   << config.partition.epsilon << " "
 	   << config.partition.seed << " "
@@ -553,29 +554,32 @@ void writeShitEvo(int i, std::string filename, std::chrono::duration<double> dur
 	   << currentFitness << " "
 	   << kahypar::metrics::absorption(hypergraph) << " "
 	   << best << " "
+	   << useThis << " "
+	   << kahypar::metrics::imbalance(hypergraph,config) << " "
+    //<< kahypar::metrics::imbalance(hypergraph, config.partition.k) << " "
 	   <<std::endl;
   out_file.close();
 }
-void writeShit(int i, std::string filename, std::chrono::duration<double> duration, Hypergraph &hypergraph, Configuration &config,double currentFitness, double averageFitness) {
-  std::size_t found = filename.find_last_of("/");
-  std::string useThis = filename.substr(found + 1);
-  std::ofstream out_file;
+// void writeShit(int i, std::string filename, std::chrono::duration<double> duration, Hypergraph &hypergraph, Configuration &config,double currentFitness, double averageFitness) {
+//   std::size_t found = filename.find_last_of("/");
+//   std::string useThis = filename.substr(found + 1);
+//   std::ofstream out_file;
   
-  out_file.open(std::string("../../../Results/") +std::string("EVOLUTIONARY.") + useThis, std::ios_base::app);
-  out_file << "RESULT" << " k=" << config.partition.k
-           << " epsilon=" << config.partition.epsilon
-	   << " seed=" << config.partition.seed
-	   << " iteration=" << i
-	   << " duration=" << duration.count()
-	   << " averageFitness=" << averageFitness
-	   << " cut=" << kahypar::metrics::hyperedgeCut(hypergraph)
-	   << " SOED=" << kahypar::metrics::soed(hypergraph)
-	   << " km-1=" << currentFitness
-	   << " absorption=" << kahypar::metrics::absorption(hypergraph)
-	   << std::endl;
+//   out_file.open(std::string("../../../Results/") +std::string("EVOLUTIONARY.") + useThis, std::ios_base::app);
+//   out_file << "RESULT" << " k=" << config.partition.k
+//            << " epsilon=" << config.partition.epsilon
+// 	   << " seed=" << config.partition.seed
+// 	   << " iteration=" << i
+// 	   << " duration=" << duration.count()
+// 	   << " averageFitness=" << averageFitness
+// 	   << " cut=" << kahypar::metrics::hyperedgeCut(hypergraph)
+// 	   << " SOED=" << kahypar::metrics::soed(hypergraph)
+// 	   << " km-1=" << currentFitness
+// 	   << " absorption=" << kahypar::metrics::absorption(hypergraph)
+// 	   << std::endl;
   
-  out_file.close();
-}
+//   out_file.close();
+// }
 void emptyLine(std::string filename) {
     std::size_t found = filename.find_last_of("/");
   std::string useThis = filename.substr(found + 1);
@@ -597,14 +601,15 @@ int main(int argc, char* argv[]) {
     std::cerr << "Therefore v-cycles are currently disabled." << std::endl;
     std::exit(-1);
   }
-   std::string filename = config.partition.graph_filename
+  /* std::string filename = config.partition.graph_filename
     + ".result"
     + ".part"
     + std::to_string(config.partition.k)
     + ".KaHyParE";
     std::fstream file;
     file.open(filename, std::fstream::out);
-    file.close();
+    file.close();*/
+  std::string filename = config.partition.graph_filename;
   kahypar::Randomize::instance().setSeed(config.partition.seed);
 
   Hypergraph hypergraph(
@@ -646,8 +651,10 @@ int main(int argc, char* argv[]) {
   HighResClockTimepoint start = std::chrono::high_resolution_clock::now();
   HighResClockTimepoint currentTime = std::chrono::high_resolution_clock::now();
   std::chrono::duration<double> iterationSeconds = currentTime - start;
-  
-  for(int i = 1; i < 11; i++) {
+  int i;
+  int n;
+  srand(time(NULL));
+  for(i = 1; i < 51; i++) {
     HighResClockTimepoint startIteration = std::chrono::high_resolution_clock::now();
     Individuum indi = populus.generateIndividuum(config);
     double currentFitness = indi.getFitness();
@@ -656,32 +663,68 @@ int main(int argc, char* argv[]) {
     }
     HighResClockTimepoint endIteration = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed_secondsIteration = endIteration - startIteration;
+    std::chrono::duration<double> elapsed_total = endIteration -start;
+    if(elapsed_total.count() > 18000) {
+      break;
+    }
     populus.printInfo();
+    // kahypar::io::printPartitioningResults(hypergraph,config, elapsed_total);
     writeShitEvo(i, filename, elapsed_secondsIteration, hypergraph,config,currentFitness,0,0,0, populus.getAverageFitness(), membaBest);
   }
   currentTime = std::chrono::high_resolution_clock::now();
   std::cout << std::endl;
   iterationSeconds = currentTime - start;
  
-  int j = 11;
-  while(iterationSeconds.count() < 3600) {
+  
+  while(iterationSeconds.count() < 18000) {
     HighResClockTimepoint startIteration = std::chrono::high_resolution_clock::now();
     std::size_t firstPos =  populus.getRandomIndividuum();
     std::size_t secondPos = populus.getRandomExcept(firstPos);
+    // n = rand() % 10;
+    //std::cout << std::endl <<std::endl << std::endl << std::endl << n << std::endl <<std::endl << std::endl << std::endl;
+    //double currentFitness = -1;
+    //unsigned replacePosition = 404;
+    /* if(n == 0){
+      populus.printInfo();
+      std::cout << "MUTATION " << firstPos << std::endl;
+      Individuum firsti = populus.getIndividuum(firstPos);
+      
+      Individuum indi = populus.mutate(firstPos, mut);
+      populus.replace(indi, firstPos);
+      std::cout << firsti.getFitness() << " " << indi.getFitness() <<std::endl;
+      std::cin.get();
+      while(firsti.getFitness() == indi.getFitness()) {
+	std::cout << "NOPE" << std::endl;
+	indi = populus.mutate(firstPos, mut);
+      }
+      
+      
+      }*/
+    /*else {
+          Individuum indi = populus.combine(firstPos, secondPos, comb);
+	  replacePosition = populus.replaceDiverse(indi);
+       currentFitness = indi.getFitness();
+       if (currentFitness < membaBest) {
+	 membaBest = currentFitness;
+       }
+    
+       }
+       populus.printInfo();*/
     Individuum indi = populus.combine(firstPos, secondPos, comb);
     double currentFitness = indi.getFitness();
-    if (currentFitness < membaBest) {
+    if(currentFitness < membaBest) {
       membaBest = currentFitness;
-    }
+    } 
     unsigned worstPosition = populus.worstIndividuumPosition();
     populus.replace(indi, worstPosition);
+    populus.printInfo();
     HighResClockTimepoint endIteration = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed_secondsIteration = endIteration - startIteration;
-    populus.printInfo();
-    writeShitEvo(j, filename, elapsed_secondsIteration, hypergraph,config,currentFitness, firstPos, secondPos, worstPosition, populus.getAverageFitness(), membaBest);
+    unsigned replacePosition = worstPosition;
+    writeShitEvo(i, filename, elapsed_secondsIteration, hypergraph,config,currentFitness, firstPos, secondPos, replacePosition, populus.getAverageFitness(), membaBest);
     currentTime = std::chrono::high_resolution_clock::now();
     iterationSeconds = currentTime -start;
-    j++;
+    i++;
   }
 
   //emptyLine(filename);

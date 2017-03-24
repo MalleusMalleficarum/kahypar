@@ -523,7 +523,7 @@ void writeShit(int i, std::string filename, std::chrono::duration<double> durati
   std::string useThis = filename.substr(found + 1);
   std::ofstream out_file;
   
-  out_file.open("../../../Results/" + useThis, std::ios_base::app);
+  out_file.open("../../../Results/" + std::string("NONEVOLUTIONARY"), std::ios_base::app);
   /* out_file << "RESULT" << " k=" << config.partition.k
            << " epsilon=" << config.partition.epsilon
 	   << " seed=" << config.partition.seed
@@ -545,6 +545,7 @@ void writeShit(int i, std::string filename, std::chrono::duration<double> durati
 	   << kahypar::metrics::soed(hypergraph) << " "
 	   << kahypar::metrics::km1(hypergraph) << " "
 	   << kahypar::metrics::absorption(hypergraph) << " "
+		<< useThis << " "
 	   <<std::endl;
   
   out_file.close();
@@ -610,7 +611,7 @@ int main(int argc, char* argv[]) {
     + std::to_string(config.partition.k)
     + ".KaHyPar";
   int i = 1;
-  while(currentTimeTaken.count() < 3600) {
+  while(/*currentTimeTaken.count() < 18000*/ i == 1) {
     
     HighResClockTimepoint startIteration = std::chrono::high_resolution_clock::now();
     partitioner.partition(hypergraph, config, dummy, dummy2);

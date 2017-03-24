@@ -4,12 +4,12 @@
 namespace kahypar{
   class IMutate {
   public:
-    void mutate(Individuum &target) {
-      mutateImpl(target);
+    Individuum mutate(Individuum &target) {
+      return mutateImpl(target);
     }
     virtual ~IMutate(){
     }
   private:
-    virtual void mutateImpl(Individuum &target) = 0;
+    virtual Individuum mutateImpl(Individuum &target) = 0;
   };
 }

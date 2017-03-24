@@ -6,6 +6,10 @@ set(PROJECT_VENDOR "Sebastian Schlag")
 set(PROJECT_CONTACT "kahypar@sebastianschlag.de")
 set(PROJECT_URL "https://bitbucket.org/schlag/hypergraph")
 set(PROJECT_DESCRIPTION "KaHyPar: Karlsruhe Hypergraph Partitioning")
+#set(BUILD_SHARED_LIBS_OFF)
+set(CMAKE_EXE_LINKER_FLAGS "-static-libstdc++")
+
+
 
 include_directories(${PROJECT_SOURCE_DIR})
 

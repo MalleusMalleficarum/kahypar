@@ -90,7 +90,7 @@ CnfToHgr_EXTERNAL_OBJECTS =
 
 tools/CnfToHgr: tools/CMakeFiles/CnfToHgr.dir/cnf_to_hgr_converter.cc.o
 tools/CnfToHgr: tools/CMakeFiles/CnfToHgr.dir/build.make
-tools/CnfToHgr: /home/andre/server-software/boost/1.62.0/lib/libboost_program_options.so
+tools/CnfToHgr: /home/andre/server-software/boost/1.58.0/lib/libboost_program_options.so
 tools/CnfToHgr: tools/CMakeFiles/CnfToHgr.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/andre/server-home/myHyparHypar/kahypar/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable CnfToHgr"
 	cd /home/andre/server-home/myHyparHypar/kahypar/tools && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/CnfToHgr.dir/link.txt --verbose=$(VERBOSE)

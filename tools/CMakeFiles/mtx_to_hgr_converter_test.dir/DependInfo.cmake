@@ -17,7 +17,7 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "external_tools/googletest/googletest/../googlemock/include"
   "external_tools/googletest/googletest/../googlemock"
   "external_tools/xxHash"
-  "/home/andre/server-software/boost/1.62.0/include"
+  "/home/andre/server-software/boost/1.58.0/include"
   )
 
 # Targets to which this target links.

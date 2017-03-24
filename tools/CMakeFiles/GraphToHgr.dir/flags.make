@@ -6,5 +6,5 @@ CXX_FLAGS =  -W -Wall -Wextra  -Wunused  -Wmaybe-uninitialized -Wfatal-errors -W
 
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/andre/server-home/myHyparHypar/kahypar -isystem /home/andre/server-home/myHyparHypar/kahypar/external_tools/googletest/googletest/include -isystem /home/andre/server-home/myHyparHypar/kahypar/external_tools/googletest/googletest -isystem /home/andre/server-home/myHyparHypar/kahypar/external_tools/googletest/googletest/../googlemock/include -isystem /home/andre/server-home/myHyparHypar/kahypar/external_tools/googletest/googletest/../googlemock -isystem /home/andre/server-home/myHyparHypar/kahypar/external_tools/xxHash -isystem /home/andre/server-software/boost/1.62.0/include 
+CXX_INCLUDES = -I/home/andre/server-home/myHyparHypar/kahypar -isystem /home/andre/server-home/myHyparHypar/kahypar/external_tools/googletest/googletest/include -isystem /home/andre/server-home/myHyparHypar/kahypar/external_tools/googletest/googletest -isystem /home/andre/server-home/myHyparHypar/kahypar/external_tools/googletest/googletest/../googlemock/include -isystem /home/andre/server-home/myHyparHypar/kahypar/external_tools/googletest/googletest/../googlemock -isystem /home/andre/server-home/myHyparHypar/kahypar/external_tools/xxHash -isystem /home/andre/server-software/boost/1.58.0/include 
 
