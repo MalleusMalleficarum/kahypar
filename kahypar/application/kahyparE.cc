@@ -666,14 +666,16 @@ int main(int argc, char* argv[]) {
 
     
     Timepoint startIteration = timer::now();
-    std::size_t firstPos =  populus.getRandomIndividuum();
-    std::size_t secondPos = populus.getRandomExcept(firstPos);
+    std::size_t firstPos;
+    std::size_t secondPos;
     n = rand() % TOTAL_CHANCE;
     double currentFitness;
     unsigned replacePosition;
     bool mutation;
     //Mutate
     if(n <= (MUTATION_CHANCE - 1)){
+      firstPos =  populus.getRandomIndividuum();
+      secondPos = firstPos;
       Individuum indi = populus.mutate(firstPos, mut);
       populus.replace(indi, firstPos);
       currentFitness = indi.getFitness();
@@ -682,7 +684,10 @@ int main(int argc, char* argv[]) {
       }
     //Combine
     else {
-      Individuum indi = populus.combine(firstPos, secondPos, comb);
+      std::pair<Individuum, Individuum> tournamentWinners = populus.getTwoIndividuumTournament();
+      Individuum indi = populus.combine(tournamentWinners.first,tournamentWinners.second, comb);
+      firstPos = 0;
+      secondPos = 0;//FIX SOMETHINE
       replacePosition = populus.replaceDiverse(indi);
       currentFitness = indi.getFitness();
       mutation = false;

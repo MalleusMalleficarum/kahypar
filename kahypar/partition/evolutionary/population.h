@@ -40,6 +40,7 @@ inline void setPartitionVector(Hypergraph &hypergraph, const std::vector<Partiti
   inline std::size_t getRandomIndividuum();
   inline void insertIndividuumFromFile(std::string filename);
   inline Individuum getIndividuumTournament();
+  inline std::pair<Individuum, Individuum> getTwoIndividuumTournament();
   inline unsigned worstIndividuumPosition();
   inline Individuum generateIndividuum(Configuration &config);//TODO
   inline Individuum crossCombineMetric(); //TODO
@@ -197,6 +198,18 @@ inline void Population::setPartitionVector(Hypergraph& hypergraph, const std::ve
       Individuum second = getIndividuum(getRandomExcept(firstPosition));
       return first.getFitness() < second.getFitness() ? first : second;
       
+    }
+    inline std::pair<Individuum, Individuum> Population::getTwoIndividuumTournament() {
+      Individuum firstRet = getIndividuumTournament();
+      std::size_t firstPosition = getRandomIndividuum();
+      Individuum one = getIndividuum(firstPosition);
+      Individuum two = getIndividuum(getRandomExcept(firstPosition));
+      Individuum secondRet = one.getFitness() < two.getFitness() ? one : two;
+      if(firstRet.getFitness() == secondRet.getFitness()) {
+        secondRet = one.getFitness() >= two.getFitness() ? one : two;
+      }
+      std::pair<Individuum, Individuum> p(firstRet, secondRet);
+      return p;
     }
     inline std::size_t Population::replace(Individuum &in, IReplace &replicator) {
       
