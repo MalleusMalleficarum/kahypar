@@ -1,0 +1,44 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+..//kahypar/macros.h
+cstdlib
+-
+gperftools/profiler.h
+-
+iostream
+-
+
+..//tools/cnf_to_hgr_conversion.h
+cstdint
+-
+fstream
+-
+sstream
+-
+string
+-
+unordered_map
+-
+vector
+-
+kahypar/macros.h
+../tools/kahypar/macros.h
+
+/home/andre/server-home/myHyparHypar/kahypar/tools/cnf_to_hgr_converter.cc
+boost/program_options.hpp
+-
+iostream
+-
+string
+-
+kahypar/macros.h
+/home/andre/server-home/myHyparHypar/kahypar/tools/kahypar/macros.h
+tools/cnf_to_hgr_conversion.h
+/home/andre/server-home/myHyparHypar/kahypar/tools/tools/cnf_to_hgr_conversion.h
+
