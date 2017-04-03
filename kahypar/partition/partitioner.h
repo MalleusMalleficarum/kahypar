@@ -291,12 +291,7 @@ inline void Partitioner::postprocess(Hypergraph& hypergraph, Hypergraph& sparseH
    partition(hypergraph, config, partition_init, partition_init, true);
  }
 inline void Partitioner::performInitialPartitioning(Hypergraph& hg, const Configuration& config) {
-		std::cout << "################";
-		std::cout << std::endl;
-		std::cout << "InitialPartitioning NOOOOOOOO";
-		std::cout << std::endl;
-		std::cout << "################";
-		std::cout << std::endl;
+
   if (config.partition.verbose_output) {
     io::printHypergraphInfo(hg, "Coarsened Hypergraph");
   }
@@ -473,12 +468,7 @@ inline Configuration Partitioner::createConfigurationForInitialPartitioning(cons
 }
 
  inline void Partitioner::partition(Hypergraph& hypergraph, Configuration& config, const std::vector<PartitionID>& parent_1, const std::vector<PartitionID>& parent_2, const boolean mutate) {
-		std::cout << "################";
-		std::cout << std::endl;
-		std::cout << "Partition";
-		std::cout << std::endl;
-		std::cout << "################";
-		std::cout << std::endl;
+
   setupConfig(hypergraph, config);
 
   if (config.preprocessing.min_hash_sparsifier.is_active) {
@@ -499,12 +489,7 @@ inline Configuration Partitioner::createConfigurationForInitialPartitioning(cons
 	partitionInternal(hypergraph, config, parent_1, parent_2, mutate);
 }
  inline void Partitioner::partitionInternal(Hypergraph& hypergraph, const Configuration& config, const std::vector<PartitionID>& parent_1, const std::vector<PartitionID>& parent_2, const boolean mutate) {
-		std::cout << "################";
-		std::cout << std::endl;
-		std::cout << "partitionInternal";
-		std::cout << std::endl;
-		std::cout << "################";
-		std::cout << std::endl;
+
   switch (config.partition.mode) {
     case Mode::recursive_bisection:
       performRecursiveBisectionPartitioning(hypergraph, config, parent_1, parent_2, mutate);
@@ -524,12 +509,6 @@ inline void Partitioner::performPartitioning(Hypergraph& hypergraph,
                                              ICoarsener& coarsener,
                                              IRefiner& refiner,
                                              const Configuration& config, const std::vector<PartitionID>& parent_1, const std::vector<PartitionID>& parent_2, const boolean mutate) {
-		std::cout << "################";
-		std::cout << std::endl;
-		std::cout << "performPartitioning";
-		std::cout << std::endl;
-		std::cout << "################";
-		std::cout << std::endl;
   HighResClockTimepoint start = std::chrono::high_resolution_clock::now();
   coarsener.coarsen(config.coarsening.contraction_limit, parent_1, parent_2);
   HighResClockTimepoint end = std::chrono::high_resolution_clock::now();
@@ -555,17 +534,8 @@ inline void Partitioner::performPartitioning(Hypergraph& hypergraph,
 		hypergraph.resetPartitioning();
 		setPartitionVector(hypergraph, parent_2);
 		HyperedgeWeight parentWeight2 = metrics::km1(hypergraph);
-		std::cout << "XXXXXXXXXXXXXXXX";
-		std::cout << std::endl;
-		std::cout << parentWeight1;
-		std::cout << std::endl;
-		std::cout << parentWeight2;
-		std::cout << std::endl;
-		std::cout << "XXXXXXXXXXXXXXXX";
-		std::cout << std::endl;
 		if(parentWeight1 < parentWeight2) {
-		std::cout << "Jo ich bin jetzt neu hier";
-		std::cout << std::endl;
+
 			hypergraph.resetPartitioning();
 			setPartitionVector(hypergraph, parent_1);
 		}
@@ -596,12 +566,7 @@ inline void Partitioner::setPartitionVector(Hypergraph& hypergraph, const std::v
 }
 inline bool Partitioner::partitionVCycle(Hypergraph& hypergraph, ICoarsener& coarsener,
                                          IRefiner& refiner, const Configuration& config, const std::vector<PartitionID>& parent_1, const std::vector<PartitionID>& parent_2) {
-		std::cout << "################";
-		std::cout << std::endl;
-		std::cout << "VCycle";
-		std::cout << std::endl;
-		std::cout << "################";
-		std::cout << std::endl;
+
   HighResClockTimepoint start = std::chrono::high_resolution_clock::now();
   coarsener.coarsen(config.coarsening.contraction_limit, parent_1, parent_2);
   HighResClockTimepoint end = std::chrono::high_resolution_clock::now();
@@ -687,12 +652,7 @@ inline Configuration Partitioner::createConfigurationForCurrentBisection(const C
 
 inline void Partitioner::performRecursiveBisectionPartitioning(Hypergraph& input_hypergraph,
                                                                const Configuration& original_config, const std::vector<PartitionID>& parent_1, const std::vector<PartitionID>& parent_2, const boolean mutate) {
-		std::cout << "################";
-		std::cout << std::endl;
-		std::cout << "Bisection";
-		std::cout << std::endl;
-		std::cout << "################";
-		std::cout << std::endl;
+
   // Custom deleters for Hypergraphs stored in hypergraph_stack. The top-level
   // hypergraph is the input hypergraph, which is not supposed to be deleted.
   // All extracted hypergraphs however can be deleted as soon as they are not needed
@@ -806,12 +766,7 @@ inline void Partitioner::performRecursiveBisectionPartitioning(Hypergraph& input
 
 inline void Partitioner::performDirectKwayPartitioning(Hypergraph& hypergraph,
                                                        const Configuration& config, const std::vector<PartitionID>& parent_1, const std::vector<PartitionID>& parent_2, const boolean mutate) {
-		std::cout << "################";
-		std::cout << std::endl;
-		std::cout << "Kway";
-		std::cout << std::endl;
-		std::cout << "################";
-		std::cout << std::endl;
+
   std::unique_ptr<ICoarsener> coarsener(
     CoarsenerFactory::getInstance().createObject(
       config.coarsening.algorithm, hypergraph, config,

@@ -79,12 +79,7 @@ class MLCoarsener final : public ICoarsener,
 
  private:
 	void coarsenImpl(const HypernodeID limit, const std::vector<PartitionID>& parent_1, const std::vector<PartitionID>& parent_2) override final {
-		std::cout << "################";
-		std::cout << std::endl;
-		std::cout << "ml coarsener...";
-		std::cout << std::endl;
-		std::cout << "################";
-		std::cout << std::endl;
+		
 		int pass_nr = 0;
 		std::vector<HypernodeID> current_hns;
 		ds::FastResetFlagArray<> already_matched(_hg.initialNumNodes());

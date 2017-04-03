@@ -22,8 +22,11 @@ namespace kahypar {
 	for(HyperedgeID v : _hypergraph.edges()) {
 	  
 	  if(_hypergraph.connectivity(v) > 1) {
-          //std::cout << _hypergraph.connectivity(v) << ' ' << v << ';';	
-	    cutEdges.push_back(v);
+          //std::cout << _hypergraph.connectivity(v) << ' ' << v << ';';
+            for(unsigned i = 1; i < _hypergraph.connectivity(v); i++) {
+	      cutEdges.push_back(v);
+            }	
+
 	  }
 	}
 	  return Individuum(result,cutEdges, metrics::km1(_hypergraph));

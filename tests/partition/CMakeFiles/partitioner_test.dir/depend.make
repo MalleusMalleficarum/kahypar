@@ -85,8 +85,10 @@ tests/partition/CMakeFiles/partitioner_test.dir/partitioner_test.cc.o: kahypar/p
 tests/partition/CMakeFiles/partitioner_test.dir/partitioner_test.cc.o: kahypar/partition/configuration_enum_classes.h
 tests/partition/CMakeFiles/partitioner_test.dir/partitioner_test.cc.o: kahypar/partition/evolutionary/i_combine.h
 tests/partition/CMakeFiles/partitioner_test.dir/partitioner_test.cc.o: kahypar/partition/evolutionary/i_mutate.h
+tests/partition/CMakeFiles/partitioner_test.dir/partitioner_test.cc.o: kahypar/partition/evolutionary/i_replace.h
 tests/partition/CMakeFiles/partitioner_test.dir/partitioner_test.cc.o: kahypar/partition/evolutionary/individuum.h
 tests/partition/CMakeFiles/partitioner_test.dir/partitioner_test.cc.o: kahypar/partition/evolutionary/population.h
+tests/partition/CMakeFiles/partitioner_test.dir/partitioner_test.cc.o: kahypar/partition/evolutionary/replace_information.h
 tests/partition/CMakeFiles/partitioner_test.dir/partitioner_test.cc.o: kahypar/partition/factories.h
 tests/partition/CMakeFiles/partitioner_test.dir/partitioner_test.cc.o: kahypar/partition/initial_partitioning/bfs_initial_partitioner.h
 tests/partition/CMakeFiles/partitioner_test.dir/partitioner_test.cc.o: kahypar/partition/initial_partitioning/greedy_hypergraph_growing_initial_partitioner.h

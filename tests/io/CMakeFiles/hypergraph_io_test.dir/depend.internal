@@ -86,8 +86,10 @@ tests/io/CMakeFiles/hypergraph_io_test.dir/hypergraph_io_test.cc.o
  kahypar/partition/configuration_enum_classes.h
  kahypar/partition/evolutionary/i_combine.h
  kahypar/partition/evolutionary/i_mutate.h
+ kahypar/partition/evolutionary/i_replace.h
  kahypar/partition/evolutionary/individuum.h
  kahypar/partition/evolutionary/population.h
+ kahypar/partition/evolutionary/replace_information.h
  kahypar/partition/factories.h
  kahypar/partition/initial_partitioning/bfs_initial_partitioner.h
  kahypar/partition/initial_partitioning/greedy_hypergraph_growing_initial_partitioner.h

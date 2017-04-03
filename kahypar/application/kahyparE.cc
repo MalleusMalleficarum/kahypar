@@ -68,6 +68,9 @@ using kahypar::Individuum;
 using kahypar::CombinatorBaseImplementation;
 using kahypar::MutatorBaseImplementation;
 
+using Timepoint = HighResClockTimepoint;
+using duration = std::chrono::duration<double>;
+using timer = std::chrono::high_resolution_clock;
 int getTerminalWidth() {
   int columns = 0;
 #if defined(_MSC_VER)
@@ -518,7 +521,7 @@ void clearFile(std::string filename) {
   std::ofstream out_file(std::string("../../../Results/")+std::string("EVOLUTIONARY.") + useThis);
   out_file.close();
 }
-void writeShitEvo(int i, std::string filename, std::chrono::duration<double> duration, Hypergraph &hypergraph, Configuration &config,double currentFitness, std::size_t parent1, std::size_t parent2, unsigned worstPos, double averageFitness, double best) {
+void writeShitEvo(int i, std::string filename, std::chrono::duration<double> duration, Hypergraph &hypergraph, Configuration &config,double currentFitness, std::size_t parent1, std::size_t parent2, unsigned worstPos, double averageFitness, double best, bool mutation) {
   std::size_t found = filename.find_last_of("/");
    std::string useThis = filename.substr(found + 1);
   std::ofstream out_file;
@@ -556,30 +559,12 @@ void writeShitEvo(int i, std::string filename, std::chrono::duration<double> dur
 	   << best << " "
 	   << useThis << " "
 	   << kahypar::metrics::imbalance(hypergraph,config) << " "
+	   << mutation 
     //<< kahypar::metrics::imbalance(hypergraph, config.partition.k) << " "
 	   <<std::endl;
   out_file.close();
 }
-// void writeShit(int i, std::string filename, std::chrono::duration<double> duration, Hypergraph &hypergraph, Configuration &config,double currentFitness, double averageFitness) {
-//   std::size_t found = filename.find_last_of("/");
-//   std::string useThis = filename.substr(found + 1);
-//   std::ofstream out_file;
-  
-//   out_file.open(std::string("../../../Results/") +std::string("EVOLUTIONARY.") + useThis, std::ios_base::app);
-//   out_file << "RESULT" << " k=" << config.partition.k
-//            << " epsilon=" << config.partition.epsilon
-// 	   << " seed=" << config.partition.seed
-// 	   << " iteration=" << i
-// 	   << " duration=" << duration.count()
-// 	   << " averageFitness=" << averageFitness
-// 	   << " cut=" << kahypar::metrics::hyperedgeCut(hypergraph)
-// 	   << " SOED=" << kahypar::metrics::soed(hypergraph)
-// 	   << " km-1=" << currentFitness
-// 	   << " absorption=" << kahypar::metrics::absorption(hypergraph)
-// 	   << std::endl;
-  
-//   out_file.close();
-// }
+
 void emptyLine(std::string filename) {
     std::size_t found = filename.find_last_of("/");
   std::string useThis = filename.substr(found + 1);
@@ -601,14 +586,7 @@ int main(int argc, char* argv[]) {
     std::cerr << "Therefore v-cycles are currently disabled." << std::endl;
     std::exit(-1);
   }
-  /* std::string filename = config.partition.graph_filename
-    + ".result"
-    + ".part"
-    + std::to_string(config.partition.k)
-    + ".KaHyParE";
-    std::fstream file;
-    file.open(filename, std::fstream::out);
-    file.close();*/
+
   std::string filename = config.partition.graph_filename;
   kahypar::Randomize::instance().setSeed(config.partition.seed);
 
@@ -639,100 +617,99 @@ int main(int argc, char* argv[]) {
 
  
 
- 
+  unsigned const POPULATION_SIZE = 10;
+  unsigned const MUTATION_CHANCE = 1;
+  unsigned const TOTAL_CHANCE = 10;
+  unsigned const FILL_AMOUNT = 50;
+  double const TIME_LIMIT_SECONDS = 5*60*60;
+  double const ITERATION_LIMIT = 50000;
+  //replaceStrategy
+  //combineStrategy
+  //mutateStrategy
+  
 
   //clearFile(config.partition.graph_filename);
   Partitioner partitioner;
-  Population populus(hypergraph, 10);
+  Population populus(hypergraph, POPULATION_SIZE);
   double membaBest = DBL_MAX;
 
   CombinatorBaseImplementation comb(hypergraph, config);
   MutatorBaseImplementation mut(hypergraph, config);
-  HighResClockTimepoint start = std::chrono::high_resolution_clock::now();
-  HighResClockTimepoint currentTime = std::chrono::high_resolution_clock::now();
-  std::chrono::duration<double> iterationSeconds = currentTime - start;
-  int i;
-  int n;
+  Timepoint start = timer::now();
+  Timepoint currentTime = timer::now();
+  duration iterationSeconds = currentTime - start;
+  unsigned i;
+  unsigned n;
   srand(time(NULL));
-  for(i = 1; i < 51; i++) {
-    HighResClockTimepoint startIteration = std::chrono::high_resolution_clock::now();
+  for(i = 1; i < (FILL_AMOUNT + 1); i++) {    //INTENDED TO START THE ITERATION NUMBERS AT 1 instead of 0
+    Timepoint startIteration = timer::now();
     Individuum indi = populus.generateIndividuum(config);
     double currentFitness = indi.getFitness();
     if (currentFitness < membaBest) {
       membaBest = currentFitness;
     }
-    HighResClockTimepoint endIteration = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> elapsed_secondsIteration = endIteration - startIteration;
-    std::chrono::duration<double> elapsed_total = endIteration -start;
-    if(elapsed_total.count() > 18000) {
+    Timepoint endIteration = timer::now();
+    duration elapsed_secondsIteration = endIteration - startIteration;
+    duration elapsed_total = endIteration - start;
+
+    populus.printInfo();
+    writeShitEvo(i, filename, elapsed_secondsIteration, hypergraph,config,currentFitness,0,0,i, populus.getAverageFitness(), membaBest, false);
+        if(elapsed_total.count() > TIME_LIMIT_SECONDS) {
       break;
     }
-    populus.printInfo();
-    // kahypar::io::printPartitioningResults(hypergraph,config, elapsed_total);
-    writeShitEvo(i, filename, elapsed_secondsIteration, hypergraph,config,currentFitness,0,0,0, populus.getAverageFitness(), membaBest);
   }
-  currentTime = std::chrono::high_resolution_clock::now();
-  std::cout << std::endl;
+  currentTime = timer::now();
   iterationSeconds = currentTime - start;
  
   
-  while(iterationSeconds.count() < 18000) {
-    HighResClockTimepoint startIteration = std::chrono::high_resolution_clock::now();
+  while(iterationSeconds.count() < TIME_LIMIT_SECONDS && i < ITERATION_LIMIT) {
+
+    
+    Timepoint startIteration = timer::now();
     std::size_t firstPos =  populus.getRandomIndividuum();
     std::size_t secondPos = populus.getRandomExcept(firstPos);
-    // n = rand() % 10;
-    //std::cout << std::endl <<std::endl << std::endl << std::endl << n << std::endl <<std::endl << std::endl << std::endl;
-    //double currentFitness = -1;
-    //unsigned replacePosition = 404;
-    /* if(n == 0){
-      populus.printInfo();
-      std::cout << "MUTATION " << firstPos << std::endl;
-      Individuum firsti = populus.getIndividuum(firstPos);
-      
+    n = rand() % TOTAL_CHANCE;
+    double currentFitness;
+    unsigned replacePosition;
+    bool mutation;
+    //Mutate
+    if(n <= (MUTATION_CHANCE - 1)){
       Individuum indi = populus.mutate(firstPos, mut);
       populus.replace(indi, firstPos);
-      std::cout << firsti.getFitness() << " " << indi.getFitness() <<std::endl;
-      std::cin.get();
-      while(firsti.getFitness() == indi.getFitness()) {
-	std::cout << "NOPE" << std::endl;
-	indi = populus.mutate(firstPos, mut);
+      currentFitness = indi.getFitness();
+      replacePosition = firstPos;
+      mutation = true;
       }
-      
-      
-      }*/
-    /*else {
-          Individuum indi = populus.combine(firstPos, secondPos, comb);
-	  replacePosition = populus.replaceDiverse(indi);
-       currentFitness = indi.getFitness();
-       if (currentFitness < membaBest) {
-	 membaBest = currentFitness;
-       }
+    //Combine
+    else {
+      Individuum indi = populus.combine(firstPos, secondPos, comb);
+      replacePosition = populus.replaceDiverse(indi);
+      currentFitness = indi.getFitness();
+      mutation = false;
+      }
+
     
+    if (currentFitness < membaBest) {
+       membaBest = currentFitness;
        }
-       populus.printInfo();*/
-    Individuum indi = populus.combine(firstPos, secondPos, comb);
-    double currentFitness = indi.getFitness();
-    if(currentFitness < membaBest) {
-      membaBest = currentFitness;
-    } 
-    unsigned worstPosition = populus.worstIndividuumPosition();
-    populus.replace(indi, worstPosition);
-    populus.printInfo();
-    HighResClockTimepoint endIteration = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> elapsed_secondsIteration = endIteration - startIteration;
-    unsigned replacePosition = worstPosition;
-    writeShitEvo(i, filename, elapsed_secondsIteration, hypergraph,config,currentFitness, firstPos, secondPos, replacePosition, populus.getAverageFitness(), membaBest);
-    currentTime = std::chrono::high_resolution_clock::now();
-    iterationSeconds = currentTime -start;
+
+    
+
+    Timepoint endIteration = timer::now();
+    duration elapsed_secondsIteration = endIteration - startIteration;
+    
+    writeShitEvo(i, filename, elapsed_secondsIteration, hypergraph,config,currentFitness, firstPos, secondPos, replacePosition, populus.getAverageFitness(), membaBest, mutation);
+    currentTime = timer::now();
+    iterationSeconds = currentTime - start;
     i++;
   }
 
-  //emptyLine(filename);
+  
 
  
 
-  HighResClockTimepoint end = std::chrono::high_resolution_clock::now();
-  std::chrono::duration<double> elapsed_seconds = end - start;
+  Timepoint end = timer::now();
+  duration elapsed_seconds = end - start;
 
 #ifdef GATHER_STATS
   LOG("*******************************");

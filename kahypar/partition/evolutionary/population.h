@@ -6,6 +6,7 @@
 #include "i_mutate.h"
 #include "individuum.h"
 #include "kahypar/definitions.h"
+#include "i_replace.h"
 
 namespace kahypar {
 
@@ -31,6 +32,7 @@ inline void setPartitionVector(Hypergraph &hypergraph, const std::vector<Partiti
   inline double fitness(Individuum &targetIndividuum);
 
   inline unsigned replaceDiverse(Individuum &in);
+  inline std::size_t replace(Individuum &in, IReplace &replicator);
   inline void replace(Individuum &in, unsigned position);
   inline void replace(Individuum &in, Individuum &out); 
   inline void insertIndividuum(Individuum &insertTarget);
@@ -113,7 +115,7 @@ inline void Population::setPartitionVector(Hypergraph& hypergraph, const std::ve
       
       std::ifstream part_file(filename);
       if(!part_file) {
-	std::cout << "FIELE DOESERE NOTE EGISST";
+	std::cout << "FIT";
 	return;
       }
       //TODO ASSERT THE FILE HAS CORRECT LENGTH
@@ -172,7 +174,10 @@ inline void Population::setPartitionVector(Hypergraph& hypergraph, const std::ve
 	std::vector<HyperedgeID> cutEdges;
 	for(HyperedgeID v : _hypergraph.edges()) {
 	  if(_hypergraph.connectivity(v) > 1) {
-	    cutEdges.push_back(v);
+	    for(unsigned i = 1; i < _hypergraph.connectivity(v);i++) {
+              cutEdges.push_back(v);
+            }
+	    
 	  }
 	}
       HyperedgeWeight weight = metrics::km1(_hypergraph);
@@ -192,6 +197,18 @@ inline void Population::setPartitionVector(Hypergraph& hypergraph, const std::ve
       Individuum second = getIndividuum(getRandomExcept(firstPosition));
       return first.getFitness() < second.getFitness() ? first : second;
       
+    }
+    inline std::size_t Population::replace(Individuum &in, IReplace &replicator) {
+      
+      ReplaceInformation info = replicator.replace(in, _internalPopulation);
+      if(!info.willReplace) {
+	std::cout << "The Replace Strategy will not insert the Individuum" << std::endl;
+	return std::numeric_limits<std::size_t>::max();
+      } else {
+	replace(in, info.position);
+	return info.position;
+      }
+     
     }
     inline void Population::replace(Individuum &in, unsigned position) {
       if(position >= size()) {
@@ -221,7 +238,7 @@ inline void Population::setPartitionVector(Hypergraph& hypergraph, const std::ve
     
     inline unsigned Population::replaceDiverse(Individuum &in) {
       unsigned max_similarity = std::numeric_limits<unsigned>::max();
-      unsigned max_similarity_id = 0;
+      unsigned max_similarity_id = 0; 
       if(in.getFitness() > getIndividuum(worstIndividuumPosition()).getFitness()) {
 	//DO WE REALLY WANT A BAD ELEMENT?
 	std::cout << "COLLAPSE";
@@ -229,11 +246,7 @@ inline void Population::setPartitionVector(Hypergraph& hypergraph, const std::ve
       } 
       for(unsigned i = 0; i < size(); i ++) {
         if(_internalPopulation[i].getFitness() >= in.getFitness()) {
-	  // int diff_size = _internalPopulation[i].getCutEdges().size() + in.getCutEdges().size();
-	  // std::cout << in.getCutEdges().size() <<  ' ' << _internalPopulation[i].getCutEdges().size() << std::endl;
-      
-      
-      // std::vector<HyperedgeID> output_diff(diff_size, std::numeric_limits<HyperedgeID>::max());
+
       std::vector<HyperedgeID> output_diff;
       std::vector<HyperedgeID> one(_internalPopulation[i].getCutEdges());
       std::vector<HyperedgeID> two(in.getCutEdges());
@@ -242,30 +255,9 @@ inline void Population::setPartitionVector(Hypergraph& hypergraph, const std::ve
 				    two.begin(),
 				    two.end(),
 				    std::back_inserter(output_diff));
-     
 
-      
-      /*for (auto gi: output_diff)
-  std::cout << gi << ' ';
-
-  std::cout << std::endl;*/
-      /*for (auto gi: one)
-  std::cout << gi << ' ';
-
-      std::cout << std::endl;
-      for (auto gi:two)
-  std::cout << gi << ' ';
-
-  std::cout << std::endl;*/
        unsigned similarity = output_diff.size();
-				    /*for(unsigned j = 0; j < output_diff.size(); j++) {
-      if(output_diff[j] < std::numeric_limits<HyperedgeID>::max()) {
-      similarity++;
-      }
-      else {
-      break;
-      }
-      }*/
+
       std::cout << "SYMMETRIC DIFFERENCE: " << similarity << " from " << i <<std::endl;
       if(similarity < max_similarity) {
       max_similarity = similarity;
@@ -298,12 +290,7 @@ inline void Population::setPartitionVector(Hypergraph& hypergraph, const std::ve
 	   bestPosition = i;
 	   bestValue = result;
 	 }
-	 std::cout << result;
-	 std::cout << " ";
-	 std::cout << bestValue;
-	 std::cout << " ";
-	 std::cout << bestPosition;
-	 std::cout << std::endl;
+
       }
        _hypergraph.resetPartitioning();
        setPartitionVector(_hypergraph, _internalPopulation.at(bestPosition).getPartition());
