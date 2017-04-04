@@ -4,7 +4,7 @@
 # 
 # This file includes the relevant testing commands required for 
 # testing this directory and lists subdirectories to be tested as well.
-subdirs(external_tools/googletest)
-subdirs(kahypar/application)
-subdirs(tools)
-subdirs(tests)
+subdirs("external_tools/googletest")
+subdirs("kahypar/application")
+subdirs("tools")
+subdirs("tests")

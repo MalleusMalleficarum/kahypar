@@ -9,6 +9,8 @@
 *.cfg~
 build/*
 rel2/*
+release/*
+external_tools/*
 release127/*
 release128/*
 release152/*
