@@ -518,7 +518,7 @@ void clearFile(std::string filename) {
   std::size_t found = filename.find_last_of("/");
   std::string useThis = filename.substr(found + 1);
   std::cout << "::"+ useThis +"::";
-  std::ofstream out_file(std::string("../../../Results/")+std::string("EVOLUTIONARY.") + useThis);
+  std::ofstream out_file(std::string("../../../../results/")+std::string("EVOLUTIONARY.") + useThis);
   out_file.close();
 }
 void writeShitEvo(int i, std::string filename, std::chrono::duration<double> duration, Hypergraph &hypergraph, Configuration &config,double currentFitness, std::size_t parent1, std::size_t parent2, unsigned worstPos, double averageFitness, double best, bool mutation) {
