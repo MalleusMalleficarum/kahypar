@@ -523,7 +523,7 @@ void writeShit(int i, std::string filename, std::chrono::duration<double> durati
   std::string useThis = filename.substr(found + 1);
   std::ofstream out_file;
   
-  out_file.open("../../../Results/" + std::string("NONEVOLUTIONARY"), std::ios_base::app);
+  out_file.open("../../../../Results/" + std::string("NONEVOLUTIONARY"), std::ios_base::app);
   /* out_file << "RESULT" << " k=" << config.partition.k
            << " epsilon=" << config.partition.epsilon
 	   << " seed=" << config.partition.seed
