@@ -1,3 +1,0 @@
-/home/andre/server-home/myHyparHypar/kahypar/kahypar/application/CMakeFiles/rebuild_cache.dir
-/home/andre/server-home/myHyparHypar/kahypar/kahypar/application/CMakeFiles/edit_cache.dir
-/home/andre/server-home/myHyparHypar/kahypar/kahypar/application/CMakeFiles/KaHyPar.dir
