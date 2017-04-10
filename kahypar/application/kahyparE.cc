@@ -461,6 +461,33 @@ void processCommandLineInput(Configuration& config, int argc, char* argv[]) {
     "Use global rebalancing PQs in twoway_fm \n"
     "(default: false)");
 
+  po::options_description evolutionary_options("Evolutionary Options", num_columns);
+  evolutionary_options.add_options()
+  ("iteration-limit",
+    po::value<unsigned>()->value_name("<unsigned>")->notifier(
+      [&](const unsigned& iterationlimit) {
+    config.evolutionary.iteration_limit = iterationlimit;
+      }),"text")
+   ("time-limit",
+    po::value<unsigned>()->value_name("<unsigned>")->notifier(
+      [&](const unsigned& timelimit) {
+    config.evolutionary.time_limit = timelimit;
+      }),"Text")
+   ("population-size",
+    po::value<unsigned>()->value_name("<unsigned>")->notifier(
+      [&](const unsigned& populationsize) {
+    config.evolutionary.population_size = populationsize;
+      }),"text")
+   ("mutation-chance",
+    po::value<float>()->value_name("<float>")->notifier(
+      [&](const float& mutationchance) {
+	config.evolutionary.mutation_chance = mutationchance;
+      }),"TExT")
+   ("fill-limit",
+    po::value<unsigned>()->value_name("<unsigned>")->notifier(
+      [&](const unsigned& filllimit) {
+    config.evolutionary.fill_limit = filllimit;
+      }),"TExt");
   po::options_description cmd_line_options;
   cmd_line_options.add(generic_options)
   .add(required_options)
@@ -469,7 +496,8 @@ void processCommandLineInput(Configuration& config, int argc, char* argv[]) {
   .add(preprocessing_options)
   .add(coarsening_options)
   .add(ip_options)
-  .add(refinement_options);
+  .add(refinement_options)
+  .add(evolutionary_options);
 
   po::variables_map cmd_vm;
   po::store(po::parse_command_line(argc, argv, cmd_line_options), cmd_vm);
@@ -494,7 +522,8 @@ void processCommandLineInput(Configuration& config, int argc, char* argv[]) {
   .add(preprocessing_options)
   .add(coarsening_options)
   .add(ip_options)
-  .add(refinement_options);
+  .add(refinement_options)
+  .add(evolutionary_options);
 
   po::store(po::parse_config_file(file, ini_line_options, true), cmd_vm);
   po::notify(cmd_vm);
@@ -559,7 +588,12 @@ void writeShitEvo(int i, std::string filename, std::chrono::duration<double> dur
 	   << best << " "
 	   << useThis << " "
 	   << kahypar::metrics::imbalance(hypergraph,config) << " "
-	   << mutation 
+	   << mutation
+	   << config.evolutionary.mutation_chance << " "
+	   << config.evolutionary.fill_limit << " "
+	   << config.evolutionary.time_limit << " "
+	   << config.evolutionary.population_size << " "
+	   << config.evolutionary.iteration_limit
     //<< kahypar::metrics::imbalance(hypergraph, config.partition.k) << " "
 	   <<std::endl;
   out_file.close();
@@ -617,12 +651,12 @@ int main(int argc, char* argv[]) {
 
  
 
-  unsigned const POPULATION_SIZE = 10;
-  unsigned const MUTATION_CHANCE = 1;
-  unsigned const TOTAL_CHANCE = 10;
-  unsigned const FILL_AMOUNT = 50;
-  double const TIME_LIMIT_SECONDS = 5*60*60;
-  double const ITERATION_LIMIT = 50000;
+  unsigned const POPULATION_SIZE = config.evolutionary.population_size;
+  float const MUTATION_CHANCE = config.evolutionary.mutation_chance;
+  //unsigned const TOTAL_CHANCE = 10;
+  unsigned const FILL_AMOUNT = config.evolutionary.fill_limit;
+  double const TIME_LIMIT_SECONDS = config.evolutionary.time_limit;
+  double const ITERATION_LIMIT = config.evolutionary.iteration_limit;
   //replaceStrategy
   //combineStrategy
   //mutateStrategy
@@ -638,10 +672,11 @@ int main(int argc, char* argv[]) {
   Timepoint start = timer::now();
   Timepoint currentTime = timer::now();
   duration iterationSeconds = currentTime - start;
-  unsigned i;
-  unsigned n;
-  srand(time(NULL));
-  for(i = 1; i < (FILL_AMOUNT + 1); i++) {    //INTENDED TO START THE ITERATION NUMBERS AT 1 instead of 0
+  unsigned i = 1;
+  float n;
+  duration elapsed_total = currentTime - start;
+  
+  while(i < (FILL_AMOUNT + 1) && i <= ITERATION_LIMIT && elapsed_total.count() <= TIME_LIMIT_SECONDS) {    //INTENDED TO START THE ITERATION NUMBERS AT 1 instead of 0
     Timepoint startIteration = timer::now();
     Individuum indi = populus.generateIndividuum(config);
     double currentFitness = indi.getFitness();
@@ -654,26 +689,28 @@ int main(int argc, char* argv[]) {
 
     populus.printInfo();
     writeShitEvo(i, filename, elapsed_secondsIteration, hypergraph,config,currentFitness,0,0,i, populus.getAverageFitness(), membaBest, false);
-        if(elapsed_total.count() > TIME_LIMIT_SECONDS) {
+    /*  if(elapsed_total.count() > TIME_LIMIT_SECONDS) {
       break;
-    }
+      }*/
+	++i;	
   }
   currentTime = timer::now();
   iterationSeconds = currentTime - start;
  
   
-  while(iterationSeconds.count() < TIME_LIMIT_SECONDS && i < ITERATION_LIMIT) {
+  while(iterationSeconds.count() <= TIME_LIMIT_SECONDS && i <= ITERATION_LIMIT) {
 
     
     Timepoint startIteration = timer::now();
     std::size_t firstPos;
     std::size_t secondPos;
-    n = rand() % TOTAL_CHANCE;
+    n = kahypar::Randomize::instance().getRandomFloat(0, 1);
     double currentFitness;
     unsigned replacePosition;
     bool mutation;
     //Mutate
-    if(n <= (MUTATION_CHANCE - 1)){
+    std::cout << std::endl << std::endl << std::endl <<"XXXXXXXXXXXXXXXXXX" <<n<<"XXXXXXXXXXXXXXXXXXXX" <<std::endl << std::endl << std::endl;
+    if(n >= (1 - MUTATION_CHANCE)){ //Trickery since [0,1) can roll a 0 whereas 1 -[0,1) never will
       firstPos =  populus.getRandomIndividuum();
       secondPos = firstPos;
       Individuum indi = populus.mutate(firstPos, mut);
@@ -684,10 +721,10 @@ int main(int argc, char* argv[]) {
       }
     //Combine
     else {
-      std::pair<Individuum, Individuum> tournamentWinners = populus.getTwoIndividuumTournament();
+      std::pair<unsigned, unsigned> tournamentWinners = populus.getTwoIndividuumTournamentPosition();
       Individuum indi = populus.combine(tournamentWinners.first,tournamentWinners.second, comb);
-      firstPos = 0;
-      secondPos = 0;//FIX SOMETHINE
+      firstPos = tournamentWinners.first;
+      secondPos = tournamentWinners.second;
       replacePosition = populus.replaceDiverse(indi);
       currentFitness = indi.getFitness();
       mutation = false;
@@ -715,7 +752,7 @@ int main(int argc, char* argv[]) {
 
   Timepoint end = timer::now();
   duration elapsed_seconds = end - start;
-
+  populus.setTheBest();
 #ifdef GATHER_STATS
   LOG("*******************************");
   LOG("***** GATHER_STATS ACTIVE *****");

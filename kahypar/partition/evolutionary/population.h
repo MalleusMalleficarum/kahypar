@@ -2,6 +2,7 @@
 
 #include <random>
 #include <list>
+#include "kahypar/utils/randomize.h"
 #include "i_combine.h"
 #include "i_mutate.h"
 #include "individuum.h"
@@ -30,25 +31,30 @@ inline void setPartitionVector(Hypergraph &hypergraph, const std::vector<Partiti
   inline Individuum mutate(Individuum &targetIndividuum, IMutate &mutator);
   inline Individuum mutate(std::size_t position, IMutate &mutator);
   inline double fitness(Individuum &targetIndividuum);
-
+  static inline Individuum createIndividuum(Hypergraph &hypergraph, Configuration &config);
   inline unsigned replaceDiverse(Individuum &in);
   inline std::size_t replace(Individuum &in, IReplace &replicator);
   inline void replace(Individuum &in, unsigned position);
   inline void replace(Individuum &in, Individuum &out); 
   inline void insertIndividuum(Individuum &insertTarget);
-  inline Individuum getIndividuum(unsigned position) const;
+  inline Individuum &getIndividuum(unsigned position);
   inline std::size_t getRandomIndividuum();
   inline void insertIndividuumFromFile(std::string filename);
   inline Individuum getIndividuumTournament();
+  inline unsigned getIndividuumTournamentPosition();
   inline std::pair<Individuum, Individuum> getTwoIndividuumTournament();
+  inline std::pair<unsigned, unsigned> getTwoIndividuumTournamentPosition();
   inline unsigned worstIndividuumPosition();
-  inline Individuum generateIndividuum(Configuration &config);//TODO
+  inline Individuum generateIndividuum(Configuration &config);
+
   inline Individuum crossCombineMetric(); //TODO
   inline Individuum crossCombine(); //TODO
   inline std::size_t getRandomExcept(std::size_t except);
   inline void printInfo();
   inline void setTheBest();
   inline double getAverageFitness();
+  inline Individuum IndividuumFromEdgeFrequency(std::vector<float> &edgeFrequency); //TODO
+  inline std::vector<float> edgeFrequency(); //TODO
  
   private: 
   std::vector<Individuum> _internalPopulation;
@@ -56,6 +62,25 @@ inline void setPartitionVector(Hypergraph &hypergraph, const std::vector<Partiti
   unsigned _maxPopulationLimit;
 
 };
+inline Individuum Population::createIndividuum(Hypergraph &hypergraph, Configuration &config) {
+       std::vector<PartitionID> result;
+      	for (HypernodeID u : hypergraph.nodes()) {
+		
+	  result.push_back(hypergraph.partID(u));
+	}
+	std::vector<HyperedgeID> cutEdges;
+	for(HyperedgeID v : hypergraph.edges()) {
+	  if(hypergraph.connectivity(v) > 1) {
+	    for(unsigned i = 1; i < hypergraph.connectivity(v);i++) {
+              cutEdges.push_back(v);
+            }
+	    
+	  }
+	}
+      HyperedgeWeight weight = metrics::km1(hypergraph);
+      Individuum ind(result, cutEdges, weight);
+      return ind;
+    }
 inline void Population::setPartitionVector(Hypergraph& hypergraph, const std::vector<PartitionID>& parent) {
 	for (HypernodeID u : hypergraph.nodes()) {
 		
@@ -102,14 +127,11 @@ inline void Population::setPartitionVector(Hypergraph& hypergraph, const std::ve
       
     }
     
-    inline Individuum Population::getIndividuum(unsigned position)const {
-      return _internalPopulation.at(position);
+    inline Individuum &Population::getIndividuum(unsigned position) {
+      return _internalPopulation[position];
     }
     inline std::size_t Population::getRandomIndividuum() {
-      std::random_device rd;
-      std::mt19937 gen(rd());
-      std::uniform_int_distribution<unsigned int> distribution(0, size() - 1);
-      return distribution(gen);
+      return Randomize::instance().getRandomInt(0, size() -1);
     }
     //DANGEROUS SIDE EFFECT IN PARALLEL
     inline void Population::insertIndividuumFromFile(std::string filename) {
@@ -167,50 +189,43 @@ inline void Population::setPartitionVector(Hypergraph& hypergraph, const std::ve
       std::vector<PartitionID> dummy;
       std::vector<PartitionID> dummy2;
       partitioner.partition(_hypergraph, config, dummy, dummy2);
-      std::vector<PartitionID> result;
-      	for (HypernodeID u : _hypergraph.nodes()) {
-		
-	  result.push_back(_hypergraph.partID(u));
-	}
-	std::vector<HyperedgeID> cutEdges;
-	for(HyperedgeID v : _hypergraph.edges()) {
-	  if(_hypergraph.connectivity(v) > 1) {
-	    for(unsigned i = 1; i < _hypergraph.connectivity(v);i++) {
-              cutEdges.push_back(v);
-            }
-	    
-	  }
-	}
-      HyperedgeWeight weight = metrics::km1(_hypergraph);
-      Individuum ind(result, cutEdges, weight);
+      Individuum ind = createIndividuum(_hypergraph, config);
       insertIndividuum(ind);
       return ind;
     }
+    
     inline Individuum Population::getIndividuumTournament() {
-      if(size() == 0) {
-	//TODO MASSIVE ERROR
-      }
-      if(size() == 1) {
-	return _internalPopulation.at(0); 
-      }
-      std::size_t firstPosition = getRandomIndividuum();
-      Individuum first = getIndividuum(firstPosition);
-      Individuum second = getIndividuum(getRandomExcept(firstPosition));
-      return first.getFitness() < second.getFitness() ? first : second;
+      return getIndividuum(getIndividuumTournamentPosition());
       
     }
-    inline std::pair<Individuum, Individuum> Population::getTwoIndividuumTournament() {
-      Individuum firstRet = getIndividuumTournament();
-      std::size_t firstPosition = getRandomIndividuum();
-      Individuum one = getIndividuum(firstPosition);
-      Individuum two = getIndividuum(getRandomExcept(firstPosition));
-      Individuum secondRet = one.getFitness() < two.getFitness() ? one : two;
-      if(firstRet.getFitness() == secondRet.getFitness()) {
-        secondRet = one.getFitness() >= two.getFitness() ? one : two;
+    inline unsigned Population::getIndividuumTournamentPosition() {
+      if(size() == 1) {
+        return 0;
       }
-      std::pair<Individuum, Individuum> p(firstRet, secondRet);
-      return p;
+      unsigned firstPos = getRandomIndividuum();
+      unsigned secondPos = getRandomExcept(firstPos);
+      Individuum first = getIndividuum(firstPos);
+      Individuum second = getIndividuum(secondPos);
+      return first.getFitness() < second.getFitness() ? firstPos : secondPos;
     }
+    inline std::pair<Individuum, Individuum> Population::getTwoIndividuumTournament() {
+      std::pair<unsigned, unsigned> p = getTwoIndividuumTournamentPosition();
+      std::pair<Individuum, Individuum> pReturn(getIndividuum(p.first), getIndividuum(p.second));
+      return pReturn;
+    }
+    inline std::pair<unsigned, unsigned> Population::getTwoIndividuumTournamentPosition() {
+      unsigned firstRetPos = getIndividuumTournamentPosition();
+      std::size_t firstPosition = getRandomIndividuum();
+      std::size_t secondPosition = getRandomExcept(firstPosition);
+      Individuum one = getIndividuum(firstPosition);
+      Individuum two = getIndividuum(secondPosition);
+      unsigned secondRetPos = one.getFitness() < two.getFitness() ? firstPosition : secondPosition;
+      if(getIndividuum(firstRetPos).getFitness() == getIndividuum(secondRetPos).getFitness()) {
+	secondRetPos = one.getFitness() >= two.getFitness() ? firstPosition : secondPosition;
+      }
+      std::pair<unsigned, unsigned> p(firstRetPos, secondRetPos);
+      return p;
+}
     inline std::size_t Population::replace(Individuum &in, IReplace &replicator) {
       
       ReplaceInformation info = replicator.replace(in, _internalPopulation);
@@ -237,10 +252,7 @@ inline void Population::setPartitionVector(Hypergraph& hypergraph, const std::ve
       _internalPopulation.at(position) = in;
     }
     inline std::size_t Population::getRandomExcept(std::size_t except) {
-      std::random_device rd;
-      std::mt19937 gen(rd());
-      std::uniform_int_distribution<unsigned int> distribution(0, size() - 2);
-      std::size_t target = distribution(gen);
+      int target = Randomize::instance().getRandomInt(0, size() -2);
       if(target == except) {
 	return size() - 1;
       }
@@ -285,7 +297,7 @@ inline void Population::setPartitionVector(Hypergraph& hypergraph, const std::ve
       std::cout << "Population INFO: ";
       std::cout << std::endl;
       for(std::size_t i = 0; i < size(); i++) {
-	std::cout << _internalPopulation.at(i).getFitness();
+	std::cout << _internalPopulation[i].getFitness();
 	std::cout << " ";
 	std::cout << i;
 	std::cout << std::endl;
@@ -297,7 +309,7 @@ inline void Population::setPartitionVector(Hypergraph& hypergraph, const std::ve
       std::size_t bestPosition = 0;
       HyperedgeWeight bestValue = INT_MAX;
        for(std::size_t i = 0; i < size(); i++) {
-	 HyperedgeWeight result = _internalPopulation.at(i).getFitness();
+	 HyperedgeWeight result = _internalPopulation[i].getFitness();
 	 if(result < bestValue) {
 	   
 	   bestPosition = i;
@@ -306,7 +318,7 @@ inline void Population::setPartitionVector(Hypergraph& hypergraph, const std::ve
 
       }
        _hypergraph.resetPartitioning();
-       setPartitionVector(_hypergraph, _internalPopulation.at(bestPosition).getPartition());
+       setPartitionVector(_hypergraph, _internalPopulation[bestPosition].getPartition());
     }
     inline double Population::getAverageFitness() {
       double result = 0;

@@ -169,7 +169,7 @@ class MurmurHash {
   uint32_t _seed;
 };
 
-#define XXH_PRIVATE_API
+/*#define XXH_PRIVATE_API
 #include "xxhash.h"
 template <typename Key>
 struct XXHash {
@@ -185,6 +185,6 @@ struct XXHash {
 
  private:
   uint64_t _seed;
-};
+};*/
 }  // namespace math
 }  // namespace kahypar

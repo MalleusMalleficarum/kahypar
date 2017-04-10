@@ -295,20 +295,47 @@ inline std::ostream& operator<< (std::ostream& str, const PartitioningParameters
   str << "  L_max1:                             " << params.max_part_weights[1] << std::endl;
   return str;
 }
+struct EvolutionaryParameters {
 
-
+  EvolutionaryParameters() : 
+    iteration_limit(5000),
+    time_limit(5*60*60),
+    population_size(10),
+    mutation_chance(0),
+    fill_limit(50) { }
+  int iteration_limit;
+  int time_limit; 
+  int population_size;
+  float mutation_chance;
+  unsigned fill_limit;
+  //Replacement strategy
+  //Mutation strategy
+  //Combine stragegy
+  
+};
+inline std::ostream& operator << (std::ostream &str, const EvolutionaryParameters& params) {
+  str << "Evolutionary Parameters:" << std::endl;
+  str << "  Iteration Limit:                    " << params.iteration_limit << std::endl;
+  str << "  Time Limit:                         " << params.time_limit << std::endl;
+  str << "  Population Size:                    " << params.population_size << std::endl;
+  str << "  Mutation Chance:                    " << params.mutation_chance * 100 <<"%" <<std::endl;
+  str << "  Fill Limit:                         " << params.fill_limit << std::endl;
+  return str;
+}
 struct Configuration {
   Configuration() :
     partition(),
     preprocessing(),
     coarsening(),
     initial_partitioning(),
-    local_search() { }
+    local_search(),
+    evolutionary() { }
   PartitioningParameters partition;
   PreprocessingParameters preprocessing;
   CoarseningParameters coarsening;
   InitialPartitioningParameters initial_partitioning;
   LocalSearchParameters local_search;
+  EvolutionaryParameters evolutionary;
 };
 
 inline std::ostream& operator<< (std::ostream& str, const Configuration& config) {
@@ -319,6 +346,8 @@ inline std::ostream& operator<< (std::ostream& str, const Configuration& config)
   << config.coarsening
   << config.initial_partitioning
   << config.local_search
+  << "---------------------------------------------------------------------" << std::endl
+  << config.evolutionary
   << "---------------------------------------------------------------------" << std::endl;
   return str;
 }
