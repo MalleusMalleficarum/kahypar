@@ -194,11 +194,11 @@ class VertexPairCoarsenerBase : public CoarsenerBase {
   }
   template <typename Rater>
   void rateAllHypernodes(Rater& rater,
-	  std::vector<HypernodeID>& target, const std::vector<PartitionID>& parent_1, const std::vector<PartitionID>& parent_2) {
+	  std::vector<HypernodeID>& target, EvoParameters &evo) {
 	  std::vector<HypernodeID> permutation;
 	  createHypernodePermutation(permutation);
 	  for (size_t i = 0; i < permutation.size(); ++i) {
-		  const typename Rater::Rating rating = rater.rate(permutation[i], parent_1, parent_2);
+		  const typename Rater::Rating rating = rater.rate(permutation[i], evo);
 		  if (rating.valid) {
 			  _pq.push(permutation[i], rating.value);
 			  target[permutation[i]] = rating.target;

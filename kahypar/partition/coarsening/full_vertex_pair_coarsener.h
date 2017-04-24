@@ -58,11 +58,11 @@ class FullVertexPairCoarsener final : public ICoarsener,
 
  private:
   FRIEND_TEST(ACoarsener, SelectsNodePairToContractBasedOnHighestRating);
-  void coarsenImpl(const HypernodeID limit, const std::vector<PartitionID>& parent_1, const std::vector<PartitionID>& parent_2) override final {
+  void coarsenImpl(const HypernodeID limit, EvoParameters &evo) override final {
 
 	  _pq.clear();
 
-	  rateAllHypernodes(_rater, _target, parent_1, parent_2);
+	  rateAllHypernodes(_rater, _target,evo);
 
 	  ds::FastResetFlagArray<> rerated_hypernodes(_hg.initialNumNodes());
 	  // Used to prevent unnecessary re-rating of hypernodes that have been removed from
@@ -104,7 +104,12 @@ class FullVertexPairCoarsener final : public ICoarsener,
   void coarsenImpl(const HypernodeID limit) override final {
 	  std::vector<PartitionID>dummy;
 	  std::vector<PartitionID>dummy2;
-	  coarsenImpl(limit, dummy, dummy2);
+          std::vector<double>dummy3;
+	  EvoParameters evo(dummy, dummy2, dummy3);
+          std::cout << std::endl << "XXXXXXXXXXXXXXXXXXXX" << std ::endl;
+          evo.print();
+          std::cout << std::endl << "XXXXXXXXXXXXXXXXXXXX" << std ::endl;
+	  coarsenImpl(limit, evo);
   }
 
   bool uncoarsenImpl(IRefiner& refiner) override final {

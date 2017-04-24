@@ -59,11 +59,11 @@ class LazyVertexPairCoarsener final : public ICoarsener,
  private:
   FRIEND_TEST(ALazyUpdateCoarsener, InvalidatesAdjacentHypernodesInsteadOfReratingThem);
 
-  void coarsenImpl(const HypernodeID limit, const std::vector<PartitionID>& parent_1, const std::vector<PartitionID>& parent_2) override final {
+  void coarsenImpl(const HypernodeID limit, EvoParameters &evo) override final {
 
 	  _pq.clear();
 
-	  rateAllHypernodes(_rater, _target, parent_1, parent_2);
+	  rateAllHypernodes(_rater, _target, evo);
 
 	  while (!_pq.empty() && _hg.currentNumNodes() > limit) {
 		  const HypernodeID rep_node = _pq.top();
@@ -100,11 +100,13 @@ class LazyVertexPairCoarsener final : public ICoarsener,
 		  }
 	  }
   }
-  //TODO(Robin) CODE DUPLICATION vllt in interface
+  
   void coarsenImpl(const HypernodeID limit) override final {
 	  std::vector<PartitionID>dummy;
 	  std::vector<PartitionID>dummy2;
-	  coarsenImpl(limit, dummy, dummy2);
+          std::vector<double>dummy3;
+          EvoParameters evo(dummy, dummy2, dummy3);
+	  coarsenImpl(limit, evo);
   }
 
   bool uncoarsenImpl(IRefiner& refiner) override final {

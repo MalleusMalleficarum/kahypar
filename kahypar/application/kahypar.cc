@@ -33,6 +33,7 @@
 #include <memory>
 #include <string>
 
+#include "kahypar/partition/evo_parameters.h"
 #include "kahypar/definitions.h"
 #include "kahypar/io/hypergraph_io.h"
 #include "kahypar/io/partitioning_output.h"
@@ -598,11 +599,14 @@ int main(int argc, char* argv[]) {
   }
   
   Partitioner partitioner;
+  std::vector<PartitionID>dummy;
+  std::vector<PartitionID>dummy2;
+  std::vector<double>dummy3;
+  kahypar::EvoParameters evo(dummy, dummy2, dummy3);
   HighResClockTimepoint start = std::chrono::high_resolution_clock::now();
   HighResClockTimepoint currentTime = std::chrono::high_resolution_clock::now();
   std::chrono::duration<double> currentTimeTaken = currentTime - start;
-  std::vector<PartitionID> dummy;
-  std::vector<PartitionID> dummy2;
+
   // clearFile(config.partition.graph_filename);
   int best = INT_MAX;
   std::string filename = config.partition.graph_filename
@@ -614,7 +618,7 @@ int main(int argc, char* argv[]) {
   while(/*currentTimeTaken.count() < 18000*/ i == 1) {
     
     HighResClockTimepoint startIteration = std::chrono::high_resolution_clock::now();
-    partitioner.partition(hypergraph, config, dummy, dummy2);
+    partitioner.partition(hypergraph, config, evo);
     HighResClockTimepoint endIteration = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed_secondsIteration = endIteration - startIteration;
     int cur = kahypar::metrics::km1(hypergraph);

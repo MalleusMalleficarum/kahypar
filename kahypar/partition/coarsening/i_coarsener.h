@@ -24,6 +24,7 @@
 
 #include "kahypar/definitions.h"
 #include "kahypar/macros.h"
+#include "kahypar/partition/evo_parameters.h"
 
 namespace kahypar {
 class IRefiner;
@@ -35,9 +36,9 @@ class ICoarsener {
   ICoarsener& operator= (const ICoarsener&) = delete;
   ICoarsener& operator= (ICoarsener&&) = delete;
 
-  void coarsen(const HypernodeID limit, const std::vector<PartitionID>& parent_1, const std::vector<PartitionID>& parent_2) {
+  void coarsen(const HypernodeID limit, EvoParameters &evo) {
 
-	  coarsenImpl(limit, parent_1, parent_2);
+	  coarsenImpl(limit, evo);
   }
   void coarsen(const HypernodeID limit) {
     coarsenImpl(limit);
@@ -57,7 +58,7 @@ class ICoarsener {
   ICoarsener() { }
 
  private:
-  virtual void coarsenImpl(const HypernodeID limit, const std::vector<PartitionID>& parent_1, const std::vector<PartitionID>& parent_2) = 0;
+  virtual void coarsenImpl(const HypernodeID limit, EvoParameters &evo) = 0;
   virtual void coarsenImpl(const HypernodeID limit) = 0;
   virtual bool uncoarsenImpl(IRefiner& refiner) = 0;
   virtual std::string policyStringImpl() const = 0;

@@ -473,6 +473,11 @@ void processCommandLineInput(Configuration& config, int argc, char* argv[]) {
       [&](const unsigned& timelimit) {
     config.evolutionary.time_limit = timelimit;
       }),"Text")
+    ("edge-repeat",
+    po::value<unsigned>()->value_name("<unsigned>")->notifier(
+      [&](const unsigned& rep) {
+    config.evolutionary.edge_repeat = rep;
+      }),"Text")
    ("population-size",
     po::value<unsigned>()->value_name("<unsigned>")->notifier(
       [&](const unsigned& populationsize) {
@@ -482,6 +487,21 @@ void processCommandLineInput(Configuration& config, int argc, char* argv[]) {
     po::value<float>()->value_name("<float>")->notifier(
       [&](const float& mutationchance) {
 	config.evolutionary.mutation_chance = mutationchance;
+      }),"TExT")
+    ("strong-set",
+    po::value<bool>()->value_name("<bool>")->notifier(
+      [&](const bool& strong_set) {
+	config.evolutionary.strong_set = strong_set;
+      }),"TExT")
+   ("replace-diverse",
+    po::value<bool>()->value_name("<bool>")->notifier(
+      [&](const bool& replacediverse) {
+	config.evolutionary.replace_diverse = replacediverse;
+      }),"TExT")
+    ("evo-verbose",
+    po::value<bool>()->value_name("<bool>")->notifier(
+      [&](const bool& verbose) {
+	config.evolutionary.verbose = verbose;
       }),"TExT")
    ("fill-limit",
     po::value<unsigned>()->value_name("<unsigned>")->notifier(
@@ -550,7 +570,7 @@ void clearFile(std::string filename) {
   std::ofstream out_file(std::string("../../../../results/")+std::string("EVOLUTIONARY.") + useThis);
   out_file.close();
 }
-void writeShitEvo(int i, std::string filename, std::chrono::duration<double> duration, Hypergraph &hypergraph, Configuration &config,double currentFitness, std::size_t parent1, std::size_t parent2, unsigned worstPos, double averageFitness, double best, bool mutation) {
+void writeShitEvo(int i, std::string filename, std::chrono::duration<double> duration, Hypergraph &hypergraph, Configuration &config,double currentFitness, std::size_t parent1, std::size_t parent2, unsigned worstPos, double averageFitness, double best, bool mutation, bool edgeFrequency) {
   std::size_t found = filename.find_last_of("/");
    std::string useThis = filename.substr(found + 1);
   std::ofstream out_file;
@@ -588,12 +608,13 @@ void writeShitEvo(int i, std::string filename, std::chrono::duration<double> dur
 	   << best << " "
 	   << useThis << " "
 	   << kahypar::metrics::imbalance(hypergraph,config) << " "
-	   << mutation
+	   << mutation << " "
 	   << config.evolutionary.mutation_chance << " "
 	   << config.evolutionary.fill_limit << " "
 	   << config.evolutionary.time_limit << " "
 	   << config.evolutionary.population_size << " "
-	   << config.evolutionary.iteration_limit
+	   << config.evolutionary.iteration_limit << " "
+	   << edgeFrequency 
     //<< kahypar::metrics::imbalance(hypergraph, config.partition.k) << " "
 	   <<std::endl;
   out_file.close();
@@ -651,12 +672,12 @@ int main(int argc, char* argv[]) {
 
  
 
-  unsigned const POPULATION_SIZE = config.evolutionary.population_size;
+  /*unsigned const POPULATION_SIZE = config.evolutionary.population_size;
   float const MUTATION_CHANCE = config.evolutionary.mutation_chance;
   //unsigned const TOTAL_CHANCE = 10;
   unsigned const FILL_AMOUNT = config.evolutionary.fill_limit;
   double const TIME_LIMIT_SECONDS = config.evolutionary.time_limit;
-  double const ITERATION_LIMIT = config.evolutionary.iteration_limit;
+  double const ITERATION_LIMIT = config.evolutionary.iteration_limit;*/
   //replaceStrategy
   //combineStrategy
   //mutateStrategy
@@ -664,7 +685,7 @@ int main(int argc, char* argv[]) {
 
   //clearFile(config.partition.graph_filename);
   Partitioner partitioner;
-  Population populus(hypergraph, POPULATION_SIZE);
+  Population populus(hypergraph, config, config.evolutionary.population_size);
   double membaBest = DBL_MAX;
 
   CombinatorBaseImplementation comb(hypergraph, config);
@@ -676,9 +697,10 @@ int main(int argc, char* argv[]) {
   float n;
   duration elapsed_total = currentTime - start;
   
-  while(i < (FILL_AMOUNT + 1) && i <= ITERATION_LIMIT && elapsed_total.count() <= TIME_LIMIT_SECONDS) {    //INTENDED TO START THE ITERATION NUMBERS AT 1 instead of 0
+  while(i < (config.evolutionary.fill_limit + 1) && i <= config.evolutionary.iteration_limit && elapsed_total.count() <= config.evolutionary.time_limit) {    //INTENDED TO START THE ITERATION NUMBERS AT 1 instead of 0
     Timepoint startIteration = timer::now();
     Individuum indi = populus.generateIndividuum(config);
+    // indi.print();
     double currentFitness = indi.getFitness();
     if (currentFitness < membaBest) {
       membaBest = currentFitness;
@@ -688,17 +710,15 @@ int main(int argc, char* argv[]) {
     duration elapsed_total = endIteration - start;
 
     populus.printInfo();
-    writeShitEvo(i, filename, elapsed_secondsIteration, hypergraph,config,currentFitness,0,0,i, populus.getAverageFitness(), membaBest, false);
-    /*  if(elapsed_total.count() > TIME_LIMIT_SECONDS) {
-      break;
-      }*/
+    writeShitEvo(i, filename, elapsed_secondsIteration, hypergraph,config,currentFitness,0,0,i, populus.getAverageFitness(), membaBest, false, false);
+
 	++i;	
   }
   currentTime = timer::now();
   iterationSeconds = currentTime - start;
  
-  
-  while(iterationSeconds.count() <= TIME_LIMIT_SECONDS && i <= ITERATION_LIMIT) {
+ 
+  while(iterationSeconds.count() <= config.evolutionary.time_limit && i <= config.evolutionary.iteration_limit) {
 
     
     Timepoint startIteration = timer::now();
@@ -709,11 +729,12 @@ int main(int argc, char* argv[]) {
     unsigned replacePosition;
     bool mutation;
     //Mutate
-    std::cout << std::endl << std::endl << std::endl <<"XXXXXXXXXXXXXXXXXX" <<n<<"XXXXXXXXXXXXXXXXXXXX" <<std::endl << std::endl << std::endl;
-    if(n >= (1 - MUTATION_CHANCE)){ //Trickery since [0,1) can roll a 0 whereas 1 -[0,1) never will
+
+    if(n >= (1 - config.evolutionary.mutation_chance)){ //Trickery since [0,1) can roll a 0 whereas 1 -[0,1) never will
       firstPos =  populus.getRandomIndividuum();
       secondPos = firstPos;
       Individuum indi = populus.mutate(firstPos, mut);
+      //indi.print();
       populus.replace(indi, firstPos);
       currentFitness = indi.getFitness();
       replacePosition = firstPos;
@@ -723,9 +744,10 @@ int main(int argc, char* argv[]) {
     else {
       std::pair<unsigned, unsigned> tournamentWinners = populus.getTwoIndividuumTournamentPosition();
       Individuum indi = populus.combine(tournamentWinners.first,tournamentWinners.second, comb);
+      //indi.print();
       firstPos = tournamentWinners.first;
       secondPos = tournamentWinners.second;
-      replacePosition = populus.replaceDiverse(indi);
+      replacePosition = populus.replaceStrategy(indi);
       currentFitness = indi.getFitness();
       mutation = false;
       }
@@ -740,7 +762,22 @@ int main(int argc, char* argv[]) {
     Timepoint endIteration = timer::now();
     duration elapsed_secondsIteration = endIteration - startIteration;
     
-    writeShitEvo(i, filename, elapsed_secondsIteration, hypergraph,config,currentFitness, firstPos, secondPos, replacePosition, populus.getAverageFitness(), membaBest, mutation);
+    writeShitEvo(i, filename, elapsed_secondsIteration, hypergraph,config,currentFitness, firstPos, secondPos, replacePosition, populus.getAverageFitness(), membaBest, mutation, false);
+    if(i%config.evolutionary.edge_repeat == 0) {
+      std::vector<unsigned> pos = populus.bestPositions((int) sqrt(config.evolutionary.population_size));
+      
+      std::vector<double>edgeFreq = populus.edgeFrequency(pos);
+
+      Individuum indi = populus.individuumFromEdgeFrequency(config, edgeFreq);
+      currentFitness = indi.getFitness();
+          if (currentFitness < membaBest) {
+       membaBest = currentFitness;
+       }
+	  unsigned replacePos = populus.replaceStrategy(indi, true);
+    writeShitEvo(i, filename, elapsed_secondsIteration, hypergraph,config,currentFitness, (int) sqrt(config.evolutionary.population_size), (int) sqrt(config.evolutionary.population_size), replacePos, populus.getAverageFitness(), membaBest, false, true);
+      
+     
+    }
     currentTime = timer::now();
     iterationSeconds = currentTime - start;
     i++;
@@ -752,6 +789,27 @@ int main(int argc, char* argv[]) {
 
   Timepoint end = timer::now();
   duration elapsed_seconds = end - start;
+  populus.printInfo();
+  /*for(int q = 1; q <= 3; ++q) {
+  
+    std::vector<unsigned> pos = populus.bestPositions(q);
+
+
+    std::vector<double>edgeFreq = populus.edgeFrequency(pos);
+ 
+    Individuum final = populus.individuumFromEdgeFrequency(config, edgeFreq);
+
+    std::cout << std::endl;
+    std::cout << "Differences: " << std::endl;
+    populus.printDifference(final);
+
+    std::cout << "--------------";
+     final.printSparse();
+
+    unsigned replacePos = populus.replaceStrategy(final);
+
+    }*/
+  
   populus.setTheBest();
 #ifdef GATHER_STATS
   LOG("*******************************");

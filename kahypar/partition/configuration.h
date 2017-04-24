@@ -302,12 +302,24 @@ struct EvolutionaryParameters {
     time_limit(5*60*60),
     population_size(10),
     mutation_chance(0),
-    fill_limit(50) { }
+    fill_limit(50),
+    strong_set(false),
+    replace_diverse(true),
+    gamma(1.0),
+    edgeFrequencyUsesWeight(false),
+    verbose(false),
+    edge_repeat(10) { }
   int iteration_limit;
   int time_limit; 
   int population_size;
   float mutation_chance;
   unsigned fill_limit;
+  bool strong_set;
+  bool replace_diverse;
+  double gamma;
+  bool edgeFrequencyUsesWeight;
+  bool verbose; 
+  unsigned edge_repeat;
   //Replacement strategy
   //Mutation strategy
   //Combine stragegy
@@ -320,6 +332,7 @@ inline std::ostream& operator << (std::ostream &str, const EvolutionaryParameter
   str << "  Population Size:                    " << params.population_size << std::endl;
   str << "  Mutation Chance:                    " << params.mutation_chance * 100 <<"%" <<std::endl;
   str << "  Fill Limit:                         " << params.fill_limit << std::endl;
+  str << "  Strong Set Difference:                         " << params.strong_set << std::endl;
   return str;
 }
 struct Configuration {
