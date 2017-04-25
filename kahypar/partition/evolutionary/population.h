@@ -161,7 +161,7 @@ inline Individuum Population::createIndividuum(Hypergraph &hypergraph, Configura
      current.printSparse();
      std::vector<HyperedgeID> cutEdges;
 
-     if(_config.evolutionary.strong_set) {
+     if(_config.evolutionary.edge_strong_set) {
 
        cutEdges = current.getStrongCutEdges();
 

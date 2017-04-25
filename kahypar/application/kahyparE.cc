@@ -503,6 +503,12 @@ void processCommandLineInput(Configuration& config, int argc, char* argv[]) {
       [&](const bool& verbose) {
 	config.evolutionary.verbose = verbose;
       }),"TExT")
+    ("edge-strong-set",
+    po::value<bool>()->value_name("<bool>")->notifier(
+      [&](const bool& ess) {
+	config.evolutionary.edge_strong_set = ess;
+      }),"TExT")
+
    ("fill-limit",
     po::value<unsigned>()->value_name("<unsigned>")->notifier(
       [&](const unsigned& filllimit) {
@@ -614,7 +620,11 @@ void writeShitEvo(int i, std::string filename, std::chrono::duration<double> dur
 	   << config.evolutionary.time_limit << " "
 	   << config.evolutionary.population_size << " "
 	   << config.evolutionary.iteration_limit << " "
-	   << edgeFrequency 
+	   << edgeFrequency << " "
+	   << config.evolutionary.strong_set << " "
+	   << config.evolutionary.edge_strong_set<< " "
+	   << config.evolutionary.edgeFrequencyUsesWeight << " "
+	   << config.evolutionary.gamma
     //<< kahypar::metrics::imbalance(hypergraph, config.partition.k) << " "
 	   <<std::endl;
   out_file.close();

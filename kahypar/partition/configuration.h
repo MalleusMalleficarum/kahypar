@@ -308,7 +308,8 @@ struct EvolutionaryParameters {
     gamma(1.0),
     edgeFrequencyUsesWeight(false),
     verbose(false),
-    edge_repeat(10) { }
+    edge_repeat(10),
+    edge_strong_set(false) { }
   int iteration_limit;
   int time_limit; 
   int population_size;
@@ -320,6 +321,7 @@ struct EvolutionaryParameters {
   bool edgeFrequencyUsesWeight;
   bool verbose; 
   unsigned edge_repeat;
+  bool edge_strong_set;
   //Replacement strategy
   //Mutation strategy
   //Combine stragegy
