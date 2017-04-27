@@ -309,6 +309,7 @@ struct EvolutionaryParameters {
     edgeFrequencyUsesWeight(false),
     verbose(false),
     edge_repeat(10),
+    graph_name("NO_GRAPH_NAME"),
     edge_strong_set(false) { }
   int iteration_limit;
   int time_limit; 
@@ -321,6 +322,7 @@ struct EvolutionaryParameters {
   bool edgeFrequencyUsesWeight;
   bool verbose; 
   unsigned edge_repeat;
+  std::string graph_name;
   bool edge_strong_set;
   //Replacement strategy
   //Mutation strategy

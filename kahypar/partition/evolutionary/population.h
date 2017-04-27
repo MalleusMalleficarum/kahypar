@@ -237,16 +237,15 @@ inline void Population::setPartitionVector(Hypergraph& hypergraph, const std::ve
     inline std::size_t Population::getRandomIndividuum() {
       return Randomize::instance().getRandomInt(0, size() -1);
     }
-    //DANGEROUS SIDE EFFECT IN PARALLEL TODO NOT IN CREATING
-    /*inline void Population::insertIndividuumFromFile(std::string filename) {
+    
+    inline void Population::insertIndividuumFromFile(std::string filename) {
       
       std::ifstream part_file(filename);
       if(!part_file) {
-	std::cout << "FIT";
+	std::cout << "File NOT FOUND :(" << std::endl;
 	return;
       }
-      //TODO ASSERT THE FILE HAS CORRECT LENGTH
-      //TODO MAYBE ASSERT THAT THE FILE CONTAINS CORRECT K
+     
       std::vector<PartitionID> partition;
       PartitionID value;
       while(part_file >> value) {
@@ -254,18 +253,11 @@ inline void Population::setPartitionVector(Hypergraph& hypergraph, const std::ve
       }
       _hypergraph.resetPartitioning();
       setPartitionVector(_hypergraph, partition);
-      	std::vector<HyperedgeID> cutEdges;
-	for(HyperedgeID v : _hypergraph.edges()) {
-	  if(_hypergraph.connectivity(v) > 1) {
-	    cutEdges.push_back(v);
-	  }
-	}
-      HyperedgeWeight weight = metrics::km1(_hypergraph);
-      Individuum individuum(partition, cutEdges , weight);
-      insertIndividuum(individuum);
+      Individuum in = createIndividuum(_hypergraph, _config);
+      insertIndividuum(in);
       _hypergraph.resetPartitioning();
       
-      }*/
+      }
     inline unsigned Population::worstIndividuumPosition() {
       //TODO what if we have nothing in our population? Max_unsigned or exception?
       unsigned currentPosition = INT_MAX;

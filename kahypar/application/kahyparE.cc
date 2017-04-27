@@ -508,7 +508,11 @@ void processCommandLineInput(Configuration& config, int argc, char* argv[]) {
       [&](const bool& ess) {
 	config.evolutionary.edge_strong_set = ess;
       }),"TExT")
-
+    ("graph-name",
+     po::value<std::string>()->value_name("<std::string>")->notifier(
+								     [&](const std::string& graphname) {
+								       config.evolutionary.graph_name = graphname;
+      }),"TExT")
    ("fill-limit",
     po::value<unsigned>()->value_name("<unsigned>")->notifier(
       [&](const unsigned& filllimit) {
@@ -696,7 +700,16 @@ int main(int argc, char* argv[]) {
   //clearFile(config.partition.graph_filename);
   Partitioner partitioner;
   Population populus(hypergraph, config, config.evolutionary.population_size);
-  double membaBest = DBL_MAX;
+  for(int i = 1; i <=10; ++i) {
+    std::string fileName = config.evolutionary.graph_name + std::to_string(i) + ".KaHyPar";
+     populus.insertIndividuumFromFile(fileName);
+  }
+  std::vector<unsigned> positions = populus.bestPositions(3);
+  std::vector<double> edgeFreq = populus.edgeFrequency(positions);
+  Individuum in = populus.individuumFromEdgeFrequency(config, edgeFreq);
+  populus.replaceStrategy(in);
+ 
+  /* double membaBest = DBL_MAX;
 
   CombinatorBaseImplementation comb(hypergraph, config);
   MutatorBaseImplementation mut(hypergraph, config);
@@ -799,7 +812,7 @@ int main(int argc, char* argv[]) {
 
   Timepoint end = timer::now();
   duration elapsed_seconds = end - start;
-  populus.printInfo();
+  populus.printInfo();*/
   /*for(int q = 1; q <= 3; ++q) {
   
     std::vector<unsigned> pos = populus.bestPositions(q);
@@ -819,7 +832,8 @@ int main(int argc, char* argv[]) {
     unsigned replacePos = populus.replaceStrategy(final);
 
     }*/
-  
+  Timepoint end = timer::now();
+  duration elapsed_seconds = end - end;
   populus.setTheBest();
 #ifdef GATHER_STATS
   LOG("*******************************");

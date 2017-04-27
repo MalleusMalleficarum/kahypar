@@ -1,0 +1,55 @@
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /home/andre/server-home/myHyparHypar/kahypar/test/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_2c2bb/fast"
+/usr/bin/make -f CMakeFiles/cmTC_2c2bb.dir/build.make CMakeFiles/cmTC_2c2bb.dir/build
+make[1]: Verzeichnis „/home/andre/server-home/myHyparHypar/kahypar/test/CMakeFiles/CMakeTmp“ wird betreten
+Building C object CMakeFiles/cmTC_2c2bb.dir/CheckSymbolExists.c.o
+/usr/bin/cc     -o CMakeFiles/cmTC_2c2bb.dir/CheckSymbolExists.c.o   -c /home/andre/server-home/myHyparHypar/kahypar/test/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_2c2bb
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_2c2bb.dir/link.txt --verbose=1
+/usr/bin/cc       CMakeFiles/cmTC_2c2bb.dir/CheckSymbolExists.c.o  -o cmTC_2c2bb -rdynamic 
+CMakeFiles/cmTC_2c2bb.dir/CheckSymbolExists.c.o: In Funktion `main':
+CheckSymbolExists.c:(.text+0x16): Nicht definierter Verweis auf `pthread_create'
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_2c2bb.dir/build.make:97: die Regel für Ziel „cmTC_2c2bb“ scheiterte
+make[1]: *** [cmTC_2c2bb] Fehler 1
+make[1]: Verzeichnis „/home/andre/server-home/myHyparHypar/kahypar/test/CMakeFiles/CMakeTmp“ wird verlassen
+Makefile:126: die Regel für Ziel „cmTC_2c2bb/fast“ scheiterte
+make: *** [cmTC_2c2bb/fast] Fehler 2
+
+File /home/andre/server-home/myHyparHypar/kahypar/test/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/andre/server-home/myHyparHypar/kahypar/test/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_27e28/fast"
+/usr/bin/make -f CMakeFiles/cmTC_27e28.dir/build.make CMakeFiles/cmTC_27e28.dir/build
+make[1]: Verzeichnis „/home/andre/server-home/myHyparHypar/kahypar/test/CMakeFiles/CMakeTmp“ wird betreten
+Building C object CMakeFiles/cmTC_27e28.dir/CheckFunctionExists.c.o
+/usr/bin/cc    -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_27e28.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.5/Modules/CheckFunctionExists.c
+Linking C executable cmTC_27e28
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_27e28.dir/link.txt --verbose=1
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTC_27e28.dir/CheckFunctionExists.c.o  -o cmTC_27e28 -rdynamic -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_27e28.dir/build.make:97: die Regel für Ziel „cmTC_27e28“ scheiterte
+make[1]: *** [cmTC_27e28] Fehler 1
+make[1]: Verzeichnis „/home/andre/server-home/myHyparHypar/kahypar/test/CMakeFiles/CMakeTmp“ wird verlassen
+Makefile:126: die Regel für Ziel „cmTC_27e28/fast“ scheiterte
+make: *** [cmTC_27e28/fast] Fehler 2
+
+
