@@ -23,8 +23,8 @@ namespace kahypar {
       if(config.evolutionary.edgeFrequencyUsesWeight) {
         currentValue = currentValue / (_hg.nodeWeight(u) * _hg.nodeWeight(v));
       }
-      //return (currentValue);
-      return ((double)_hg.edgeWeight(he)) / (_hg.edgeSize(he) - 1);
+      return (currentValue);
+      //return ((double)_hg.edgeWeight(he)) / (_hg.edgeSize(he) - 1);
       //return 0;
     }
   }
