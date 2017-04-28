@@ -57,8 +57,9 @@ inline void setPartitionVector(Hypergraph &hypergraph, const std::vector<Partiti
   inline void printInfo();
   inline void setTheBest();
   inline double getAverageFitness();
-  inline Individuum individuumFromEdgeFrequency(Configuration &config, std::vector<double> &edgeFrequency); //TODO
+  inline Individuum individuumFromEdgeFrequency(Configuration &config, std::vector<double> &edgeFrequency); 
   inline std::vector<double> edgeFrequency(std::vector<unsigned> &positions); 
+  inline Individuum combineIndividuumFromEdgeFrequency(unsigned pos1, unsigned pos2, Configuration &config, std::vector<double> &edgeFrequency);
   
  
   private: 
@@ -119,6 +120,21 @@ inline Individuum Population::individuumFromEdgeFrequency(Configuration &config,
     return ind;
 
 }
+inline Individuum Population::combineIndividuumFromEdgeFrequency(unsigned pos1, unsigned pos2, Configuration &config, std::vector<double> &edgeFrequency) {
+    Partitioner partitioner;
+    
+
+    EvoParameters evo(getIndividuum(pos1).getPartition(), getIndividuum(pos2).getPartition(), false, true, edgeFrequency);
+
+    partitioner.partition(_hypergraph, config, evo);
+
+    Individuum ind = createIndividuum(_hypergraph, config);
+
+    std::cout << ind.getFitness();
+    return ind;
+
+}
+
 inline Individuum Population::createIndividuum(Hypergraph &hypergraph, Configuration &config) {
        std::vector<PartitionID> result;
       	for (HypernodeID u : hypergraph.nodes()) {

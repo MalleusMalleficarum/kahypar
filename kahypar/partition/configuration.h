@@ -309,7 +309,11 @@ struct EvolutionaryParameters {
     edgeFrequencyUsesWeight(false),
     verbose(false),
     edge_repeat(10),
-    edge_strong_set(false) { }
+    edge_strong_set(false),
+    use_edge_combine(false),
+    best_positions(0),
+    combine_positions(true),
+    random_positions(0) { }
   int iteration_limit;
   int time_limit; 
   int population_size;
@@ -322,6 +326,10 @@ struct EvolutionaryParameters {
   bool verbose; 
   unsigned edge_repeat;
   bool edge_strong_set;
+  bool use_edge_combine;
+  unsigned best_positions;
+  bool combine_positions;
+  unsigned random_positions;
   //Replacement strategy
   //Mutation strategy
   //Combine stragegy
