@@ -523,7 +523,7 @@ void processCommandLineInput(Configuration& config, int argc, char* argv[]) {
       [&](const bool& ess) {
 	config.evolutionary.combine_positions = ess;
       }),"TExT")
-    ("random-positons",
+    ("random-positions",
     po::value<unsigned>()->value_name("<unsigned>")->notifier(
       [&](const unsigned& ess) {
 	config.evolutionary.random_positions = ess;
@@ -600,7 +600,7 @@ void writeShitEvo(int i, std::string filename, std::chrono::duration<double> dur
    std::string useThis = filename.substr(found + 1);
   std::ofstream out_file;
   
-  out_file.open(std::string("../../../../results/") +std::string("EVOLUTIONARYtemp"), std::ios_base::app);
+  out_file.open(std::string("../../../../results/") +std::string("EVOLUTIONARY"), std::ios_base::app);
   /*  out_file << "RESULT" << " k=" << config.partition.k
            << " epsilon=" << config.partition.epsilon
 	   << " seed=" << config.partition.seed
@@ -643,7 +643,8 @@ void writeShitEvo(int i, std::string filename, std::chrono::duration<double> dur
 	   << config.evolutionary.strong_set << " "
 	   << config.evolutionary.edge_strong_set<< " "
 	   << config.evolutionary.edgeFrequencyUsesWeight << " "
-	   << config.evolutionary.gamma
+	   << config.evolutionary.gamma << " "
+	   << config.evolutionary.use_edge_combine
     //<< kahypar::metrics::imbalance(hypergraph, config.partition.k) << " "
 	   <<std::endl;
   out_file.close();
