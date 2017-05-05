@@ -9,6 +9,7 @@
 #include "kahypar/definitions.h"
 #include "i_replace.h"
 #include "kahypar/datastructure/sparse_map.h"
+
 namespace kahypar {
 
 
@@ -51,8 +52,8 @@ inline void setPartitionVector(Hypergraph &hypergraph, const std::vector<Partiti
   inline Individuum generateIndividuum(Configuration &config);
   inline std::vector<unsigned> bestPositions(unsigned amount);
   inline unsigned difference(Individuum &in, unsigned position);
-  inline Individuum crossCombineMetric(); //TODO
-  inline Individuum crossCombine(); //TODO
+  //inline Individuum crossCombineMetric(); //TODO
+inline Individuum crossCombine(Individuum& original, Configuration &config, ICombine &comb); //TODO
   inline std::size_t getRandomExcept(std::size_t except);
   inline void printInfo();
   inline void setTheBest();
@@ -70,7 +71,46 @@ inline void setPartitionVector(Hypergraph &hypergraph, const std::vector<Partiti
   unsigned _maxPopulationLimit;
 
 };
+  inline Individuum Population::crossCombine(Individuum &original, Configuration &config, ICombine &comb) {
 
+    Configuration configTemp = config;
+    switch(config.evolutionary.cc_objective) {
+      case CrossCombineObjective::k : {
+        int lowerbound = std::max(config.partition.k / 4, 2);
+int kFactor = Randomize::instance().getRandomInt(lowerbound, config.partition.k * 4);
+        configTemp.partition.k = kFactor;
+//break; //Do not want until experiments confirm
+      }
+      case CrossCombineObjective::epsilon : {
+float epsilonFactor = Randomize::instance().getRandomFloat(config.partition.epsilon, 0.25);
+        configTemp.partition.epsilon = epsilonFactor;
+        break;
+      }
+      case CrossCombineObjective::metric : {
+        if(config.partition.objective == Objective::km1) {
+          configTemp.partition.objective = Objective::cut;
+        }
+        else {
+          configTemp.partition.objective = Objective::km1;
+        }
+        break;
+      }
+      case CrossCombineObjective::mode : {
+        if(config.partition.mode == Mode::recursive_bisection){
+          config.partition.mode = Mode::direct_kway;
+        }
+        else {
+          config.partition.mode = Mode::recursive_bisection;
+        }
+        break;
+      }
+    }
+    Individuum indTemp = createIndividuum(_hypergraph, configTemp);
+    return combine(original, indTemp, comb);
+
+  }
+
+ 
   inline void Population::printDifference(Individuum &in) {
     
     for(int i = 0; i < size(); ++i) {

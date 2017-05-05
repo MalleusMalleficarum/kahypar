@@ -80,6 +80,12 @@ enum class Objective : uint8_t {
   cut,
   km1
 };
+enum class CrossCombineObjective : uint8_t {
+  k,
+  epsilon,
+  metric,
+  mode
+};
 
 static std::string toString(const Mode& mode) {
   switch (mode) {
@@ -194,7 +200,36 @@ static std::string toString(const GlobalRebalancingMode& state) {
   }
   return std::string("UNDEFINED");
 }
-
+static std::string toString(const CrossCombineObjective &ccobj) {
+  switch (ccobj) {
+    case CrossCombineObjective::mode:
+      return std::string("mode");
+    case CrossCombineObjective::metric :
+      return std::string("objective");
+    case CrossCombineObjective::epsilon :
+      return std::string("epsilon");
+    case CrossCombineObjective::k :
+      return std::string("k");
+  }
+  return std::string("UNDEFINED");
+}
+static CrossCombineObjective crossCombineObjectiveFromString(const std::string &ccobj) {
+  if(ccobj == "mode") {
+    return CrossCombineObjective::mode;
+  }
+  else if (ccobj == "objective") {
+    return CrossCombineObjective::metric;
+  }
+  else if (ccobj == "epsilon") {
+    return CrossCombineObjective::epsilon;
+  }
+  else if (ccobj == "k") {
+    return CrossCombineObjective::k;
+  }
+  std::cout << "No valid Cross Combine Objective" << std::endl;
+  exit(0);
+  return CrossCombineObjective::k;
+}
 static RefinementStoppingRule stoppingRuleFromString(const std::string& rule) {
   if (rule == "simple") {
     return RefinementStoppingRule::simple;

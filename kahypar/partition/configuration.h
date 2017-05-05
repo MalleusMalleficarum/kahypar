@@ -313,7 +313,9 @@ struct EvolutionaryParameters {
     use_edge_combine(false),
     best_positions(0),
     combine_positions(true),
-    random_positions(0) { }
+    random_positions(0),
+    cc_objective(CrossCombineObjective::k),
+    cross_combine_chance(0) { }
   int iteration_limit;
   int time_limit; 
   int population_size;
@@ -330,6 +332,9 @@ struct EvolutionaryParameters {
   unsigned best_positions;
   bool combine_positions;
   unsigned random_positions;
+  CrossCombineObjective cc_objective;
+  float cross_combine_chance;
+  
   //Replacement strategy
   //Mutation strategy
   //Combine stragegy
