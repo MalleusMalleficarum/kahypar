@@ -40,12 +40,18 @@ struct MinHashSparsifierParameters {
   HypernodeID min_median_he_size = 28;
   bool is_active = false;
 };
-
+struct LouvainCommunityDetection {
+  bool enable_in_initial_partitioning = false;
+  LouvainEdgeWeight edge_weight = LouvainEdgeWeight::hybrid;
+  int max_pass_iterations = 100;
+  long double min_eps_improvement = 0.0001;
+};
 struct PreprocessingParameters {
   bool enable_min_hash_sparsifier = false;
   bool remove_always_cut_hes = false;
   bool remove_parallel_hes = false;
   MinHashSparsifierParameters min_hash_sparsifier = MinHashSparsifierParameters();
+  LouvainCommunityDetection louvain_community_detection = LouvainCommunityDetection();
 };
 
 inline std::ostream& operator<< (std::ostream& str, const MinHashSparsifierParameters& params) {
@@ -315,7 +321,8 @@ struct EvolutionaryParameters {
     combine_positions(true),
     random_positions(0),
     cc_objective(CrossCombineObjective::k),
-    cross_combine_chance(0) { }
+    cross_combine_chance(0),
+    louvain(false) { }
   int iteration_limit;
   int time_limit; 
   int population_size;
@@ -334,7 +341,7 @@ struct EvolutionaryParameters {
   unsigned random_positions;
   CrossCombineObjective cc_objective;
   float cross_combine_chance;
-  
+  bool louvain;
   //Replacement strategy
   //Mutation strategy
   //Combine stragegy

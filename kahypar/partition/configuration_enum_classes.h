@@ -28,7 +28,10 @@ enum class Mode : uint8_t {
   recursive_bisection,
   direct_kway
 };
-
+enum class ContextType :bool {
+  main,
+  initial_partitioning
+};
 enum class InitialPartitioningTechnique : uint8_t {
   multilevel,
   flat
@@ -65,7 +68,12 @@ enum class InitialPartitionerAlgorithm : uint8_t {
   lp,
   pool
 };
-
+enum class LouvainEdgeWeight : uint8_t {
+  hybrid,
+  uniform,
+  non_uniform,
+  degree
+};
 enum class RefinementStoppingRule : uint8_t {
   simple,
   adaptive_opt,
@@ -84,7 +92,8 @@ enum class CrossCombineObjective : uint8_t {
   k,
   epsilon,
   metric,
-  mode
+  mode,
+  louvain
 };
 
 static std::string toString(const Mode& mode) {
@@ -210,6 +219,8 @@ static std::string toString(const CrossCombineObjective &ccobj) {
       return std::string("epsilon");
     case CrossCombineObjective::k :
       return std::string("k");
+    case CrossCombineObjective::louvain :
+      return std::string("louvain");
   }
   return std::string("UNDEFINED");
 }
@@ -225,6 +236,9 @@ static CrossCombineObjective crossCombineObjectiveFromString(const std::string &
   }
   else if (ccobj == "k") {
     return CrossCombineObjective::k;
+  }
+  else if (ccobj == "louvain") {
+    return CrossCombineObjective::louvain;
   }
   std::cout << "No valid Cross Combine Objective" << std::endl;
   exit(0);

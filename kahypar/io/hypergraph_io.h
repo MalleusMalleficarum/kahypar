@@ -89,7 +89,7 @@ static inline void readHypergraphFile(const std::string& filename, HypernodeID& 
         HyperedgeWeight edge_weight;
         line_stream >> edge_weight;
         if (hyperedge_weights == nullptr) {
-          LOG(" ****** ignoring hyperedge weights ******");
+          //LOG << " ****** ignoring hyperedge weights ******";
         } else {
           ASSERT(hyperedge_weights != nullptr, "Hypergraph has hyperedge weights");
           hyperedge_weights->push_back(edge_weight);
@@ -107,7 +107,7 @@ static inline void readHypergraphFile(const std::string& filename, HypernodeID& 
 
     if (has_hypernode_weights) {
       if (hypernode_weights == nullptr) {
-        LOG(" ****** ignoring hypernode weights ******");
+       //LOG<<" ****** ignoring hypernode weights ******";
       } else {
         ASSERT(hypernode_weights != nullptr, "Hypergraph has hypernode weights");
         for (HypernodeID i = 0; i < num_hypernodes; ++i) {

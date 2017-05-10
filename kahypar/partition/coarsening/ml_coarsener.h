@@ -79,11 +79,12 @@ class MLCoarsener final : public ICoarsener,
 
  private:
 	void coarsenImpl(const HypernodeID limit, EvoParameters &evo) override final {
-		
+                std::cout << _config.partition.k << " ?????????";
 		int pass_nr = 0;
 		std::vector<HypernodeID> current_hns;
 		ds::FastResetFlagArray<> already_matched(_hg.initialNumNodes());
 		while (_hg.currentNumNodes() > limit) {
+
 			LOGVAR(pass_nr);
 			LOGVAR(_hg.currentNumNodes());
 
@@ -92,6 +93,7 @@ class MLCoarsener final : public ICoarsener,
 
 			const HypernodeID num_hns_before_pass = _hg.currentNumNodes();
 			for (const HypernodeID hn : _hg.nodes()) {
+
 				current_hns.push_back(hn);
 			}
 			Randomize::instance().shuffleVector(current_hns, current_hns.size());
@@ -101,10 +103,13 @@ class MLCoarsener final : public ICoarsener,
 			//           });
 
 			for (const HypernodeID hn : current_hns) {
+
 				if (_hg.nodeIsEnabled(hn)) {
+
 					const Rating rating = contractionPartner(hn, already_matched, evo);
 
 					if (rating.target != kInvalidTarget) {
+
 						already_matched.set(hn, true);
 						already_matched.set(rating.target, true);
 						// if (_hg.nodeDegree(hn) > _hg.nodeDegree(rating.target)) {
@@ -115,11 +120,13 @@ class MLCoarsener final : public ICoarsener,
 					}
 
 					if (_hg.currentNumNodes() <= limit) {
+
 						break;
 					}
 				}
 			}
 			if (num_hns_before_pass == _hg.currentNumNodes()) {
+
 				break;
 			}
 
@@ -128,6 +135,7 @@ class MLCoarsener final : public ICoarsener,
 	
 	}
   void coarsenImpl(const HypernodeID limit) override final {
+          
 	  std::vector<PartitionID>dummy;
 	  std::vector<PartitionID>dummy2;
           std::vector<double>dummy3;
@@ -139,6 +147,7 @@ class MLCoarsener final : public ICoarsener,
     DBG(dbg_partition_rating, "Calculating rating for HN " << u);
     const HypernodeWeight weight_u = _hg.nodeWeight(u);
     for (const HyperedgeID he : _hg.incidentEdges(u)) {
+
       ASSERT(_hg.edgeSize(he) > 1, V(he));
       if (_hg.edgeSize(he) <= _config.partition.hyperedge_size_threshold) {
 	
@@ -167,8 +176,16 @@ class MLCoarsener final : public ICoarsener,
     RatingType max_rating = std::numeric_limits<RatingType>::min();
     HypernodeID target = std::numeric_limits<HypernodeID>::max();
     for (auto it = _tmp_ratings.end() - 1; it >= _tmp_ratings.begin(); --it) {
+
       const HypernodeID tmp_target = it->key;
-      const RatingType tmp_rating = it->value;
+      RatingType tmp_rating; //const
+      if(evo.frequency.size() == 0) {
+        tmp_rating = it->value;
+      }
+      else {
+        tmp_rating = it->value / std::pow((double)(_hg.nodeWeight(u) * _hg.nodeWeight(tmp_target)), 1.2);
+      }
+      
       DBG(false, "r(" << u << "," << tmp_target << ")=" << tmp_rating);
       if (acceptRating(tmp_rating, max_rating, target, tmp_target, already_matched)) {
         max_rating = tmp_rating;
@@ -179,7 +196,7 @@ class MLCoarsener final : public ICoarsener,
     Rating ret;
     if (max_rating != std::numeric_limits<RatingType>::min()) {
       ASSERT(target != std::numeric_limits<HypernodeID>::max());
-      ASSERT(_tmp_ratings[target] == max_rating, V(target));
+      //ASSERT(_tmp_ratings[target] == max_rating, V(target));
       ret.value = max_rating;
       ret.target = target;
       ret.valid = true;

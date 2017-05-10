@@ -40,11 +40,8 @@ class ConnectivitySets final {
   // Each contains the size of the connectivity set as  the header
   // and afterwards the _dense and sparse arrays and the partition pin counts.
   // This memory is allocated outside the structure using a memory arena.
-  struct ConnectivitySet {
-    const PartitionID _k;
-    PartitionID _size;
-    // After _size are the _dense and _sparse arrays.
-
+  class ConnectivitySet {
+ public:
     explicit ConnectivitySet(const PartitionID k) :
       _k(k),
       _size(0) {
@@ -58,6 +55,8 @@ class ConnectivitySets final {
 
     ConnectivitySet(ConnectivitySet&& other) = delete;
     ConnectivitySet& operator= (ConnectivitySet&&) = delete;
+
+    ~ConnectivitySet() = default;
 
     PartitionID* dense() {
       return &_size + 1;
@@ -101,6 +100,11 @@ class ConnectivitySets final {
     PartitionID size() const {
       return _size;
     }
+
+ private:
+    const PartitionID _k;
+    PartitionID _size;
+    // After _size are the _dense and _sparse arrays.
   };
 
 
@@ -115,26 +119,21 @@ class ConnectivitySets final {
     _connectivity_sets(nullptr) { }
 
 
-  ~ConnectivitySets() {
-    // Since ConnectivitySet only contains PartitionIDs and these are PODs,
-    // we do not need to call destructors of ConnectivitySet get(i)->~ConnectivitySet();
-    static_assert(std::is_pod<PartitionID>::value, "PartitionID is not a POD");
-    free(_connectivity_sets);
-  }
+  ~ConnectivitySets() = default;
 
   ConnectivitySets(const ConnectivitySets&) = delete;
   ConnectivitySets& operator= (const ConnectivitySets&) = delete;
 
-  ConnectivitySets(ConnectivitySets&& other) :
+  ConnectivitySets(ConnectivitySets&& other) noexcept :
     _k(other._k),
-    _connectivity_sets(other._connectivity_sets) {
+    _connectivity_sets(std::move(other._connectivity_sets)) {
     other._k = 0;
     other._connectivity_sets = nullptr;
   }
 
-  ConnectivitySets& operator= (ConnectivitySets&& other) {
+  ConnectivitySets& operator= (ConnectivitySets&& other) noexcept {
     _k = other._k;
-    _connectivity_sets = other._connectivity_sets;
+    _connectivity_sets = std::move(other._connectivity_sets);
     other._k = 0;
     other._connectivity_sets = nullptr;
     return *this;
@@ -142,12 +141,15 @@ class ConnectivitySets final {
 
   void initialize(const HyperedgeID num_hyperedges, const PartitionID k) {
     _k = k;
-    _connectivity_sets = static_cast<Byte*>(malloc(num_hyperedges * sizeOfConnectivitySet()));
+    _connectivity_sets = std::make_unique<Byte[]>(num_hyperedges * sizeOfConnectivitySet());
     for (HyperedgeID i = 0; i < num_hyperedges; ++i) {
       new(get(i))ConnectivitySet(_k);
     }
   }
 
+  void resize(const HyperedgeID num_hyperedges, const PartitionID k) {
+    initialize(num_hyperedges, k);
+  }
 
   const ConnectivitySet& operator[] (const HyperedgeID he) const {
     return *get(he);
@@ -160,7 +162,8 @@ class ConnectivitySets final {
 
  private:
   const ConnectivitySet* get(const HyperedgeID he) const {
-    return reinterpret_cast<ConnectivitySet*>(_connectivity_sets + he * sizeOfConnectivitySet());
+    return reinterpret_cast<ConnectivitySet*>(_connectivity_sets.get() +
+                                              he * sizeOfConnectivitySet());
   }
 
   // To avoid code duplication we implement non-const version in terms of const version
@@ -173,7 +176,7 @@ class ConnectivitySets final {
   }
 
   PartitionID _k;
-  Byte* _connectivity_sets;
+  std::unique_ptr<Byte[]> _connectivity_sets;
 };
 }  // namespace ds
-}  // namespace kahypar
+} // namespace kahypar

@@ -263,7 +263,7 @@ class HypergraphPruner {
         hypergraph.edgeHash(he) -= math::hash(v);
       }
       hypergraph.resetEdgeContractionType(he);
-      ASSERT([&]() {
+      /*ASSERT([&]() {
           size_t correct_hash = 42;
           for (const HypernodeID pin : hypergraph.pins(he)) {
             correct_hash += math::hash(pin);
@@ -274,7 +274,7 @@ class HypergraphPruner {
             return false;
           }
           return true;
-        } (), V(he));
+        } (), V(he));*/
       DBG(dbg_coarsening_fingerprinting, "Fingerprint for HE " << he
           << "= {" << he << "," << hypergraph.edgeHash(he) << "," << hypergraph.edgeSize(he) << "}");
       _fingerprints.emplace_back(he, hypergraph.edgeHash(he));

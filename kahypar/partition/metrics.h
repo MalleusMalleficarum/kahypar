@@ -37,13 +37,14 @@ struct Metrics {
 
 
 namespace metrics {
+static constexpr bool debug = false;
 static const bool dbg_metrics_hyperedge_cut = false;
 
 static inline HyperedgeWeight hyperedgeCut(const Hypergraph& hg) {
   HyperedgeWeight cut = 0;
   for (const HyperedgeID he : hg.edges()) {
     if (hg.connectivity(he) > 1) {
-      DBG(dbg_metrics_hyperedge_cut, "Hyperedge " << he << " is cut-edge");
+      //DBG(dbg_metrics_hyperedge_cut, "Hyperedge " << he << " is cut-edge");
       cut += hg.edgeWeight(he);
     }
   }
@@ -98,7 +99,7 @@ static inline HyperedgeWeight hyperedgeCut(const Hypergraph& hg, CoarsendToHmeti
 
     for (auto pin_it = begin; pin_it != end; ++pin_it) {
       if (partition != partitioning[hg_to_hmetis[*pin_it]]) {
-        DBG(dbg_metrics_hyperedge_cut, "Hyperedge " << he << " is cut-edge");
+        //DBG(dbg_metrics_hyperedge_cut, "Hyperedge " << he << " is cut-edge");
         cut += hg.edgeWeight(he);
         break;
       }

@@ -9,6 +9,7 @@
 #include "kahypar/definitions.h"
 #include "i_replace.h"
 #include "kahypar/datastructure/sparse_map.h"
+#include "kahypar/partition/preprocessing/louvain.h"
 
 namespace kahypar {
 
@@ -29,8 +30,8 @@ class Population {
   inline unsigned size() {return _internalPopulation.size();};
 inline void setPartitionVector(Hypergraph &hypergraph, const std::vector<PartitionID>&parent);
   inline void printDifference(Individuum &printIn);
-  inline Individuum combine(Individuum &parent_1, Individuum &parent_2, ICombine &combinator);
-  inline Individuum combine(std::size_t pos1, std::size_t pos2, ICombine &combinator);
+  inline Individuum combine(Individuum &parent_1, Individuum &parent_2, ICombine &combinator, bool crossComb = false);
+  inline Individuum combine(std::size_t pos1, std::size_t pos2, ICombine &combinator, bool crossComb = false);
   inline Individuum mutate(Individuum &targetIndividuum, IMutate &mutator);
   inline Individuum mutate(std::size_t position, IMutate &mutator);
   inline double fitness(Individuum &targetIndividuum);
@@ -49,11 +50,11 @@ inline void setPartitionVector(Hypergraph &hypergraph, const std::vector<Partiti
   inline std::pair<Individuum, Individuum> getTwoIndividuumTournament();
   inline std::pair<unsigned, unsigned> getTwoIndividuumTournamentPosition();
   inline unsigned worstIndividuumPosition();
-  inline Individuum generateIndividuum(Configuration &config);
+  inline Individuum generateIndividuum(Configuration &config, bool insert);
   inline std::vector<unsigned> bestPositions(unsigned amount);
   inline unsigned difference(Individuum &in, unsigned position);
-  //inline Individuum crossCombineMetric(); //TODO
-inline Individuum crossCombine(Individuum& original, Configuration &config, ICombine &comb); //TODO
+
+  inline Individuum crossCombine(Individuum& original,const Configuration &config, ICombine &comb); //TODO
   inline std::size_t getRandomExcept(std::size_t except);
   inline void printInfo();
   inline void setTheBest();
@@ -71,18 +72,19 @@ inline Individuum crossCombine(Individuum& original, Configuration &config, ICom
   unsigned _maxPopulationLimit;
 
 };
-  inline Individuum Population::crossCombine(Individuum &original, Configuration &config, ICombine &comb) {
-
+  inline Individuum Population::crossCombine(Individuum &original,const Configuration &config, ICombine &comb) {
+    std::cout << std::endl << std::endl << std::endl<< "==============================================" << std::endl << std::endl << std::endl;
     Configuration configTemp = config;
     switch(config.evolutionary.cc_objective) {
       case CrossCombineObjective::k : {
         int lowerbound = std::max(config.partition.k / 4, 2);
-int kFactor = Randomize::instance().getRandomInt(lowerbound, config.partition.k * 4);
+        int kFactor = Randomize::instance().getRandomInt(lowerbound, config.partition.k * 4);
+        //int kFactor = 5;
         configTemp.partition.k = kFactor;
 //break; //Do not want until experiments confirm
       }
       case CrossCombineObjective::epsilon : {
-float epsilonFactor = Randomize::instance().getRandomFloat(config.partition.epsilon, 0.25);
+        float epsilonFactor = Randomize::instance().getRandomFloat(config.partition.epsilon, 0.25);
         configTemp.partition.epsilon = epsilonFactor;
         break;
       }
@@ -97,16 +99,36 @@ float epsilonFactor = Randomize::instance().getRandomFloat(config.partition.epsi
       }
       case CrossCombineObjective::mode : {
         if(config.partition.mode == Mode::recursive_bisection){
-          config.partition.mode = Mode::direct_kway;
+          configTemp.partition.mode = Mode::direct_kway;
         }
         else {
-          config.partition.mode = Mode::recursive_bisection;
+          configTemp.partition.mode = Mode::recursive_bisection;
         }
         break;
       }
+      case CrossCombineObjective::louvain : {
+
+        Context con(config);
+
+        std::vector<PartitionID> tempVect = detectCommunities(_hypergraph, con);
+
+        /*for(unsigned i = 0; i < tempVect.size(); ++i) {
+
+          std::cout << tempVect[i] << " ";
+        }*/
+        std::vector<HyperedgeID> dummy;
+        
+        Individuum indTempLouv(tempVect, dummy, dummy, std::numeric_limits<double>::max());
+        return combine(original, indTempLouv, comb, true);
+        break;
+      }
     }
-    Individuum indTemp = createIndividuum(_hypergraph, configTemp);
-    return combine(original, indTemp, comb);
+    std::cout << toString(configTemp) <<std::endl;
+    _hypergraph.changeK(configTemp.partition.k);
+    Individuum indTemp = generateIndividuum(configTemp, false);
+    _hypergraph.changeK(config.partition.k);
+    _hypergraph.reset();
+    return combine(original, indTemp, comb, true);
 
   }
 
@@ -196,6 +218,7 @@ inline Individuum Population::createIndividuum(Hypergraph &hypergraph, Configura
 	    
 	  }
 	}
+        
      
 	Individuum ind(result,cutWeak, cutStrong, weight);
       return ind;
@@ -205,7 +228,7 @@ inline Individuum Population::createIndividuum(Hypergraph &hypergraph, Configura
    std::vector<double> edges(_hypergraph.initialNumEdges());
 
    
-   const double increment = 1.0 / positions.size();
+   const double increment = 1.0;
 
    for(unsigned it = 0; it < positions.size(); ++it) {
     
@@ -247,14 +270,14 @@ inline void Population::setPartitionVector(Hypergraph& hypergraph, const std::ve
 		hypergraph.setNodePart(u, parent[u]);
 	}
 }
- inline Individuum Population::combine(Individuum &parent_1, Individuum &parent_2, ICombine &combinator) {
-      return combinator.combine(parent_1, parent_2);
+ inline Individuum Population::combine(Individuum &parent_1, Individuum &parent_2, ICombine &combinator, bool crossComb) {
+      return combinator.combine(parent_1, parent_2, crossComb);
 }
- inline Individuum Population::combine(std::size_t pos1, std::size_t pos2, ICombine &combinator) {
+ inline Individuum Population::combine(std::size_t pos1, std::size_t pos2, ICombine &combinator, bool crossComb) {
    Individuum ind1 = getIndividuum(pos1);
    Individuum ind2 = getIndividuum(pos2);
    //TODO bound check
-   return combine(ind1, ind2, combinator);
+   return combine(ind1, ind2, combinator, crossComb);
  }
  inline Individuum Population::mutate(Individuum &targetIndividuum, IMutate &mutator) {
       return mutator.mutate(targetIndividuum);
@@ -343,8 +366,8 @@ inline void Population::setPartitionVector(Hypergraph& hypergraph, const std::ve
       }
       return currentPosition;
     }
-    inline Individuum Population::generateIndividuum(Configuration &config) {
-      _hypergraph.resetPartitioning();
+    inline Individuum Population::generateIndividuum(Configuration &config, bool insert = true) {
+      _hypergraph.reset();
       Partitioner partitioner;
       std::vector<PartitionID>dummy;
       std::vector<PartitionID>dummy2;
@@ -352,7 +375,10 @@ inline void Population::setPartitionVector(Hypergraph& hypergraph, const std::ve
       EvoParameters evo(dummy, dummy2, dummy3);
       partitioner.partition(_hypergraph, config, evo);
       Individuum ind = createIndividuum(_hypergraph, config);
-      insertIndividuum(ind);
+      if(insert) {
+        insertIndividuum(ind);
+      }
+      
       return ind;
     }
     
@@ -495,7 +521,8 @@ inline void Population::setPartitionVector(Hypergraph& hypergraph, const std::ve
 	 }
 
       }
-       _hypergraph.resetPartitioning();
+      std::cout << "Best Posittion: " << bestPosition << std::endl;
+       _hypergraph.reset();
        setPartitionVector(_hypergraph, _internalPopulation[bestPosition].getPartition());
     }
     inline double Population::getAverageFitness() {

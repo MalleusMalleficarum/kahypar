@@ -616,7 +616,7 @@ void writeShitEvo(int i, std::string filename, std::chrono::duration<double> dur
    std::string useThis = filename.substr(found + 1);
   std::ofstream out_file;
   
-  out_file.open(std::string("../../../../results/") +std::string("EVOLUTIONARY"), std::ios_base::app);
+  out_file.open(std::string("../../../../results/") +std::string("EVOLUTIONARYtemp"), std::ios_base::app);
   /*  out_file << "RESULT" << " k=" << config.partition.k
            << " epsilon=" << config.partition.epsilon
 	   << " seed=" << config.partition.seed
@@ -662,7 +662,8 @@ void writeShitEvo(int i, std::string filename, std::chrono::duration<double> dur
 	   << config.evolutionary.gamma << " "
 	   << config.evolutionary.use_edge_combine <<  " "
 	   << crossCombine << " "
-	   << kahypar::toString(config.evolutionary.cc_objective)
+	   << kahypar::toString(config.evolutionary.cc_objective) << " "
+           << config.evolutionary.cross_combine_chance
     //<< kahypar::metrics::imbalance(hypergraph, config.partition.k) << " "
 	   <<std::endl;
   out_file.close();
@@ -871,7 +872,7 @@ int main(int argc, char* argv[]) {
           if (currentFitness < membaBest) {
        membaBest = currentFitness;
        }
-	  unsigned replacePos = populus.replaceStrategy(indi, true);
+	  unsigned replacePos = populus.replaceStrategy(indi, false);
 	  writeShitEvo(i, filename, elapsed_secondsIteration, hypergraph,config,currentFitness, (int) sqrt(config.evolutionary.population_size), (int) sqrt(config.evolutionary.population_size), replacePos, populus.getAverageFitness(), membaBest, false, true, false);
       
      

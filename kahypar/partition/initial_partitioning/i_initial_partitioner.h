@@ -36,7 +36,8 @@ class IInitialPartitioner {
 
 
   void partition(Hypergraph& hg, const Configuration& config) {
-    HyperedgeWeight best_cut = std::numeric_limits<HyperedgeWeight>::max();
+ std::cout <<"IP:" << config.partition.k << std::endl;	    
+	HyperedgeWeight best_cut = std::numeric_limits<HyperedgeWeight>::max();
     std::vector<PartitionID> best_partition(hg.initialNumNodes(), 0);
     for (int i = 0; i < config.initial_partitioning.nruns; ++i) {
       // hg.resetPartitioning() is called in partitionImpl

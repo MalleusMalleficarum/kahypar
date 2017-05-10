@@ -542,9 +542,15 @@ inline void Partitioner::performPartitioning(Hypergraph& hypergraph,
 	        hypergraph.resetPartitioning();
 		setPartitionVector(hypergraph, evo.parent_1);
 		HyperedgeWeight parentWeight1 = metrics::km1(hypergraph);
-		hypergraph.resetPartitioning();
-		setPartitionVector(hypergraph, evo.parent_2);
-		HyperedgeWeight parentWeight2 = metrics::km1(hypergraph);
+                HyperedgeWeight parentWeight2;
+                if(!evo.crossCombineIgnoreSecondPartition) {
+		  hypergraph.resetPartitioning();
+		  setPartitionVector(hypergraph, evo.parent_2);
+                  parentWeight2 = metrics::km1(hypergraph);
+                } else {
+                  parentWeight2 = parentWeight1 + 1;
+                }
+
 		if(parentWeight1 < parentWeight2) {
 
 			hypergraph.resetPartitioning();

@@ -12,9 +12,11 @@ namespace kahypar {
     _config(config) {}
 	
   private:
-    Individuum combineImpl(const Individuum &parent_1, const Individuum &parent_2) override final {
+    Individuum combineImpl(const Individuum &parent_1, const Individuum &parent_2, bool crossComb) override final {
+      bool temp = crossComb;
       Partitioner partitioner;
-      EvoParameters evo(parent_1.getPartition(), parent_2.getPartition(), false, false, std::vector<double>());
+      EvoParameters evo(parent_1.getPartition(), parent_2.getPartition(), false, false, std::vector<double>(), crossComb);
+      _hypergraph.reset();
       partitioner.partition(_hypergraph, _config, evo);
       return Population::createIndividuum(_hypergraph, _config);
     }
