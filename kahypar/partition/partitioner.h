@@ -114,8 +114,8 @@ class Partitioner {
   Partitioner(Partitioner&&) = delete;
   Partitioner& operator= (Partitioner&&) = delete;
   inline void mutateHypergraphPartition(Hypergraph& hypergraph, Configuration& config, std::vector<PartitionID> &partition);
-  inline void partition(Hypergraph & hypergraph, Configuration & config, EvoParameters &evo);
-
+  inline std::vector<HyperedgeID> partition(Hypergraph & hypergraph, Configuration & config, EvoParameters &evo);
+  
   const std::string internals() const {
     return _internals;
   }
@@ -146,14 +146,14 @@ class Partitioner {
   inline void preprocess(Hypergraph& hypergraph, Hypergraph& sparseHypergraph,
                          const Configuration& config);
 
-  inline void partitionInternal(Hypergraph& hypergraph, const Configuration& config, const boolean mutate = false);
-  inline void partitionInternal(Hypergraph & hypergraph, const Configuration & config, EvoParameters &evo);
-  inline void performDirectKwayPartitioning(Hypergraph& hypergraph,
+  inline std::vector<HyperedgeID> partitionInternal(Hypergraph& hypergraph, const Configuration& config, const boolean mutate = false);
+  inline std::vector<HyperedgeID> partitionInternal(Hypergraph & hypergraph, const Configuration & config, EvoParameters &evo);
+  inline std::vector<HyperedgeID> performDirectKwayPartitioning(Hypergraph& hypergraph,
                                             const Configuration& config);
 
-  inline void performRecursiveBisectionPartitioning(Hypergraph& hypergraph,
+  inline std::vector<HyperedgeID> performRecursiveBisectionPartitioning(Hypergraph& hypergraph,
      const Configuration& config, const boolean mutate = false);
-  inline void performDirectKwayPartitioning(Hypergraph & hypergraph, const Configuration & config, EvoParameters &evo);
+  inline std::vector<HyperedgeID> performDirectKwayPartitioning(Hypergraph & hypergraph, const Configuration & config, EvoParameters &evo);
   inline HypernodeID originalHypernode(const HypernodeID hn,
                                        const MappingStack& mapping_stack) const;
 
@@ -169,11 +169,14 @@ class Partitioner {
                                                               const PartitionID k0,
                                                               const PartitionID k1) const;
 
-  inline void performRecursiveBisectionPartitioning(Hypergraph & input_hypergraph, const Configuration & original_config, EvoParameters &evo);
+  inline std::vector<HyperedgeID> performRecursiveBisectionPartitioning(Hypergraph & input_hypergraph, const Configuration & original_config, EvoParameters &evo);
 
-  inline void performPartitioning(Hypergraph& hypergraph, ICoarsener& coarsener, IRefiner& refiner,
-    const Configuration& config, const boolean mutate = false);
-  
+  inline std::vector<HyperedgeID> performPartitioning(Hypergraph& hypergraph, ICoarsener& coarsener, IRefiner& refiner,
+    const Configuration& config, boolean mutate = false);
+  inline std::vector<HyperedgeID> performPartitioning(Hypergraph& hypergraph,
+                                             ICoarsener& coarsener,
+                                             IRefiner& refiner,
+                                             const Configuration& config, EvoParameters &evo);
   inline void performInitialPartitioning(Hypergraph& hg, const Configuration& config);
   inline void createMappingsForInitialPartitioning(HmetisToCoarsenedMapping& hmetis_to_hg,
                                                    CoarsenedToHmetisMapping& hg_to_hmetis,
@@ -188,7 +191,6 @@ class Partitioner {
                           const Configuration& config);
 
 
-  inline void performPartitioning(Hypergraph & hypergraph, ICoarsener & coarsener, IRefiner & refiner, const Configuration & config, EvoParameters &evo);
 
   inline bool partitionVCycle(Hypergraph & hypergraph, ICoarsener & coarsener, IRefiner & refiner, const Configuration & config, EvoParameters &evo);
 
@@ -476,50 +478,51 @@ inline Configuration Partitioner::createConfigurationForInitialPartitioning(cons
   return config;
 }
 
- inline void Partitioner::partition(Hypergraph& hypergraph, Configuration& config, EvoParameters &evo) {
+ inline std::vector<HyperedgeID> Partitioner::partition(Hypergraph& hypergraph, Configuration& config, EvoParameters &evo) {
 
   setupConfig(hypergraph, config);
 
   if (config.preprocessing.min_hash_sparsifier.is_active) {
     Hypergraph sparseHypergraph;
     preprocess(hypergraph, sparseHypergraph, config);
-    partitionInternal(sparseHypergraph, config, evo);
+    return partitionInternal(sparseHypergraph, config, evo);
     postprocess(hypergraph, sparseHypergraph, config);
   } else {
     preprocess(hypergraph, config);
-    partitionInternal(hypergraph, config,evo);
+    return partitionInternal(hypergraph, config,evo);
     postprocess(hypergraph, config);
   }
 }
 
- inline void Partitioner::partitionInternal(Hypergraph& hypergraph, const Configuration& config, const boolean mutate) {
+ inline std::vector<HyperedgeID> Partitioner::partitionInternal(Hypergraph& hypergraph, const Configuration& config, const boolean mutate) {
 	std::vector<PartitionID> parent_1;
 	std::vector<PartitionID> parent_2;
 	EvoParameters evo(parent_1, parent_2, mutate, false,std::vector<double>());
-	partitionInternal(hypergraph, config, evo);
+	return partitionInternal(hypergraph, config, evo);
 }
- inline void Partitioner::partitionInternal(Hypergraph& hypergraph, const Configuration& config, EvoParameters &evo) {
+ inline std::vector<HyperedgeID> Partitioner::partitionInternal(Hypergraph& hypergraph, const Configuration& config, EvoParameters &evo) {
 
   switch (config.partition.mode) {
     case Mode::recursive_bisection:
-      performRecursiveBisectionPartitioning(hypergraph, config,evo);
+      return performRecursiveBisectionPartitioning(hypergraph, config,evo);
       break;
     case Mode::direct_kway:
-      performDirectKwayPartitioning(hypergraph, config, evo);
+      return performDirectKwayPartitioning(hypergraph, config, evo);
       break;
   }
 }
 
- inline void Partitioner::performPartitioning(Hypergraph& hypergraph, ICoarsener& coarsener, IRefiner& refiner, const Configuration& config, boolean mutate) {
+ inline std::vector<HyperedgeID> Partitioner::performPartitioning(Hypergraph& hypergraph, ICoarsener& coarsener, IRefiner& refiner, const Configuration& config, boolean mutate) {
 	std::vector<PartitionID> parent_1;
 	std::vector<PartitionID> parent_2;
 	EvoParameters evo(parent_1, parent_2, mutate, false, std::vector<double>());
-	performPartitioning(hypergraph, coarsener, refiner, config, evo);
+	return performPartitioning(hypergraph, coarsener, refiner, config, evo);
 }
-inline void Partitioner::performPartitioning(Hypergraph& hypergraph,
+inline std::vector<HyperedgeID> Partitioner::performPartitioning(Hypergraph& hypergraph,
                                              ICoarsener& coarsener,
                                              IRefiner& refiner,
                                              const Configuration& config, EvoParameters &evo) {
+  
   HighResClockTimepoint start = std::chrono::high_resolution_clock::now();
   coarsener.coarsen(config.coarsening.contraction_limit, evo);
   HighResClockTimepoint end = std::chrono::high_resolution_clock::now();
@@ -568,15 +571,64 @@ inline void Partitioner::performPartitioning(Hypergraph& hypergraph,
                                std::chrono::duration<double>(end - start).count());
 
   hypergraph.initializeNumCutHyperedges();
+  bool printState = true;
+  std::vector<HyperedgeID> out;
 
+  std::vector<HyperedgeID> first;
+  std::vector<HyperedgeID> second;
+  if(printState) {
+  std::cout << std::endl <<std::endl;
+  for(HyperedgeID u : hypergraph.edges()) {
+    if(hypergraph.connectivity(u) > 1) {
+      first.push_back(u);
+      //std::cout << u << " " << hypergraph.connectivity(u) << ";";
+    }
+
+  }
+  std::cout << std::endl <<std::endl;
+
+  
   start = std::chrono::high_resolution_clock::now();
   coarsener.uncoarsen(refiner);
   end = std::chrono::high_resolution_clock::now();
+  
+  if(printState) {
+  std::cout << std::endl <<std::endl;
+    for(HyperedgeID u : hypergraph.edges()) {
+    if(hypergraph.connectivity(u) > 1) {
+      second.push_back(u);
+      //std::cout << u << " " << hypergraph.connectivity(u) << ":";
+    }
+
+  }
+  //std::vector<HyperedgeID> out(std::max(first.size(), second.size()));
+  
+  std::set_intersection(first.begin(),first.end(),second.begin(),second.end(),back_inserter(out));
+  /*for(int i = 0; i < first.size(); ++i) {
+    std::cout << first[i] << ' ';
+
+  }
+  std::cout << "FIRSTFIRSTFIRST" << std::endl << std::endl;
+  for(int i = 0; i < second.size(); ++i) {
+    std::cout << second[i] << ' ';
+
+  }
+std::cout << "SECONSECONDSECONd" << std::endl << std::endl;
+  for(int i = 0; i < out.size(); ++i) {
+    std::cout << out[i] << ' ';
+
+  }*/
+//std::cout << "ENDENDEND" << std::endl << std::endl;
+  }
+  std::cout << std::endl <<std::endl;
+
+  }
   Stats::instance().addToTotal(config, "UncoarseningRefinement",
                                std::chrono::duration<double>(end - start).count());
+  return out;
 }
 inline void Partitioner::setPartitionVector(Hypergraph& hypergraph, const std::vector<PartitionID>& parent) {
-	for (HypernodeID u : hypergraph.nodes()) {
+	for (const HypernodeID u : hypergraph.nodes()) {
 		
 		hypergraph.setNodePart(u, parent[u]);
 	}
@@ -667,9 +719,9 @@ inline Configuration Partitioner::createConfigurationForCurrentBisection(const C
   return current_config;
 }
 
-inline void Partitioner::performRecursiveBisectionPartitioning(Hypergraph& input_hypergraph,
+inline std::vector<HyperedgeID> Partitioner::performRecursiveBisectionPartitioning(Hypergraph& input_hypergraph,
                                                                const Configuration& original_config, EvoParameters &evo) {
-
+  std::vector<HyperedgeID> ret;
   // Custom deleters for Hypergraphs stored in hypergraph_stack. The top-level
   // hypergraph is the input hypergraph, which is not supposed to be deleted.
   // All extracted hypergraphs however can be deleted as soon as they are not needed
@@ -749,7 +801,7 @@ inline void Partitioner::performRecursiveBisectionPartitioning(Hypergraph& input
 
           // TODO(schlag): we could integrate v-cycles in a similar fashion as is
           // performDirectKwayPartitioning
-          performPartitioning(current_hypergraph, *coarsener, *refiner, current_config, evo);
+          ret = performPartitioning(current_hypergraph, *coarsener, *refiner, current_config, evo);
 
           if (current_config.partition.verbose_output) {
             LOG("-------------------------------------------------------------");
@@ -779,9 +831,10 @@ inline void Partitioner::performRecursiveBisectionPartitioning(Hypergraph& input
         break;
     }
   }
+  return ret;
 }
 
-inline void Partitioner::performDirectKwayPartitioning(Hypergraph& hypergraph,
+inline std::vector<HyperedgeID> Partitioner::performDirectKwayPartitioning(Hypergraph& hypergraph,
                                                        const Configuration& config, EvoParameters &evo) {
 
   std::unique_ptr<ICoarsener> coarsener(
@@ -796,7 +849,7 @@ inline void Partitioner::performDirectKwayPartitioning(Hypergraph& hypergraph,
   // TODO(schlag): find better solution
   _internals.append(coarsener->policyString() + " " + refiner->policyString());
 
-  performPartitioning(hypergraph, *coarsener, *refiner, config, evo);
+  std::vector<HyperedgeID> ret = performPartitioning(hypergraph, *coarsener, *refiner, config, evo);
 
   DBG(dbg_partition_vcycles,
       "PartitioningResult: cut=" << metrics::hyperedgeCut(hypergraph));
@@ -819,6 +872,7 @@ inline void Partitioner::performDirectKwayPartitioning(Hypergraph& hypergraph,
     initial_cut = metrics::hyperedgeCut(hypergraph);
 #endif
   }
+  return ret;
 }
 
 inline void Partitioner::createMappingsForInitialPartitioning(HmetisToCoarsenedMapping& hmetis_to_hg,

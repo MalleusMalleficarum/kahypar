@@ -27,6 +27,11 @@ class Population {
       
   ~Population() {}
 
+  inline Individuum stableNetNoInitialPartitioning(unsigned positiion, bool vcycle = false);
+  inline Individuum stableNetStrategy(unsigned position);
+  inline void forceBlock(HyperedgeID he);
+  inline Individuum stableNetCreate(unsigned pos, std::vector<HyperedgeID> &theEdges);
+  inline Individuum singleStableNet(Configuration &config);
   inline unsigned size() {return _internalPopulation.size();};
 inline void setPartitionVector(Hypergraph &hypergraph, const std::vector<PartitionID>&parent);
   inline void printDifference(Individuum &printIn);
@@ -34,6 +39,8 @@ inline void setPartitionVector(Hypergraph &hypergraph, const std::vector<Partiti
   inline Individuum combine(std::size_t pos1, std::size_t pos2, ICombine &combinator, bool crossComb = false);
   inline Individuum mutate(Individuum &targetIndividuum, IMutate &mutator);
   inline Individuum mutate(std::size_t position, IMutate &mutator);
+  inline unsigned bestPosition(); 
+  
   inline double fitness(Individuum &targetIndividuum);
   static inline Individuum createIndividuum(Hypergraph &hypergraph, Configuration &config);
   inline unsigned replaceDiverse(Individuum &in, bool acceptWorse);
@@ -53,7 +60,7 @@ inline void setPartitionVector(Hypergraph &hypergraph, const std::vector<Partiti
   inline Individuum generateIndividuum(Configuration &config, bool insert);
   inline std::vector<unsigned> bestPositions(unsigned amount);
   inline unsigned difference(Individuum &in, unsigned position);
-
+  inline std::vector<unsigned> stableNet(double &amount, std::vector<unsigned> &positions);
   inline Individuum crossCombine(Individuum& original,const Configuration &config, ICombine &comb); //TODO
   inline std::size_t getRandomExcept(std::size_t except);
   inline void printInfo();
@@ -62,16 +69,208 @@ inline void setPartitionVector(Hypergraph &hypergraph, const std::vector<Partiti
   inline Individuum individuumFromEdgeFrequency(Configuration &config, std::vector<double> &edgeFrequency); 
   inline std::vector<double> edgeFrequency(std::vector<unsigned> &positions); 
   inline Individuum combineIndividuumFromEdgeFrequency(unsigned pos1, unsigned pos2, Configuration &config, std::vector<double> &edgeFrequency);
+  inline std::vector<unsigned> randomPositions(unsigned amount);
   
  
   private: 
   std::vector<Individuum> _internalPopulation;
   Hypergraph &_hypergraph;
   Configuration &_config;
+  
   //std::map<HyperedgeID, Connectivity>  _edgeFrequencyMap;
   unsigned _maxPopulationLimit;
 
 };
+  inline std::vector<unsigned> Population::randomPositions(unsigned amount) {
+    std::vector<unsigned> fill;
+    for(unsigned i = 0; i < _internalPopulation.size(); ++i) {
+      fill.push_back(i);
+    }
+    Randomize::instance().shuffleVector(fill, fill.size());
+    std::vector<unsigned> ret;
+    for(unsigned i = 0; i < _internalPopulation.size() && i < amount; ++i) {ret.push_back(i);}
+    return ret;
+  }
+  inline Individuum Population::stableNetStrategy(unsigned pos) {
+    if(_config.evolutionary.population_stable_net) {
+      std::vector<unsigned> positions = bestPositions(_config.evolutionary.stable_net_pop_amount);
+      //std::vector<unsigned> positions = randomPositions(_config.evolutionary.stable_net_pop_amount);
+      //std::vector<unsigned> positions;
+      //positions.push_back(pos);
+      std::vector<unsigned> vec = stableNet(_config.evolutionary.stable_net_threshold, positions);
+      return stableNetCreate(pos, vec);
+    }
+    else {
+      return stableNetNoInitialPartitioning(pos, _config.evolutionary.stable_net_vcycle);
+    }
+  }
+  inline Individuum Population::stableNetNoInitialPartitioning(unsigned pos, bool vcycle) {
+      _hypergraph.reset();
+      Individuum indtemp = getIndividuum(pos);
+      Partitioner partitioner;
+      std::vector<PartitionID>dummy = indtemp.getPartition();
+      std::vector<PartitionID>dummy2 = indtemp.getPartition();
+      std::vector<double>dummy3;
+      EvoParameters evo(dummy, dummy2, dummy3);
+      std::vector<HyperedgeID> printy = partitioner.partition(_hypergraph, _config, evo);
+      Randomize::instance().shuffleVector(printy, printy.size());
+      std::cout << std::endl << std::endl;
+      for(int i = 0; i < printy.size(); ++i) {
+        std::cout << printy[i] << ' '; 
+      }
+      std::cout << std::endl << std::endl;
+      bool touched [_hypergraph.initialNumNodes()] = {};
+
+      for(int i = 0; i < printy.size(); ++i) {
+        bool touch = false;
+        for(HypernodeID u : _hypergraph.pins(printy[i])) {
+          if(touched[u]) {
+            touch = true;
+          }
+        }
+
+        if(!touch) {
+          for(HypernodeID u :_hypergraph.pins(printy[i])) {
+            touched[u] = true;
+          } 
+          forceBlock(printy[i]);
+        }
+        else {std::cout << "-"<<printy[i] << ' ';}
+      }
+      /*for(int i = 0; i < printy.size(); ++i) {
+        std::cout << printy[i] << ' ';
+      }*/
+      Individuum ind = createIndividuum(_hypergraph, _config);
+      ind.printSparse();
+      if(vcycle) {
+        std::vector<PartitionID>dummi = ind.getPartition();
+        std::vector<PartitionID>dummi2 = ind.getPartition();
+        std::vector<double>dummi3;
+        
+        EvoParameters ewo(dummi, dummi2, dummi3);
+        partitioner.partition(_hypergraph, _config, ewo);
+      }
+       
+
+      std::vector<HyperedgeID> one = printy;
+      std::vector<HyperedgeID> two = ind.getCutEdges();
+      std::vector<HyperedgeID> output_diff;
+      std::sort(one.begin(), one.end());
+      std::set_intersection(one.begin(),
+				    one.end(),
+				    two.begin(),
+				    two.end(),
+				    std::back_inserter(output_diff));
+      std::cout << std::endl <<std::endl << "====================="<< std::endl <<std::endl;
+      std::cout <<output_diff.size() << std::endl;
+      for(int i = 0; i < output_diff.size(); ++i) {
+        std::cout << output_diff[i] << ' ';
+      }
+      std::cout << std::endl <<std::endl << "====================="<< std::endl <<std::endl;
+      
+      return ind;
+  }
+  inline Individuum Population::stableNetCreate(unsigned pos, std::vector<HyperedgeID> &theEdges) {
+    _hypergraph.reset();
+    
+    std::vector<PartitionID> partition = getIndividuum(pos).getPartition();
+    setPartitionVector(_hypergraph, partition);
+    Randomize::instance().shuffleVector(theEdges, theEdges.size());
+    bool touchedA [_hypergraph.initialNumNodes()] = {};
+    for(int i = 0; i < theEdges.size(); ++i) {
+      bool touch = false;
+      for(HypernodeID u : _hypergraph.pins(theEdges[i])) {
+        if(touchedA[u]) {
+          touch = true;
+        }
+      }
+      if(!touch) {
+        for(HypernodeID u :_hypergraph.pins(theEdges[i])) {
+          touchedA[u] = true;
+        } 
+        forceBlock(theEdges[i]);
+      }
+    }    
+    return createIndividuum(_hypergraph, _config);
+  }
+  
+  inline void Population::forceBlock(HyperedgeID he) {
+    int amount[_hypergraph.k()] = { };
+    for(HypernodeID u : _hypergraph.nodes()) {
+      amount[_hypergraph.partID(u)] += 1;
+    }
+    int smallestBlock = std::numeric_limits<int>::max();
+    int smallestBlockValue = std::numeric_limits<int>::max();
+    for(int i = 0; i < _hypergraph.k(); ++i) {
+      if(amount[i] < smallestBlockValue) { 
+        smallestBlock = i;
+        smallestBlockValue = amount[i];
+      }
+    }
+    for(HypernodeID u : _hypergraph.pins(he)) {
+      std::cout << he << ' ';
+      _hypergraph.changeNodePart(u, _hypergraph.partID(u), smallestBlock);
+    }
+  }
+
+  inline Individuum Population::singleStableNet(Configuration &config) {
+      _hypergraph.reset();
+      Partitioner partitioner;
+      std::vector<PartitionID>dummy;
+      std::vector<PartitionID>dummy2;
+      std::vector<double>dummy3;
+      EvoParameters evo(dummy, dummy2, dummy3);
+      std::vector<HyperedgeID> printy = partitioner.partition(_hypergraph, config, evo);
+      Randomize::instance().shuffleVector(printy, printy.size());
+      std::cout << std::endl << std::endl;
+      for(int i = 0; i < printy.size(); ++i) {
+        std::cout << printy[i] << ' '; 
+      }
+      std::cout << std::endl << std::endl;
+      bool touched [_hypergraph.initialNumNodes()] = {};
+
+      for(int i = 0; i < printy.size(); ++i) {
+        bool touch = false;
+        for(HypernodeID u : _hypergraph.pins(printy[i])) {
+          if(touched[u]) {
+            touch = true;
+          }
+        }
+
+        if(!touch) {
+          for(HypernodeID u :_hypergraph.pins(printy[i])) {
+            touched[u] = true;
+          } 
+          forceBlock(printy[i]);
+        }
+        else {std::cout << "-"<<printy[i] << ' ';}
+      }
+      /*for(int i = 0; i < printy.size(); ++i) {
+        std::cout << printy[i] << ' ';
+      }*/
+      Individuum ind = createIndividuum(_hypergraph, config);
+      std::vector<HyperedgeID> one = printy;
+      std::vector<HyperedgeID> two = ind.getCutEdges();
+      std::vector<HyperedgeID> output_diff;
+      std::sort(one.begin(), one.end());
+      std::set_intersection(one.begin(),
+				    one.end(),
+				    two.begin(),
+				    two.end(),
+				    std::back_inserter(output_diff));
+      std::cout << std::endl <<std::endl << "====================="<< std::endl <<std::endl;
+      std::cout <<output_diff.size() << std::endl;
+      for(int i = 0; i < output_diff.size(); ++i) {
+        std::cout << output_diff[i] << ' ';
+      }
+      std::cout << std::endl <<std::endl << "====================="<< std::endl <<std::endl;
+      bool insert = true;
+      if(insert) {
+        insertIndividuum(ind);
+      }
+      
+      return ind;
+  }
   inline Individuum Population::crossCombine(Individuum &original,const Configuration &config, ICombine &comb) {
     std::cout << std::endl << std::endl << std::endl<< "==============================================" << std::endl << std::endl << std::endl;
     Configuration configTemp = config;
@@ -237,7 +436,7 @@ inline Individuum Population::createIndividuum(Hypergraph &hypergraph, Configura
      
      Individuum current = getIndividuum(positions[it]);
      
-     current.printSparse();
+     //current.printSparse();
      std::vector<HyperedgeID> cutEdges;
 
      if(_config.evolutionary.edge_strong_set) {
@@ -252,18 +451,39 @@ inline Individuum Population::createIndividuum(Hypergraph &hypergraph, Configura
      std::cout << std::endl;
      for(unsigned i = 0; i < cutEdges.size(); ++i) {
        HyperedgeID value = cutEdges[i];
-       std::cout << value << " ";
+       
        edges[value] = edges[value] + increment;
      }
      std::cout << std::endl;
    }
-   /*std::cout << std::endl <<std::endl;
+   std::cout << std::endl <<std::endl;
    for(unsigned it = 0; it < edges.size(); ++it) {
-     std::cout << it << ' ' << edges[it] << " ; ";
+     if(edges[it] >= 0.8 * ((double) positions.size())) {
+       std::cout << it << ' ' << edges[it] << " ; ";
+     }
+    
    }
-std::cout << std::endl <<std::endl;*/
+std::cout << std::endl <<std::endl;
    return edges;
  }
+inline std::vector<unsigned> Population::stableNet(double &amount,std::vector<unsigned> &positions) {
+  std::vector<unsigned> retvect;
+  //std::vector<unsigned> myVec;
+  //for(unsigned i = 0; i < positions; i++ )
+  //  myVec.push_back( i );
+
+
+  std::vector<double> edge = edgeFrequency(positions);
+  for(unsigned i = 0; i < edge.size(); i++){
+    if(edge[i] >= amount * positions.size()) {
+      
+      retvect.push_back(i);
+    }
+  }
+  ASSERT(retvect.size != 0);
+  return retvect;
+
+}
 inline void Population::setPartitionVector(Hypergraph& hypergraph, const std::vector<PartitionID>& parent) {
 	for (HypernodeID u : hypergraph.nodes()) {
 		
@@ -373,7 +593,10 @@ inline void Population::setPartitionVector(Hypergraph& hypergraph, const std::ve
       std::vector<PartitionID>dummy2;
       std::vector<double>dummy3;
       EvoParameters evo(dummy, dummy2, dummy3);
-      partitioner.partition(_hypergraph, config, evo);
+      std::vector<HyperedgeID> printy = partitioner.partition(_hypergraph, config, evo);
+      for(int i = 0; i < printy.size(); ++i) {
+        std::cout << printy[i] << ' ';
+      }
       Individuum ind = createIndividuum(_hypergraph, config);
       if(insert) {
         insertIndividuum(ind);
@@ -524,6 +747,20 @@ inline void Population::setPartitionVector(Hypergraph& hypergraph, const std::ve
       std::cout << "Best Posittion: " << bestPosition << std::endl;
        _hypergraph.reset();
        setPartitionVector(_hypergraph, _internalPopulation[bestPosition].getPartition());
+    }
+    inline unsigned Population::bestPosition() {
+      std::size_t bestPosition = 0;
+      HyperedgeWeight bestValue = INT_MAX;
+       for(std::size_t i = 0; i < size(); i++) {
+	 HyperedgeWeight result = _internalPopulation[i].getFitness();
+	 if(result < bestValue) {
+	   
+	   bestPosition = i;
+	   bestValue = result;
+	 }
+
+      }
+      return bestPosition;
     }
     inline double Population::getAverageFitness() {
       double result = 0;

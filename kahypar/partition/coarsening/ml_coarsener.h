@@ -79,10 +79,36 @@ class MLCoarsener final : public ICoarsener,
 
  private:
 	void coarsenImpl(const HypernodeID limit, EvoParameters &evo) override final {
-                std::cout << _config.partition.k << " ?????????";
+                
 		int pass_nr = 0;
 		std::vector<HypernodeID> current_hns;
 		ds::FastResetFlagArray<> already_matched(_hg.initialNumNodes());
+
+
+                if(evo.stableNetVector.size() != 0) {
+                  Randomize::instance().shuffleVector(evo.stableNetVector, evo.stableNetVector.size());
+                  for(unsigned i = 0; i < evo.stableNetVector.size(); ++i) {
+                    bool untouched = true;
+                    HypernodeID anchor;
+                    for(const HypernodeID u : _hg.pins(evo.stableNetVector[i])) {
+                      if(already_matched[u]) {
+                        untouched = false;
+                      }
+                      anchor = u;
+                    }
+                    if(untouched) {
+                      already_matched.set(anchor, true);
+                      for(const HypernodeID u : _hg.pins(evo.stableNetVector[i])) {
+                        already_matched.set(u, true);
+                        if(anchor != u) {
+                          performContraction(anchor, u);
+                        }
+                      }
+                    }
+                  }
+                }
+
+
 		while (_hg.currentNumNodes() > limit) {
 
 			LOGVAR(pass_nr);

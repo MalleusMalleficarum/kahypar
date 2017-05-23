@@ -19,5 +19,6 @@ namespace kahypar {
     bool edgeFrequency;
     const std::vector<double> frequency;
     bool crossCombineIgnoreSecondPartition;
+    std::vector<unsigned> stableNetVector;
 };
 }

@@ -309,7 +309,7 @@ struct EvolutionaryParameters {
     population_size(10),
     mutation_chance(0),
     fill_limit(50),
-    strong_set(false),
+    strong_set(true),
     replace_diverse(true),
     gamma(1.0),
     edgeFrequencyUsesWeight(false),
@@ -317,12 +317,21 @@ struct EvolutionaryParameters {
     edge_repeat(10),
     edge_strong_set(false),
     use_edge_combine(false),
-    best_positions(0),
+    best_positions((int) sqrt(population_size)),
     combine_positions(true),
     random_positions(0),
     cc_objective(CrossCombineObjective::k),
     cross_combine_chance(0),
-    louvain(false) { }
+    louvain(false),
+    filename("EVOLUTIONARY"),
+    stable_net(false),
+    stable_net_vcycle(false),
+    diversify(false),
+    stable_net_threshold(0.8),
+    stable_net_pop_amount(10),
+    population_stable_net(false) {
+       
+    }
   int iteration_limit;
   int time_limit; 
   int population_size;
@@ -342,6 +351,13 @@ struct EvolutionaryParameters {
   CrossCombineObjective cc_objective;
   float cross_combine_chance;
   bool louvain;
+  std::string filename;
+  bool stable_net;
+  bool stable_net_vcycle;
+  bool diversify;
+  double stable_net_threshold;
+  unsigned stable_net_pop_amount;
+  bool population_stable_net;
   //Replacement strategy
   //Mutation strategy
   //Combine stragegy

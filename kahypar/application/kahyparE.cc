@@ -45,6 +45,7 @@
 #include "kahypar/partition/evolutionary/individuum.h"
 #include "kahypar/partition/evolutionary/combine_implementation.h"
 #include "kahypar/partition/evolutionary/mutate_implementation.h"
+#include "kahypar/partition/diversifier.h"
 
 namespace po = boost::program_options;
 
@@ -67,7 +68,7 @@ using kahypar::Population;
 using kahypar::Individuum;
 using kahypar::CombinatorBaseImplementation;
 using kahypar::MutatorBaseImplementation;
-
+using kahypar::diversifyer;
 using Timepoint = HighResClockTimepoint;
 using duration = std::chrono::duration<double>;
 using timer = std::chrono::high_resolution_clock;
@@ -544,6 +545,31 @@ void processCommandLineInput(Configuration& config, int argc, char* argv[]) {
       [&](const unsigned& ess) {
 	config.evolutionary.random_positions = ess;
       }),"TExT")
+        ("stable-net",
+    po::value<bool>()->value_name("<bool>")->notifier(
+      [&](const bool& ess) {
+	config.evolutionary.stable_net = ess;
+      }),"TExT")
+        ("stable-net-vcycle",
+    po::value<bool>()->value_name("<bool>")->notifier(
+      [&](const bool& ess) {
+	config.evolutionary.stable_net_vcycle = ess;
+      }),"TExT")
+        ("population-stable-net",
+    po::value<bool>()->value_name("<bool>")->notifier(
+      [&](const bool& ess) {
+	config.evolutionary.population_stable_net = ess;
+      }),"TExT")
+         ("diversify",
+    po::value<bool>()->value_name("<bool>")->notifier(
+      [&](const bool& ess) {
+	config.evolutionary.diversify = ess;
+      }),"TExT")
+    ("filename",
+     po::value<std::string>()->value_name("<string>")->notifier(
+			[&](const std::string& ess) {
+	config.evolutionary.filename = ess;
+      }),"TExT")
    ("fill-limit",
     po::value<unsigned>()->value_name("<unsigned>")->notifier(
       [&](const unsigned& filllimit) {
@@ -588,8 +614,13 @@ void processCommandLineInput(Configuration& config, int argc, char* argv[]) {
 
   po::store(po::parse_config_file(file, ini_line_options, true), cmd_vm);
   po::notify(cmd_vm);
-
-
+  std::ifstream file2("../../../config/cut_rb_alenex16.ini");
+  if (!file2) {
+    std::cerr << "Could not load config file at: " << config_path << std::endl;
+    std::exit(-1);
+  }
+  //po::store(po::parse_config_file(file2, true), cmd_vm);
+  //po::notify(cmd_vm);
   std::string epsilon_str = std::to_string(config.partition.epsilon);
   epsilon_str.erase(epsilon_str.find_last_not_of('0') + 1, std::string::npos);
 
@@ -604,19 +635,12 @@ void processCommandLineInput(Configuration& config, int argc, char* argv[]) {
     + std::to_string(config.partition.seed)
     + ".KaHyPar";
 }
-void clearFile(std::string filename) {
-  std::size_t found = filename.find_last_of("/");
-  std::string useThis = filename.substr(found + 1);
-  std::cout << "::"+ useThis +"::";
-  std::ofstream out_file(std::string("../../../../results/")+std::string("EVOLUTIONARY.") + useThis);
-  out_file.close();
-}
-void writeShitEvo(int i, std::string filename, std::chrono::duration<double> duration, Hypergraph &hypergraph, Configuration &config,double currentFitness, std::size_t parent1, std::size_t parent2, unsigned worstPos, double averageFitness, double best, bool mutation, bool edgeFrequency, bool crossCombine) {
+void writeShitEvo(int i, std::string filename, std::chrono::duration<double> duration, Hypergraph &hypergraph, Configuration &config,double currentFitness, std::size_t parent1, std::size_t parent2, unsigned worstPos, double averageFitness, double best, bool mutation, bool edgeFrequency, bool crossCombine, int difference, std::chrono::duration<double>totalDuration) {
   std::size_t found = filename.find_last_of("/");
    std::string useThis = filename.substr(found + 1);
   std::ofstream out_file;
   
-  out_file.open(std::string("../../../../results/") +std::string("EVOLUTIONARYtemp"), std::ios_base::app);
+  out_file.open(std::string("../../../../results/") +std::string(config.evolutionary.filename), std::ios_base::app);
   /*  out_file << "RESULT" << " k=" << config.partition.k
            << " epsilon=" << config.partition.epsilon
 	   << " seed=" << config.partition.seed
@@ -663,21 +687,16 @@ void writeShitEvo(int i, std::string filename, std::chrono::duration<double> dur
 	   << config.evolutionary.use_edge_combine <<  " "
 	   << crossCombine << " "
 	   << kahypar::toString(config.evolutionary.cc_objective) << " "
-           << config.evolutionary.cross_combine_chance
+           << config.evolutionary.cross_combine_chance << " "
+	   << difference << " "
+	   << config.evolutionary.stable_net << " "
+	   << config.evolutionary.stable_net_vcycle << " "
+	   << totalDuration.count()
     //<< kahypar::metrics::imbalance(hypergraph, config.partition.k) << " "
 	   <<std::endl;
   out_file.close();
 }
 
-void emptyLine(std::string filename) {
-    std::size_t found = filename.find_last_of("/");
-  std::string useThis = filename.substr(found + 1);
-  std::ofstream out_file;
-  
-  out_file.open(std::string("../../../Results/") +std::string("EVOLUTIONARY.") + useThis, std::ios_base::app);
-  out_file << "##################################" << std::endl;
-  out_file.close();
-}
 int main(int argc, char* argv[]) {
    
   Configuration config;
@@ -745,8 +764,8 @@ int main(int argc, char* argv[]) {
   unsigned i = 1;
   float n;
   duration elapsed_total = currentTime - start;
-  
-  while(i < (config.evolutionary.fill_limit + 1) && i <= config.evolutionary.iteration_limit && elapsed_total.count() <= config.evolutionary.time_limit) {    //INTENDED TO START THE ITERATION NUMBERS AT 1 instead of 0
+
+  while(i < (config.evolutionary.fill_limit + 1) && elapsed_total.count() <= config.evolutionary.time_limit) {    //INTENDED TO START THE ITERATION NUMBERS AT 1 instead of 0
     Timepoint startIteration = timer::now();
     Individuum indi = populus.generateIndividuum(config);
     // indi.print();
@@ -759,7 +778,7 @@ int main(int argc, char* argv[]) {
     duration elapsed_total = endIteration - start;
 
     populus.printInfo();
-    writeShitEvo(i, filename, elapsed_secondsIteration, hypergraph,config,currentFitness,0,0,i, populus.getAverageFitness(), membaBest, false, false, false);
+    writeShitEvo(i, filename, elapsed_secondsIteration, hypergraph,config,currentFitness,0,0,i, populus.getAverageFitness(), membaBest, false, false, false,0, iterationSeconds);
 
 	++i;	
   }
@@ -767,8 +786,11 @@ int main(int argc, char* argv[]) {
   iterationSeconds = currentTime - start;
  
  
-  while(iterationSeconds.count() <= config.evolutionary.time_limit && i <= config.evolutionary.iteration_limit) {
-
+  while(iterationSeconds.count() <= config.evolutionary.time_limit) {
+    if(config.evolutionary.diversify) {
+      diversifyer div;
+      div.diversify(config);
+    }
     
     Timepoint startIteration = timer::now();
     std::size_t firstPos;
@@ -779,19 +801,30 @@ int main(int argc, char* argv[]) {
     bool mutation;
     bool edgeFreqBool;
     bool crossCombine;
+    int diff = -1;
     //Mutate
 
-    if(n >= (1 - config.evolutionary.mutation_chance)){ //Trickery since [0,1) can roll a 0 whereas 1 -[0,1) never will
-      firstPos =  populus.getRandomIndividuum();
+    if(n >= (1 - config.evolutionary.mutation_chance)) { //Trickery since [0,1) can roll a 0 whereas 1 -[0,1) never will
+      firstPos =  populus.getRandomExcept(populus.bestPosition());
       secondPos = firstPos;
-      Individuum indi = populus.mutate(firstPos, mut);
+      
       //indi.print();
-      populus.replace(indi, firstPos);
-      currentFitness = indi.getFitness();
+
+     
       replacePosition = firstPos;
       mutation = true;
       edgeFreqBool = false;
       crossCombine = false;
+      if(config.evolutionary.stable_net) {
+        Individuum indi = populus.stableNetStrategy(firstPos);
+        populus.replace(indi, firstPos);
+        currentFitness = indi.getFitness();
+      }
+      else {
+	Individuum indi = populus.mutate(firstPos, mut);
+         populus.replace(indi, firstPos);
+        currentFitness = indi.getFitness();
+      }
       }
     //Combine
     else {
@@ -808,72 +841,74 @@ int main(int argc, char* argv[]) {
 	replacePosition = populus.replaceStrategy(indi);
       }
       else {
-      crossCombine = false;
-      if(config.evolutionary.use_edge_combine) {
-	edgeFreqBool = true;
-	std::vector<unsigned> positions;
-	if(config.evolutionary.best_positions > 0) {
-	  std::vector<unsigned>bestPos = populus.bestPositions(config.evolutionary.best_positions);
-	positions.insert(positions.end(), bestPos.begin(), bestPos.end());
-	}
-	if(config.evolutionary.combine_positions) {
-	  positions.push_back(tournamentWinners.first);
-	  positions.push_back(tournamentWinners.second);
-	}
-	if(config.evolutionary.random_positions > 0) {
-	  for(int i = 0; i < config.evolutionary.random_positions; ++i) {
-	    positions.push_back(kahypar::Randomize::instance().getRandomInt(0, populus.size()));
-	  }
-	}
-	std::vector<double>edgeFreq = populus.edgeFrequency(positions);
-	Individuum indi = populus.combineIndividuumFromEdgeFrequency(tournamentWinners.first, tournamentWinners.second, config, edgeFreq);
-
-      firstPos = tournamentWinners.first;
-      secondPos = tournamentWinners.second;
-      replacePosition = populus.replaceStrategy(indi);
-      currentFitness = indi.getFitness();
-      mutation = false;
+        crossCombine = false;
+        if(config.evolutionary.use_edge_combine) {
+          edgeFreqBool = true;
+          std::vector<unsigned> positions;
+	  if(config.evolutionary.best_positions > 0) {
+	    std::vector<unsigned>bestPos = populus.bestPositions(config.evolutionary.best_positions);
+          positions.insert(positions.end(), bestPos.begin(), bestPos.end());
+          }
+          if(config.evolutionary.combine_positions) {
+            positions.push_back(tournamentWinners.first);
+            positions.push_back(tournamentWinners.second);
+          }
+          if(config.evolutionary.random_positions > 0) {
+            for(int i = 0; i < config.evolutionary.random_positions; ++i) {
+              positions.push_back(kahypar::Randomize::instance().getRandomInt(0, populus.size()));
+            }
+          }
+          std::vector<double>edgeFreq = populus.edgeFrequency(positions);
+          Individuum indi = populus.combineIndividuumFromEdgeFrequency(tournamentWinners.first, tournamentWinners.second, config, edgeFreq);
 	
-      }
-      else {
-	edgeFreqBool = false;
-        Individuum indi = populus.combine(tournamentWinners.first,tournamentWinners.second, comb);
-      firstPos = tournamentWinners.first;
-      secondPos = tournamentWinners.second;
-      replacePosition = populus.replaceStrategy(indi);
-      currentFitness = indi.getFitness();
-      mutation = false;
-      }
+          firstPos = tournamentWinners.first;
+          secondPos = tournamentWinners.second;
+          diff = populus.difference(populus.getIndividuum(tournamentWinners.first), tournamentWinners.second);
+          replacePosition = populus.replaceStrategy(indi);
+          currentFitness = indi.getFitness();
+          mutation = false;
+	
+        }
+        else {
+	  edgeFreqBool = false;
+          Individuum indi = populus.combine(tournamentWinners.first,tournamentWinners.second, comb);
+          firstPos = tournamentWinners.first;
+          secondPos = tournamentWinners.second;
+          replacePosition = populus.replaceStrategy(indi);
+          diff = populus.difference(populus.getIndividuum(tournamentWinners.first), tournamentWinners.second);
+          currentFitness = indi.getFitness();
+          mutation = false;
+        }
       }
       //indi.print();
-
-      }
+    }
 
     
     if (currentFitness < membaBest) {
-       membaBest = currentFitness;
-       }
+      membaBest = currentFitness;
+    }
 
     
 
     Timepoint endIteration = timer::now();
     duration elapsed_secondsIteration = endIteration - startIteration;
-    
-    writeShitEvo(i, filename, elapsed_secondsIteration, hypergraph,config,currentFitness, firstPos, secondPos, replacePosition, populus.getAverageFitness(), membaBest, mutation, edgeFreqBool, crossCombine);
+    duration elapsed_total = endIteration - start;
+    writeShitEvo(i, filename, elapsed_secondsIteration, hypergraph,config,currentFitness, firstPos, secondPos, replacePosition, populus.getAverageFitness(), membaBest, mutation, edgeFreqBool, crossCombine, diff, elapsed_total);
 
-    // EdgeFrequency Without anything special
+    //EdgeFrequency Without anything special
     if(i%config.evolutionary.edge_repeat == 0) {
-      std::vector<unsigned> pos = populus.bestPositions((int) sqrt(config.evolutionary.population_size));
+      std::vector<unsigned> pos = populus.bestPositions(config.evolutionary.best_positions);
       
       std::vector<double>edgeFreq = populus.edgeFrequency(pos);
 
       Individuum indi = populus.individuumFromEdgeFrequency(config, edgeFreq);
       currentFitness = indi.getFitness();
-          if (currentFitness < membaBest) {
-       membaBest = currentFitness;
-       }
-	  unsigned replacePos = populus.replaceStrategy(indi, false);
-	  writeShitEvo(i, filename, elapsed_secondsIteration, hypergraph,config,currentFitness, (int) sqrt(config.evolutionary.population_size), (int) sqrt(config.evolutionary.population_size), replacePos, populus.getAverageFitness(), membaBest, false, true, false);
+      if (currentFitness < membaBest) {
+        membaBest = currentFitness;
+      }
+      unsigned replacePos = populus.replaceStrategy(indi, false);
+      elapsed_total = endIteration - start;
+      writeShitEvo(i, filename, elapsed_secondsIteration, hypergraph,config,currentFitness, (int) sqrt(config.evolutionary.population_size), (int) sqrt(config.evolutionary.population_size), replacePos, populus.getAverageFitness(), membaBest, false, true, false, 0, elapsed_total);
       
      
     }
@@ -885,35 +920,13 @@ int main(int argc, char* argv[]) {
   
 
  
-
+  
   Timepoint end = timer::now();
   duration elapsed_seconds = end - start;
+  //Individuum ind = populus.singleStableNet(config);
+  //std::cout <<  kahypar::metrics::imbalance(hypergraph,config); 
   populus.printInfo();
 
-  /* for(int q = 0; q < 20; ++q) {
-    
-    // std::vector<unsigned> pos = populus.bestPositions(q);
-
-
-    
-    unsigned first = populus.getRandomIndividuum();
-    unsigned second = populus.getRandomExcept(first);
-        std::vector<unsigned>posTest;
-    posTest.push_back(first);
-    std::vector<double>edgeFreq = populus.edgeFrequency(posTest);
-    Individuum final = populus.combineIndividuumFromEdgeFrequency(first,second,config, edgeFreq);
-
-    std::cout << std::endl;
-    std::cout << "Differences: " << std::endl;
-    populus.printDifference(final);
-
-    std::cout << "--------------";
-     final.printSparse();
-
-    unsigned replacePos = populus.replaceStrategy(final);
-    writeShitEvo(9001, filename, elapsed_seconds, hypergraph,config,final.getFitness(), first, second, replacePos, populus.getAverageFitness(), 9001, false, true);
-    }*/
-  
   populus.setTheBest();
 #ifdef GATHER_STATS
   LOG("*******************************");
@@ -929,4 +942,3 @@ int main(int argc, char* argv[]) {
   kahypar::io::serializer::serialize(config, hypergraph, partitioner, elapsed_seconds);
   return 0;
 }
-
