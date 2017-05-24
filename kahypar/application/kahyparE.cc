@@ -184,7 +184,19 @@ void sanityCheck(Configuration& config) {
   }
 }
 
+void readConfigFromFile(Configuration& config) {
+   po::variables_map cmd_vm;
 
+  po::options_description ini_line_options;
+
+  std::ifstream file2("../../../config/cut_rb_alenex16.ini");
+  if (!file2) {
+    std::cerr << "Could not load config file at: " << "LOL THIS ONE IS HARDCODED" << std::endl;
+    std::exit(-1);
+  }
+  po::store(po::parse_config_file(file2,ini_line_options, true), cmd_vm);
+  po::notify(cmd_vm);
+}
 void processCommandLineInput(Configuration& config, int argc, char* argv[]) {
   const int num_columns = getTerminalWidth();
 
@@ -700,10 +712,13 @@ void writeShitEvo(int i, std::string filename, std::chrono::duration<double> dur
 int main(int argc, char* argv[]) {
    
   Configuration config;
-
+  Configuration config2;
   processCommandLineInput(config, argc, argv);
   sanityCheck(config);
-
+  // readConfigFromFile(config2);
+  
+  // kahypar::io::printPartitionerConfiguration(config2);
+  //exit(1);
   if (config.partition.global_search_iterations != 0) {
     std::cerr << "Coarsened does not check if HNs are in same part." << std::endl;
     std::cerr << "Therefore v-cycles are currently disabled." << std::endl;

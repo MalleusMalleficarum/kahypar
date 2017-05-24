@@ -1,5 +1,5 @@
 #pragma once
-
+#include <boost/program_options.hpp>
 #include <random>
 #include <list>
 #include "kahypar/utils/randomize.h"
@@ -10,6 +10,8 @@
 #include "i_replace.h"
 #include "kahypar/datastructure/sparse_map.h"
 #include "kahypar/partition/preprocessing/louvain.h"
+
+namespace po = boost::program_options;
 
 namespace kahypar {
 
@@ -40,7 +42,7 @@ inline void setPartitionVector(Hypergraph &hypergraph, const std::vector<Partiti
   inline Individuum mutate(Individuum &targetIndividuum, IMutate &mutator);
   inline Individuum mutate(std::size_t position, IMutate &mutator);
   inline unsigned bestPosition(); 
-  
+  inline void readConfigFromFile(Configuration &config, bool cutRB);
   inline double fitness(Individuum &targetIndividuum);
   static inline Individuum createIndividuum(Hypergraph &hypergraph, Configuration &config);
   inline unsigned replaceDiverse(Individuum &in, bool acceptWorse);
@@ -61,7 +63,7 @@ inline void setPartitionVector(Hypergraph &hypergraph, const std::vector<Partiti
   inline std::vector<unsigned> bestPositions(unsigned amount);
   inline unsigned difference(Individuum &in, unsigned position);
   inline std::vector<unsigned> stableNet(double &amount, std::vector<unsigned> &positions);
-  inline Individuum crossCombine(Individuum& original,const Configuration &config, ICombine &comb); //TODO
+  inline Individuum crossCombine(Individuum& original,const Configuration &config, ICombine &comb); 
   inline std::size_t getRandomExcept(std::size_t except);
   inline void printInfo();
   inline void setTheBest();
@@ -271,6 +273,26 @@ inline void setPartitionVector(Hypergraph &hypergraph, const std::vector<Partiti
       
       return ind;
   }
+
+  inline void Population::readConfigFromFile(Configuration& config, bool cutRB) {
+    po::variables_map cmd_vm;
+
+    po::options_description ini_line_options;
+    std::string filename;
+    if(cutRB) {
+      filename = "../../../config/cut_rb_alenex16.ini";
+    }
+    else {
+      filename = "../../../config/km1_direct_alenex17.ini";
+    } 
+    std::ifstream file2(filename);
+    if (!file2) {
+      std::cerr << "Could not load config file at: " << "LOL THIS ONE IS HARDCODED" << std::endl;
+      std::exit(-1);
+    }
+    po::store(po::parse_config_file(file2,ini_line_options, true), cmd_vm);
+    po::notify(cmd_vm);
+  }
   inline Individuum Population::crossCombine(Individuum &original,const Configuration &config, ICombine &comb) {
     std::cout << std::endl << std::endl << std::endl<< "==============================================" << std::endl << std::endl << std::endl;
     Configuration configTemp = config;
@@ -278,7 +300,6 @@ inline void setPartitionVector(Hypergraph &hypergraph, const std::vector<Partiti
       case CrossCombineObjective::k : {
         int lowerbound = std::max(config.partition.k / 4, 2);
         int kFactor = Randomize::instance().getRandomInt(lowerbound, config.partition.k * 4);
-        //int kFactor = 5;
         configTemp.partition.k = kFactor;
 //break; //Do not want until experiments confirm
       }
@@ -289,18 +310,22 @@ inline void setPartitionVector(Hypergraph &hypergraph, const std::vector<Partiti
       }
       case CrossCombineObjective::metric : {
         if(config.partition.objective == Objective::km1) {
+          readConfigFromFile(configTemp, true);
           configTemp.partition.objective = Objective::cut;
         }
         else {
+          readConfigFromFile(configTemp, false);
           configTemp.partition.objective = Objective::km1;
         }
         break;
       }
       case CrossCombineObjective::mode : {
         if(config.partition.mode == Mode::recursive_bisection){
+          readConfigFromFile(configTemp, false);
           configTemp.partition.mode = Mode::direct_kway;
         }
         else {
+          readConfigFromFile(configTemp, true);
           configTemp.partition.mode = Mode::recursive_bisection;
         }
         break;
