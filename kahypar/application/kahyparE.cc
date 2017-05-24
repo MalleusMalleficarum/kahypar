@@ -573,8 +573,8 @@ void processCommandLineInput(Configuration& config, int argc, char* argv[]) {
 	config.evolutionary.population_stable_net = ess;
       }),"TExT")
          ("diversify",
-    po::value<bool>()->value_name("<bool>")->notifier(
-      [&](const bool& ess) {
+    po::value<int>()->value_name("<int>")->notifier(
+      [&](const int& ess) {
 	config.evolutionary.diversify = ess;
       }),"TExT")
     ("filename",
