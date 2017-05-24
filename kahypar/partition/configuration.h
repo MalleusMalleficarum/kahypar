@@ -326,7 +326,7 @@ struct EvolutionaryParameters {
     filename("EVOLUTIONARY"),
     stable_net(false),
     stable_net_vcycle(false),
-    diversify(false),
+    diversify(std::numeric_limits<int>::max()),
     stable_net_threshold(0.8),
     stable_net_pop_amount(10),
     population_stable_net(false) {
@@ -354,7 +354,7 @@ struct EvolutionaryParameters {
   std::string filename;
   bool stable_net;
   bool stable_net_vcycle;
-  bool diversify;
+  int diversify;
   double stable_net_threshold;
   unsigned stable_net_pop_amount;
   bool population_stable_net;

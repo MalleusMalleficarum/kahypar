@@ -703,7 +703,8 @@ void writeShitEvo(int i, std::string filename, std::chrono::duration<double> dur
 	   << difference << " "
 	   << config.evolutionary.stable_net << " "
 	   << config.evolutionary.stable_net_vcycle << " "
-	   << totalDuration.count()
+	   << totalDuration.count() << " "
+	   << config.evolutionary.diversify
     //<< kahypar::metrics::imbalance(hypergraph, config.partition.k) << " "
 	   <<std::endl;
   out_file.close();
@@ -802,7 +803,7 @@ int main(int argc, char* argv[]) {
  
  
   while(iterationSeconds.count() <= config.evolutionary.time_limit) {
-    if(config.evolutionary.diversify) {
+    if(i % config.evolutionary.diversify == 0) {
       diversifyer div;
       div.diversify(config);
     }
