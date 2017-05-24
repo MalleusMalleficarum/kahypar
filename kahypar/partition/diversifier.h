@@ -1,6 +1,11 @@
 #pragma once
 
 namespace kahypar {
+
+// TODO(robin): maintain less state:
+// [ ] use a evo::diversify namespace to encapsulate free functions
+// [ ] make one function for combine
+
 class diversifyer {
   public :
     diversifyer() {};
@@ -12,6 +17,7 @@ class diversifyer {
       //config.evolutionary.mutation_chance = 1 - Randomize::instance().getRandomFloat(0, 1);
       //config.evolutionary.edge_repeat = Randomize::instance().getRandomInt(1,15);
       config.evolutionary.use_edge_combine = Randomize::instance().flipCoin();
+      // TODO(robin): remove: we always use strong set difference since weak didn't make sense
       config.evolutionary.strong_set = Randomize::instance().flipCoin();
       config.evolutionary.cc_objective = static_cast<CrossCombineObjective>(Randomize::instance().getRandomInt(0,4));
       config.evolutionary.stable_net = Randomize::instance().flipCoin();

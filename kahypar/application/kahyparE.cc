@@ -647,9 +647,14 @@ void processCommandLineInput(Configuration& config, int argc, char* argv[]) {
     + std::to_string(config.partition.seed)
     + ".KaHyPar";
 }
+
+// TODO(robin): rename and move to io::partitioning_output
+// TODO(robin): make all parameters const
+// TODO(robin): use camelCase only for method names and classes - variables are
+//              lower_case_with_underscore
 void writeShitEvo(int i, std::string filename, std::chrono::duration<double> duration, Hypergraph &hypergraph, Configuration &config,double currentFitness, std::size_t parent1, std::size_t parent2, unsigned worstPos, double averageFitness, double best, bool mutation, bool edgeFrequency, bool crossCombine, int difference, std::chrono::duration<double>totalDuration) {
   std::size_t found = filename.find_last_of("/");
-   std::string useThis = filename.substr(found + 1);
+  std::string useThis = filename.substr(found + 1);
   std::ofstream out_file;
   
   out_file.open(std::string("../../../../results/") +std::string(config.evolutionary.filename), std::ios_base::app);
@@ -711,6 +716,19 @@ void writeShitEvo(int i, std::string filename, std::chrono::duration<double> dur
 }
 
 int main(int argc, char* argv[]) {
+
+  // TODO(robin): general todos:
+  // [ ] refactor everything according to the structure we devised on the whiteboard
+  // [ ] refactor variable and method names to adhere to naming convetions
+  // [ ] improve const-correctness:
+  //     - make function parameters const
+  //     - make all local variables that don't change const
+  // [ ] use make AnalyzeModifiedSources / make AnalyzeAllSources to enforce codestyle
+  // [ ] fix all suggestions warnings output by AnalyzeModifiedSources
+  // [ ] fix compiler warnings
+  // [ ] remove i_combine, i_mutate, i_replace interfaces
+
+
    
   Configuration config;
   Configuration config2;
@@ -768,21 +786,29 @@ int main(int argc, char* argv[]) {
   
 
   //clearFile(config.partition.graph_filename);
+
+  // TODO(robin): move evolutionary code into partition::evo_partitioner.h
   Partitioner partitioner;
   Population populus(hypergraph, config, config.evolutionary.population_size);
   double membaBest = DBL_MAX;
 
+  // TODO(robin): look at mutate_implementation.h and
+  // combine_implementation.h for detail
   CombinatorBaseImplementation comb(hypergraph, config);
   MutatorBaseImplementation mut(hypergraph, config);
+
   Timepoint start = timer::now();
   Timepoint currentTime = timer::now();
   duration iterationSeconds = currentTime - start;
   unsigned i = 1;
+  // TODO(robin): what is n? use variable names that speak for themselves
   float n;
   duration elapsed_total = currentTime - start;
 
   while(i < (config.evolutionary.fill_limit + 1) && elapsed_total.count() <= config.evolutionary.time_limit) {    //INTENDED TO START THE ITERATION NUMBERS AT 1 instead of 0
     Timepoint startIteration = timer::now();
+    // TODO(robin): Individuum --> Individual (and also the corresponding methods)
+    // TODO(robin): populus --> population
     Individuum indi = populus.generateIndividuum(config);
     // indi.print();
     double currentFitness = indi.getFitness();
@@ -804,6 +830,8 @@ int main(int argc, char* argv[]) {
  
   while(iterationSeconds.count() <= config.evolutionary.time_limit) {
     if(i % config.evolutionary.diversify == 0) {
+    if(config.evolutionary.diversify) {
+      // TODO(robin): see diversifyer.h
       diversifyer div;
       div.diversify(config);
     }
@@ -814,10 +842,17 @@ int main(int argc, char* argv[]) {
     n = kahypar::Randomize::instance().getRandomFloat(0, 1);
     double currentFitness;
     unsigned replacePosition;
+    // TODO(robin): Why do you need these parameters? What do they actually do?
     bool mutation;
     bool edgeFreqBool;
     bool crossCombine;
     int diff = -1;
+
+
+    // TODO(robin): enhance readability:
+    // use separate methods / free functions instead of comments
+    // i.e. performMutation(.....), performCombine(.....)
+
     //Mutate
 
     if(n >= (1 - config.evolutionary.mutation_chance)) { //Trickery since [0,1) can roll a 0 whereas 1 -[0,1) never will
@@ -826,30 +861,41 @@ int main(int argc, char* argv[]) {
       
       //indi.print();
 
-     
+      // TODO(robin): make these variables local to the scope and make them const
       replacePosition = firstPos;
       mutation = true;
       edgeFreqBool = false;
       crossCombine = false;
       if(config.evolutionary.stable_net) {
+        // TODO(robin): stableNet should be a free function in evo::mutation namespace
         Individuum indi = populus.stableNetStrategy(firstPos);
         populus.replace(indi, firstPos);
         currentFitness = indi.getFitness();
       }
       else {
+        // TODO(robin): mutate should be a free function in evo::mutation namespace
 	Individuum indi = populus.mutate(firstPos, mut);
          populus.replace(indi, firstPos);
         currentFitness = indi.getFitness();
       }
       }
+
+    // TODO(robin): also enhance readability here by extracting combine and cross combine
+    // code in separate methods
+
     //Combine
     else {
+      // TODO(robin): rename getTwoIndividuumTournamentPosition to sth like
+      // tournametSelect(....)
       std::pair<unsigned, unsigned> tournamentWinners = populus.getTwoIndividuumTournamentPosition();
       float cc_roll = kahypar::Randomize::instance().getRandomFloat(0,1);
       if(cc_roll >= (1 - config.evolutionary.cross_combine_chance)) {
-	crossCombine = true;
+        // TODO(robin): do these parameters actually do something?
+        crossCombine = true;
 	mutation = false;
-	edgeFreqBool = false;
+        edgeFreqBool = false;
+        // =======================================================
+        // TODO(robin): crossCombine should be a free function in evo::combine namespace
 	Individuum indi = populus.crossCombine(populus.getIndividuum(tournamentWinners.first), config, comb);
 	firstPos = tournamentWinners.first;
 	secondPos = tournamentWinners.second;
@@ -862,9 +908,11 @@ int main(int argc, char* argv[]) {
           edgeFreqBool = true;
           std::vector<unsigned> positions;
 	  if(config.evolutionary.best_positions > 0) {
-	    std::vector<unsigned>bestPos = populus.bestPositions(config.evolutionary.best_positions);
+            std::vector<unsigned>bestPos = populus.bestPositions(config.evolutionary.best_positions);
+            // TODO(robin):  this can be done by copy assignment: positions = best_positions
           positions.insert(positions.end(), bestPos.begin(), bestPos.end());
           }
+            // TODO(robin): ????
           if(config.evolutionary.combine_positions) {
             positions.push_back(tournamentWinners.first);
             positions.push_back(tournamentWinners.second);
@@ -874,22 +922,30 @@ int main(int argc, char* argv[]) {
               positions.push_back(kahypar::Randomize::instance().getRandomInt(0, populus.size()));
             }
           }
+
           std::vector<double>edgeFreq = populus.edgeFrequency(positions);
+          // TODO(robin): edgeFrequencyCombine should be a free function in evo::combine namespace
           Individuum indi = populus.combineIndividuumFromEdgeFrequency(tournamentWinners.first, tournamentWinners.second, config, edgeFreq);
 	
           firstPos = tournamentWinners.first;
           secondPos = tournamentWinners.second;
+          // TODO(robin): hide difference within replaceStrategy method
           diff = populus.difference(populus.getIndividuum(tournamentWinners.first), tournamentWinners.second);
+          // TODO(robin): rename replaceStrategy to sth. more meaningful
           replacePosition = populus.replaceStrategy(indi);
           currentFitness = indi.getFitness();
           mutation = false;
 	
         }
         else {
-	  edgeFreqBool = false;
+          // TODO(robin): due to all of these if-elses its hard to see what we are actually doing here
+          // ---> increase readability be refactoring this into a separate function
+          edgeFreqBool = false;
+          // TODO(robin): combine should be a free function in evo::combine namespace
           Individuum indi = populus.combine(tournamentWinners.first,tournamentWinners.second, comb);
           firstPos = tournamentWinners.first;
           secondPos = tournamentWinners.second;
+          // TODO(robin): see comments above for replace Strategy and difference
           replacePosition = populus.replaceStrategy(indi);
           diff = populus.difference(populus.getIndividuum(tournamentWinners.first), tournamentWinners.second);
           currentFitness = indi.getFitness();
@@ -911,6 +967,8 @@ int main(int argc, char* argv[]) {
     duration elapsed_total = endIteration - start;
     writeShitEvo(i, filename, elapsed_secondsIteration, hypergraph,config,currentFitness, firstPos, secondPos, replacePosition, populus.getAverageFitness(), membaBest, mutation, edgeFreqBool, crossCombine, diff, elapsed_total);
 
+
+    // TODO(robin): ???????
     //EdgeFrequency Without anything special
     if(i%config.evolutionary.edge_repeat == 0) {
       std::vector<unsigned> pos = populus.bestPositions(config.evolutionary.best_positions);
@@ -922,6 +980,7 @@ int main(int argc, char* argv[]) {
       if (currentFitness < membaBest) {
         membaBest = currentFitness;
       }
+      // TODO(robin): see comments above for replace Strategy and difference
       unsigned replacePos = populus.replaceStrategy(indi, false);
       elapsed_total = endIteration - start;
       writeShitEvo(i, filename, elapsed_secondsIteration, hypergraph,config,currentFitness, (int) sqrt(config.evolutionary.population_size), (int) sqrt(config.evolutionary.population_size), replacePos, populus.getAverageFitness(), membaBest, false, true, false, 0, elapsed_total);

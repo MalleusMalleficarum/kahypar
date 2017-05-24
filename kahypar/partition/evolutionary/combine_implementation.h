@@ -5,6 +5,12 @@
 
 using kahypar::Partitioner;
 namespace kahypar {
+
+// TODO(robin): maintain less state:
+// [ ] use a evo::combine namespace to encapsulate free functions
+// [ ] make one function for combine
+// [ ] make one function for cross combine
+
   class CombinatorBaseImplementation final : public ICombine{
   public:
     CombinatorBaseImplementation(Hypergraph &hypergraph, Configuration &config) :

@@ -3,6 +3,10 @@
 #include "kahypar/partition/partitioner.h"
 #include "population.h"
 namespace kahypar {
+
+// TODO(robin): maintain less state:
+// [ ] use a evo::mutate namespace to encapsulate free functions
+
   class MutatorBaseImplementation final : public IMutate{
   public:
 	MutatorBaseImplementation(Hypergraph & hypergraph, Configuration &config) :
