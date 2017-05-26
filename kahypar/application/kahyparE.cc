@@ -21,8 +21,8 @@
 #include <boost/program_options.hpp>
 
 #if defined(_MSC_VER)
-#include <Windows.h>
 #include <process.h>
+#include <Windows.h>
 #else
 #include <sys/ioctl.h>
 #endif
@@ -39,13 +39,13 @@
 #include "kahypar/io/sql_plottools_serializer.h"
 #include "kahypar/kahypar.h"
 #include "kahypar/macros.h"
+#include "kahypar/partition/diversifier.h"
+#include "kahypar/partition/evolutionary/combine_implementation.h"
+#include "kahypar/partition/evolutionary/individuum.h"
+#include "kahypar/partition/evolutionary/mutate_implementation.h"
+#include "kahypar/partition/evolutionary/population.h"
 #include "kahypar/utils/math.h"
 #include "kahypar/utils/randomize.h"
-#include "kahypar/partition/evolutionary/population.h"
-#include "kahypar/partition/evolutionary/individuum.h"
-#include "kahypar/partition/evolutionary/combine_implementation.h"
-#include "kahypar/partition/evolutionary/mutate_implementation.h"
-#include "kahypar/partition/diversifier.h"
 
 namespace po = boost::program_options;
 
@@ -185,7 +185,7 @@ void sanityCheck(Configuration& config) {
 }
 
 void readConfigFromFile(Configuration& config) {
-   po::variables_map cmd_vm;
+  po::variables_map cmd_vm;
 
   po::options_description ini_line_options;
 
@@ -194,7 +194,7 @@ void readConfigFromFile(Configuration& config) {
     std::cerr << "Could not load config file at: " << "LOL THIS ONE IS HARDCODED" << std::endl;
     std::exit(-1);
   }
-  po::store(po::parse_config_file(file2,ini_line_options, true), cmd_vm);
+  po::store(po::parse_config_file(file2, ini_line_options, true), cmd_vm);
   po::notify(cmd_vm);
 }
 void processCommandLineInput(Configuration& config, int argc, char* argv[]) {
@@ -476,13 +476,13 @@ void processCommandLineInput(Configuration& config, int argc, char* argv[]) {
 
   po::options_description evolutionary_options("Evolutionary Options", num_columns);
   evolutionary_options.add_options()
-  ("iteration-limit",
+    ("iteration-limit",
     po::value<unsigned>()->value_name("<unsigned>")->notifier(
       [&](const unsigned& iterationlimit) {
     config.evolutionary.iteration_limit = iterationlimit;
-      }),"text")
-    ("cross-combine-objective", 
-  po::value<std::string>()->value_name("<string>")->notifier(
+  }), "text")
+    ("cross-combine-objective",
+    po::value<std::string>()->value_name("<string>")->notifier(
       [&](const std::string& ccobj) {
     config.evolutionary.cc_objective = kahypar::crossCombineObjectiveFromString(ccobj);
   }),
@@ -492,101 +492,101 @@ void processCommandLineInput(Configuration& config, int argc, char* argv[]) {
     " - epsilon = epsilon \n"
     " - k = k (and currently epsilon too) \n"
     "(default: k(+epsilon)")
-   ("time-limit",
+    ("time-limit",
     po::value<unsigned>()->value_name("<unsigned>")->notifier(
       [&](const unsigned& timelimit) {
     config.evolutionary.time_limit = timelimit;
-      }),"Text")
+  }), "Text")
     ("edge-repeat",
     po::value<unsigned>()->value_name("<unsigned>")->notifier(
       [&](const unsigned& rep) {
     config.evolutionary.edge_repeat = rep;
-      }),"Text")
-   ("population-size",
+  }), "Text")
+    ("population-size",
     po::value<unsigned>()->value_name("<unsigned>")->notifier(
       [&](const unsigned& populationsize) {
     config.evolutionary.population_size = populationsize;
-      }),"text")
-   ("mutation-chance",
+  }), "text")
+    ("mutation-chance",
     po::value<float>()->value_name("<float>")->notifier(
       [&](const float& mutationchance) {
-	config.evolutionary.mutation_chance = mutationchance;
-      }),"TExT")
+    config.evolutionary.mutation_chance = mutationchance;
+  }), "TExT")
     ("cross-combine-chance",
     po::value<float>()->value_name("<float>")->notifier(
       [&](const float& ccchance) {
-	config.evolutionary.cross_combine_chance = ccchance;
-      }),"TExT")
+    config.evolutionary.cross_combine_chance = ccchance;
+  }), "TExT")
     ("strong-set",
     po::value<bool>()->value_name("<bool>")->notifier(
       [&](const bool& strong_set) {
-	config.evolutionary.strong_set = strong_set;
-      }),"TExT")
-   ("replace-diverse",
+    config.evolutionary.strong_set = strong_set;
+  }), "TExT")
+    ("replace-diverse",
     po::value<bool>()->value_name("<bool>")->notifier(
       [&](const bool& replacediverse) {
-	config.evolutionary.replace_diverse = replacediverse;
-      }),"TExT")
+    config.evolutionary.replace_diverse = replacediverse;
+  }), "TExT")
     ("evo-verbose",
     po::value<bool>()->value_name("<bool>")->notifier(
       [&](const bool& verbose) {
-	config.evolutionary.verbose = verbose;
-      }),"TExT")
+    config.evolutionary.verbose = verbose;
+  }), "TExT")
     ("edge-strong-set",
     po::value<bool>()->value_name("<bool>")->notifier(
       [&](const bool& ess) {
-	config.evolutionary.edge_strong_set = ess;
-      }),"TExT")
+    config.evolutionary.edge_strong_set = ess;
+  }), "TExT")
     ("edge-combine",
     po::value<bool>()->value_name("<bool>")->notifier(
       [&](const bool& ess) {
-	config.evolutionary.use_edge_combine = ess;
-      }),"TExT")
+    config.evolutionary.use_edge_combine = ess;
+  }), "TExT")
     ("best-positions",
     po::value<unsigned>()->value_name("<unsigned>")->notifier(
       [&](const unsigned& ess) {
-	config.evolutionary.best_positions = ess;
-      }),"TExT")
+    config.evolutionary.best_positions = ess;
+  }), "TExT")
     ("combine-positions",
     po::value<bool>()->value_name("<bool>")->notifier(
       [&](const bool& ess) {
-	config.evolutionary.combine_positions = ess;
-      }),"TExT")
+    config.evolutionary.combine_positions = ess;
+  }), "TExT")
     ("random-positions",
     po::value<unsigned>()->value_name("<unsigned>")->notifier(
       [&](const unsigned& ess) {
-	config.evolutionary.random_positions = ess;
-      }),"TExT")
-        ("stable-net",
+    config.evolutionary.random_positions = ess;
+  }), "TExT")
+    ("stable-net",
     po::value<bool>()->value_name("<bool>")->notifier(
       [&](const bool& ess) {
-	config.evolutionary.stable_net = ess;
-      }),"TExT")
-        ("stable-net-vcycle",
+    config.evolutionary.stable_net = ess;
+  }), "TExT")
+    ("stable-net-vcycle",
     po::value<bool>()->value_name("<bool>")->notifier(
       [&](const bool& ess) {
-	config.evolutionary.stable_net_vcycle = ess;
-      }),"TExT")
-        ("population-stable-net",
+    config.evolutionary.stable_net_vcycle = ess;
+  }), "TExT")
+    ("population-stable-net",
     po::value<bool>()->value_name("<bool>")->notifier(
       [&](const bool& ess) {
-	config.evolutionary.population_stable_net = ess;
-      }),"TExT")
-         ("diversify",
+    config.evolutionary.population_stable_net = ess;
+  }), "TExT")
+    ("diversify",
     po::value<int>()->value_name("<int>")->notifier(
       [&](const int& ess) {
-	config.evolutionary.diversify = ess;
-      }),"TExT")
+    config.evolutionary.diversify = ess;
+  }), "TExT")
     ("filename",
-     po::value<std::string>()->value_name("<string>")->notifier(
-			[&](const std::string& ess) {
-	config.evolutionary.filename = ess;
-      }),"TExT")
-   ("fill-limit",
+    po::value<std::string>()->value_name("<string>")->notifier(
+      [&](const std::string& ess) {
+    config.evolutionary.filename = ess;
+  }), "TExT")
+    ("fill-limit",
     po::value<unsigned>()->value_name("<unsigned>")->notifier(
       [&](const unsigned& filllimit) {
     config.evolutionary.fill_limit = filllimit;
-      }),"TExt");
+  }), "TExt");
   po::options_description cmd_line_options;
   cmd_line_options.add(generic_options)
   .add(required_options)
@@ -652,90 +652,94 @@ void processCommandLineInput(Configuration& config, int argc, char* argv[]) {
 // TODO(robin): make all parameters const
 // TODO(robin): use camelCase only for method names and classes - variables are
 //              lower_case_with_underscore
-void writeShitEvo(int i, std::string filename, std::chrono::duration<double> duration, Hypergraph &hypergraph, Configuration &config,double currentFitness, std::size_t parent1, std::size_t parent2, unsigned worstPos, double averageFitness, double best, bool mutation, bool edgeFrequency, bool crossCombine, int difference, std::chrono::duration<double>totalDuration) {
+// TODO(robin): use sqlplottools style and append standard partitioner output
+void writeShitEvo(int i, std::string filename, std::chrono::duration<double> duration, Hypergraph& hypergraph, Configuration& config, double currentFitness, std::size_t parent1, std::size_t parent2, unsigned worstPos, double averageFitness, double best, bool mutation, bool edgeFrequency, bool crossCombine, int difference, std::chrono::duration<double> totalDuration) {
   std::size_t found = filename.find_last_of("/");
   std::string useThis = filename.substr(found + 1);
   std::ofstream out_file;
-  
-  out_file.open(std::string("../../../../results/") +std::string(config.evolutionary.filename), std::ios_base::app);
+
+  out_file.open(std::string("../../../../results/") + std::string(config.evolutionary.filename), std::ios_base::app);
   /*  out_file << "RESULT" << " k=" << config.partition.k
            << " epsilon=" << config.partition.epsilon
-	   << " seed=" << config.partition.seed
-	   << " iteration=" << i
-	   << " duration=" << duration.count()
-	   << " parent1=" << parent1
-	   << " parent2=" << parent2
-	   << " replacePosition=" << worstPos
-	   << " averageFitness=" << averageFitness
-	   << " cut=" << kahypar::metrics::hyperedgeCut(hypergraph)
-	   << " SOED=" << kahypar::metrics::soed(hypergraph)
-	   << " km-1=" << currentFitness
-	   << " absorption=" << kahypar::metrics::absorption(hypergraph)
-	   << " best=" << best
-	   << std::endl;*/
-  
+       << " seed=" << config.partition.seed
+       << " iteration=" << i
+       << " duration=" << duration.count()
+       << " parent1=" << parent1
+       << " parent2=" << parent2
+       << " replacePosition=" << worstPos
+       << " averageFitness=" << averageFitness
+       << " cut=" << kahypar::metrics::hyperedgeCut(hypergraph)
+       << " SOED=" << kahypar::metrics::soed(hypergraph)
+       << " km-1=" << currentFitness
+       << " absorption=" << kahypar::metrics::absorption(hypergraph)
+       << " best=" << best
+       << std::endl;*/
+
   out_file << config.partition.k << " "
-	   << config.partition.epsilon << " "
-	   << config.partition.seed << " "
-	   << i << " "
-	   << duration.count() << " "
-	   << parent1 << " "
-	   << parent2 << " "
-	   << worstPos << " "
-	   << averageFitness << " "
-	   << kahypar::metrics::hyperedgeCut(hypergraph) << " "
-	   << kahypar::metrics::soed(hypergraph) << " "
-	   << currentFitness << " "
-	   << kahypar::metrics::absorption(hypergraph) << " "
-	   << best << " "
-	   << useThis << " "
-	   << kahypar::metrics::imbalance(hypergraph,config) << " "
-	   << mutation << " "
-	   << config.evolutionary.mutation_chance << " "
-	   << config.evolutionary.fill_limit << " "
-	   << config.evolutionary.time_limit << " "
-	   << config.evolutionary.population_size << " "
-	   << config.evolutionary.iteration_limit << " "
-	   << edgeFrequency << " "
-	   << config.evolutionary.strong_set << " "
-	   << config.evolutionary.edge_strong_set<< " "
-	   << config.evolutionary.edgeFrequencyUsesWeight << " "
-	   << config.evolutionary.gamma << " "
-	   << config.evolutionary.use_edge_combine <<  " "
-	   << crossCombine << " "
-	   << kahypar::toString(config.evolutionary.cc_objective) << " "
-           << config.evolutionary.cross_combine_chance << " "
-	   << difference << " "
-	   << config.evolutionary.stable_net << " "
-	   << config.evolutionary.stable_net_vcycle << " "
-	   << totalDuration.count() << " "
-	   << config.evolutionary.diversify
-    //<< kahypar::metrics::imbalance(hypergraph, config.partition.k) << " "
-	   <<std::endl;
+  << config.partition.epsilon << " "
+  << config.partition.seed << " "
+  << i << " "
+  << duration.count() << " "
+  << parent1 << " "
+  << parent2 << " "
+  << worstPos << " "
+  << averageFitness << " "
+  << kahypar::metrics::hyperedgeCut(hypergraph) << " "
+  << kahypar::metrics::soed(hypergraph) << " "
+  << currentFitness << " "
+  << kahypar::metrics::absorption(hypergraph) << " "
+  << best << " "
+  << useThis << " "
+  << kahypar::metrics::imbalance(hypergraph, config) << " "
+  << mutation << " "
+  << config.evolutionary.mutation_chance << " "
+  << config.evolutionary.fill_limit << " "
+  << config.evolutionary.time_limit << " "
+  << config.evolutionary.population_size << " "
+  << config.evolutionary.iteration_limit << " "
+  << edgeFrequency << " "
+  << config.evolutionary.strong_set << " "
+  << config.evolutionary.edge_strong_set << " "
+  << config.evolutionary.edgeFrequencyUsesWeight << " "
+  << config.evolutionary.gamma << " "
+  << config.evolutionary.use_edge_combine << " "
+  << crossCombine << " "
+  << kahypar::toString(config.evolutionary.cc_objective) << " "
+  << config.evolutionary.cross_combine_chance << " "
+  << difference << " "
+  << config.evolutionary.stable_net << " "
+  << config.evolutionary.stable_net_vcycle << " "
+  << totalDuration.count() << " "
+  << config.evolutionary.diversify
+  //<< kahypar::metrics::imbalance(hypergraph, config.partition.k) << " "
+  << std::endl;
   out_file.close();
 }
 
 int main(int argc, char* argv[]) {
-
   // TODO(robin): general todos:
   // [ ] refactor everything according to the structure we devised on the whiteboard
   // [ ] refactor variable and method names to adhere to naming convetions
   // [ ] improve const-correctness:
   //     - make function parameters const
   //     - make all local variables that don't change const
+  // [ ] update uncrustify config
   // [ ] use make AnalyzeModifiedSources / make AnalyzeAllSources to enforce codestyle
   // [ ] fix all suggestions warnings output by AnalyzeModifiedSources
   // [ ] fix compiler warnings
   // [ ] remove i_combine, i_mutate, i_replace interfaces
+  // [ ] remove dead code
+  // [ ] unsigned -> size_t
+  // [ ] refactor population methods
+  // [ ] attache evo params to config
 
 
-   
   Configuration config;
   Configuration config2;
   processCommandLineInput(config, argc, argv);
   sanityCheck(config);
   // readConfigFromFile(config2);
-  
+
   // kahypar::io::printPartitionerConfiguration(config2);
   //exit(1);
   if (config.partition.global_search_iterations != 0) {
@@ -772,8 +776,6 @@ int main(int argc, char* argv[]) {
   }
 
 
- 
-
   /*unsigned const POPULATION_SIZE = config.evolutionary.population_size;
   float const MUTATION_CHANCE = config.evolutionary.mutation_chance;
   //unsigned const TOTAL_CHANCE = 10;
@@ -783,11 +785,12 @@ int main(int argc, char* argv[]) {
   //replaceStrategy
   //combineStrategy
   //mutateStrategy
-  
+
 
   //clearFile(config.partition.graph_filename);
 
   // TODO(robin): move evolutionary code into partition::evo_partitioner.h
+  // TODO(robin): include 'advanced repetitions config' for standard kahypar
   Partitioner partitioner;
   Population populus(hypergraph, config, config.evolutionary.population_size);
   double membaBest = DBL_MAX;
@@ -805,7 +808,7 @@ int main(int argc, char* argv[]) {
   float n;
   duration elapsed_total = currentTime - start;
 
-  while(i < (config.evolutionary.fill_limit + 1) && elapsed_total.count() <= config.evolutionary.time_limit) {    //INTENDED TO START THE ITERATION NUMBERS AT 1 instead of 0
+  while (i < (config.evolutionary.fill_limit + 1) && elapsed_total.count() <= config.evolutionary.time_limit) {    //INTENDED TO START THE ITERATION NUMBERS AT 1 instead of 0
     Timepoint startIteration = timer::now();
     // TODO(robin): Individuum --> Individual (and also the corresponding methods)
     // TODO(robin): populus --> population
@@ -820,200 +823,189 @@ int main(int argc, char* argv[]) {
     duration elapsed_total = endIteration - start;
 
     populus.printInfo();
-    writeShitEvo(i, filename, elapsed_secondsIteration, hypergraph,config,currentFitness,0,0,i, populus.getAverageFitness(), membaBest, false, false, false,0, iterationSeconds);
+    writeShitEvo(i, filename, elapsed_secondsIteration, hypergraph, config, currentFitness, 0, 0, i, populus.getAverageFitness(), membaBest, false, false, false, 0, iterationSeconds);
 
-	++i;	
+    ++i;
   }
   currentTime = timer::now();
   iterationSeconds = currentTime - start;
- 
- 
-  while(iterationSeconds.count() <= config.evolutionary.time_limit) {
-    if(i % config.evolutionary.diversify == 0) {
-    if(config.evolutionary.diversify) {
-      // TODO(robin): see diversifyer.h
-      diversifyer div;
-      div.diversify(config);
-    }
-    
-    Timepoint startIteration = timer::now();
-    std::size_t firstPos;
-    std::size_t secondPos;
-    n = kahypar::Randomize::instance().getRandomFloat(0, 1);
-    double currentFitness;
-    unsigned replacePosition;
-    // TODO(robin): Why do you need these parameters? What do they actually do?
-    bool mutation;
-    bool edgeFreqBool;
-    bool crossCombine;
-    int diff = -1;
 
 
-    // TODO(robin): enhance readability:
-    // use separate methods / free functions instead of comments
-    // i.e. performMutation(.....), performCombine(.....)
-
-    //Mutate
-
-    if(n >= (1 - config.evolutionary.mutation_chance)) { //Trickery since [0,1) can roll a 0 whereas 1 -[0,1) never will
-      firstPos =  populus.getRandomExcept(populus.bestPosition());
-      secondPos = firstPos;
-      
-      //indi.print();
-
-      // TODO(robin): make these variables local to the scope and make them const
-      replacePosition = firstPos;
-      mutation = true;
-      edgeFreqBool = false;
-      crossCombine = false;
-      if(config.evolutionary.stable_net) {
-        // TODO(robin): stableNet should be a free function in evo::mutation namespace
-        Individuum indi = populus.stableNetStrategy(firstPos);
-        populus.replace(indi, firstPos);
-        currentFitness = indi.getFitness();
-      }
-      else {
-        // TODO(robin): mutate should be a free function in evo::mutation namespace
-	Individuum indi = populus.mutate(firstPos, mut);
-         populus.replace(indi, firstPos);
-        currentFitness = indi.getFitness();
-      }
+  while (iterationSeconds.count() <= config.evolutionary.time_limit) {
+    if (i % config.evolutionary.diversify == 0) {
+      if (config.evolutionary.diversify) {
+        // TODO(robin): see diversifyer.h
+        diversifyer div;
+        div.diversify(config);
       }
 
-    // TODO(robin): also enhance readability here by extracting combine and cross combine
-    // code in separate methods
+      Timepoint startIteration = timer::now();
+      std::size_t firstPos;
+      std::size_t secondPos;
+      n = kahypar::Randomize::instance().getRandomFloat(0, 1);
+      double currentFitness;
+      unsigned replacePosition;
+      // TODO(robin): Why do you need these parameters? What do they actually do?
+      // --> use enum class instead with 3 types of ops
+      bool mutation;
+      bool edgeFreqBool;
+      bool crossCombine;
+      int diff = -1;
 
-    //Combine
-    else {
-      // TODO(robin): rename getTwoIndividuumTournamentPosition to sth like
-      // tournametSelect(....)
-      std::pair<unsigned, unsigned> tournamentWinners = populus.getTwoIndividuumTournamentPosition();
-      float cc_roll = kahypar::Randomize::instance().getRandomFloat(0,1);
-      if(cc_roll >= (1 - config.evolutionary.cross_combine_chance)) {
-        // TODO(robin): do these parameters actually do something?
-        crossCombine = true;
-	mutation = false;
+
+      // TODO(robin): enhance readability:
+      // use separate methods / free functions instead of comments
+      // i.e. performMutation(.....), performCombine(.....)
+
+      //Mutate
+      // TODO(robin): move this to evo_partitioner.partition(.....)
+      if (n >= (1 - config.evolutionary.mutation_chance)) {  //Trickery since [0,1) can roll a 0 whereas 1 -[0,1) never will
+        firstPos = populus.getRandomExcept(populus.bestPosition());
+        secondPos = firstPos;
+
+        //indi.print();
+
+        replacePosition = firstPos;
+        mutation = true;
         edgeFreqBool = false;
-        // =======================================================
-        // TODO(robin): crossCombine should be a free function in evo::combine namespace
-	Individuum indi = populus.crossCombine(populus.getIndividuum(tournamentWinners.first), config, comb);
-	firstPos = tournamentWinners.first;
-	secondPos = tournamentWinners.second;
-	currentFitness = indi.getFitness();
-	replacePosition = populus.replaceStrategy(indi);
-      }
-      else {
         crossCombine = false;
-        if(config.evolutionary.use_edge_combine) {
-          edgeFreqBool = true;
-          std::vector<unsigned> positions;
-	  if(config.evolutionary.best_positions > 0) {
-            std::vector<unsigned>bestPos = populus.bestPositions(config.evolutionary.best_positions);
-            // TODO(robin):  this can be done by copy assignment: positions = best_positions
-          positions.insert(positions.end(), bestPos.begin(), bestPos.end());
-          }
-            // TODO(robin): ????
-          if(config.evolutionary.combine_positions) {
-            positions.push_back(tournamentWinners.first);
-            positions.push_back(tournamentWinners.second);
-          }
-          if(config.evolutionary.random_positions > 0) {
-            for(int i = 0; i < config.evolutionary.random_positions; ++i) {
-              positions.push_back(kahypar::Randomize::instance().getRandomInt(0, populus.size()));
-            }
-          }
-
-          std::vector<double>edgeFreq = populus.edgeFrequency(positions);
-          // TODO(robin): edgeFrequencyCombine should be a free function in evo::combine namespace
-          Individuum indi = populus.combineIndividuumFromEdgeFrequency(tournamentWinners.first, tournamentWinners.second, config, edgeFreq);
-	
-          firstPos = tournamentWinners.first;
-          secondPos = tournamentWinners.second;
-          // TODO(robin): hide difference within replaceStrategy method
-          diff = populus.difference(populus.getIndividuum(tournamentWinners.first), tournamentWinners.second);
-          // TODO(robin): rename replaceStrategy to sth. more meaningful
-          replacePosition = populus.replaceStrategy(indi);
+        if (config.evolutionary.stable_net) {
+          // TODO(robin): stableNet should be a free function in evo::mutation namespace
+          Individuum indi = populus.stableNetStrategy(firstPos);
+          populus.replace(indi, firstPos);
           currentFitness = indi.getFitness();
-          mutation = false;
-	
-        }
-        else {
-          // TODO(robin): due to all of these if-elses its hard to see what we are actually doing here
-          // ---> increase readability be refactoring this into a separate function
-          edgeFreqBool = false;
-          // TODO(robin): combine should be a free function in evo::combine namespace
-          Individuum indi = populus.combine(tournamentWinners.first,tournamentWinners.second, comb);
-          firstPos = tournamentWinners.first;
-          secondPos = tournamentWinners.second;
-          // TODO(robin): see comments above for replace Strategy and difference
-          replacePosition = populus.replaceStrategy(indi);
-          diff = populus.difference(populus.getIndividuum(tournamentWinners.first), tournamentWinners.second);
+        } else {
+          // TODO(robin): mutate should be a free function in evo::mutation namespace
+          Individuum indi = populus.mutate(firstPos, mut);
+          populus.replace(indi, firstPos);
           currentFitness = indi.getFitness();
-          mutation = false;
         }
       }
-      //indi.print();
-    }
+      // TODO(robin): also enhance readability here by extracting combine and cross combine
+      // code in separate methods
+      //Combine
+      else {
+        // TODO(robin): rename getTwoIndividuumTournamentPosition to sth like
+        // tournametSelect(....)
+        std::pair<unsigned, unsigned> tournamentWinners = populus.getTwoIndividuumTournamentPosition();
+        float cc_roll = kahypar::Randomize::instance().getRandomFloat(0, 1);
+        if (cc_roll >= (1 - config.evolutionary.cross_combine_chance)) {
+          // TODO(robin): do these parameters actually do something?
+          crossCombine = true;
+          mutation = false;
+          edgeFreqBool = false;
+          // =======================================================
+          // TODO(robin): crossCombine should be a free function in evo::combine namespace
+          Individuum indi = populus.crossCombine(populus.getIndividuum(tournamentWinners.first), config, comb);
+          firstPos = tournamentWinners.first;
+          secondPos = tournamentWinners.second;
+          currentFitness = indi.getFitness();
+          replacePosition = populus.replaceStrategy(indi);
+        } else {
+          crossCombine = false;
+          if (config.evolutionary.use_edge_combine) {
+            edgeFreqBool = true;
+            std::vector<unsigned> positions;
+            if (config.evolutionary.best_positions > 0) {
+              std::vector<unsigned> bestPos = populus.bestPositions(config.evolutionary.best_positions);
+              // TODO(robin):  this can be done by copy assignment: positions = best_positions
+              positions.insert(positions.end(), bestPos.begin(), bestPos.end());
+            }
+            // TODO(robin): ???? remove dead code
+            if (config.evolutionary.combine_positions) {
+              positions.push_back(tournamentWinners.first);
+              positions.push_back(tournamentWinners.second);
+            }
+            if (config.evolutionary.random_positions > 0) {
+              for (int i = 0; i < config.evolutionary.random_positions; ++i) {
+                positions.push_back(kahypar::Randomize::instance().getRandomInt(0, populus.size()));
+              }
+            }
 
-    
-    if (currentFitness < membaBest) {
-      membaBest = currentFitness;
-    }
+            std::vector<double> edgeFreq = populus.edgeFrequency(positions);
+            // TODO(robin): edgeFrequencyCombine should be a free function in evo::combine namespace
+            Individuum indi = populus.combineIndividuumFromEdgeFrequency(tournamentWinners.first, tournamentWinners.second, config, edgeFreq);
 
-    
+            firstPos = tournamentWinners.first;
+            secondPos = tournamentWinners.second;
+            // TODO(robin): hide difference within replaceStrategy method
+            diff = populus.difference(populus.getIndividuum(tournamentWinners.first), tournamentWinners.second);
+            // TODO(robin): rename replaceStrategy to sth. more meaningful
+            replacePosition = populus.replaceStrategy(indi);
+            currentFitness = indi.getFitness();
+            mutation = false;
+          } else {
+            // TODO(robin): due to all of these if-elses its hard to see what we are actually doing here
+            // ---> increase readability be refactoring this into a separate function
+            edgeFreqBool = false;
+            // TODO(robin): combine should be a free function in evo::combine namespace
+            Individuum indi = populus.combine(tournamentWinners.first, tournamentWinners.second, comb);
+            firstPos = tournamentWinners.first;
+            secondPos = tournamentWinners.second;
+            // TODO(robin): see comments above for replace Strategy and difference
+            replacePosition = populus.replaceStrategy(indi);
+            diff = populus.difference(populus.getIndividuum(tournamentWinners.first), tournamentWinners.second);
+            currentFitness = indi.getFitness();
+            mutation = false;
+          }
+        }
+        //indi.print();
+      }
 
-    Timepoint endIteration = timer::now();
-    duration elapsed_secondsIteration = endIteration - startIteration;
-    duration elapsed_total = endIteration - start;
-    writeShitEvo(i, filename, elapsed_secondsIteration, hypergraph,config,currentFitness, firstPos, secondPos, replacePosition, populus.getAverageFitness(), membaBest, mutation, edgeFreqBool, crossCombine, diff, elapsed_total);
 
-
-    // TODO(robin): ???????
-    //EdgeFrequency Without anything special
-    if(i%config.evolutionary.edge_repeat == 0) {
-      std::vector<unsigned> pos = populus.bestPositions(config.evolutionary.best_positions);
-      
-      std::vector<double>edgeFreq = populus.edgeFrequency(pos);
-
-      Individuum indi = populus.individuumFromEdgeFrequency(config, edgeFreq);
-      currentFitness = indi.getFitness();
       if (currentFitness < membaBest) {
         membaBest = currentFitness;
       }
-      // TODO(robin): see comments above for replace Strategy and difference
-      unsigned replacePos = populus.replaceStrategy(indi, false);
-      elapsed_total = endIteration - start;
-      writeShitEvo(i, filename, elapsed_secondsIteration, hypergraph,config,currentFitness, (int) sqrt(config.evolutionary.population_size), (int) sqrt(config.evolutionary.population_size), replacePos, populus.getAverageFitness(), membaBest, false, true, false, 0, elapsed_total);
-      
-     
+
+
+      Timepoint endIteration = timer::now();
+      duration elapsed_secondsIteration = endIteration - startIteration;
+      duration elapsed_total = endIteration - start;
+      writeShitEvo(i, filename, elapsed_secondsIteration, hypergraph, config, currentFitness, firstPos, secondPos, replacePosition, populus.getAverageFitness(), membaBest, mutation, edgeFreqBool, crossCombine, diff, elapsed_total);
+
+
+      // TODO(robin): ???????
+      //EdgeFrequency Without anything special
+      // config.evolutionary.edge_repeat --> config.evolutionary.edge_frequency_repeat
+      if (i % config.evolutionary.edge_repeat == 0) {
+        std::vector<unsigned> pos = populus.bestPositions(config.evolutionary.best_positions);
+
+        std::vector<double> edgeFreq = populus.edgeFrequency(pos);
+
+        Individuum indi = populus.individuumFromEdgeFrequency(config, edgeFreq);
+        currentFitness = indi.getFitness();
+        if (currentFitness < membaBest) {
+          membaBest = currentFitness;
+        }
+        // TODO(robin): see comments above for replace Strategy and difference
+        unsigned replacePos = populus.replaceStrategy(indi, false);
+        elapsed_total = endIteration - start;
+        writeShitEvo(i, filename, elapsed_secondsIteration, hypergraph, config, currentFitness, (int)sqrt(config.evolutionary.population_size), (int)sqrt(config.evolutionary.population_size), replacePos, populus.getAverageFitness(), membaBest, false, true, false, 0, elapsed_total);
+      }
+      currentTime = timer::now();
+      iterationSeconds = currentTime - start;
+      i++;
     }
-    currentTime = timer::now();
-    iterationSeconds = currentTime - start;
-    i++;
-  }
 
-  
 
- 
-  
-  Timepoint end = timer::now();
-  duration elapsed_seconds = end - start;
-  //Individuum ind = populus.singleStableNet(config);
-  //std::cout <<  kahypar::metrics::imbalance(hypergraph,config); 
-  populus.printInfo();
+    Timepoint end = timer::now();
+    duration elapsed_seconds = end - start;
+    //Individuum ind = populus.singleStableNet(config);
+    //std::cout <<  kahypar::metrics::imbalance(hypergraph,config);
+    populus.printInfo();
 
-  populus.setTheBest();
+    populus.setTheBest();
 #ifdef GATHER_STATS
-  LOG("*******************************");
-  LOG("***** GATHER_STATS ACTIVE *****");
-  LOG("*******************************");
-  kahypar::io::printPartitioningStatistics();
+    LOG("*******************************");
+    LOG("***** GATHER_STATS ACTIVE *****");
+    LOG("*******************************");
+    kahypar::io::printPartitioningStatistics();
 #endif
 
-  kahypar::io::printPartitioningResults(hypergraph, config, elapsed_seconds);
-  kahypar::io::writePartitionFile(hypergraph,
-                                  config.partition.graph_partition_filename);
+    kahypar::io::printPartitioningResults(hypergraph, config, elapsed_seconds);
+    kahypar::io::writePartitionFile(hypergraph,
+                                    config.partition.graph_partition_filename);
 
-  kahypar::io::serializer::serialize(config, hypergraph, partitioner, elapsed_seconds);
-  return 0;
-}
+    kahypar::io::serializer::serialize(config, hypergraph, partitioner, elapsed_seconds);
+    return 0;
+  }
